@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Tủ đồ của bạn</title>
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --surface: #fff;
+      --text: #1a1a1a;
+      --muted: #6b6560;
+      --accent: #c9a9b8;
+      --lavender: #e8e0f4;
+      --border: rgba(26,26,26,.08);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+    aside { width: 240px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 16px; flex-shrink: 0; }
+    aside h1 { font-size: 16px; margin-bottom: 24px; }
+    nav a { display: block; padding: 10px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 14px; margin-bottom: 4px; }
+    nav a.active, nav a:hover { background: var(--lavender); color: var(--text); }
+    main { flex: 1; padding: 24px; overflow: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header h2 { font-size: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: 0 4px 12px rgba(26,26,26,.06); }
+    .card .value { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+    .card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+    th, td { text-align: left; padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    th { background: var(--lavender); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; background: var(--lavender); }
+    .section { display: none; }
+    .section.active { display: block; }
+    .btn { background: var(--text); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      aside { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      nav { display: flex; flex-wrap: wrap; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <h1>Tủ đồ Admin</h1>
+    <nav>
+      <a href="#" class="active" data-section="dashboard">Dashboard</a>
+      <a href="#" data-section="users">Người dùng</a>
+      <a href="#" data-section="community">Cộng đồng</a>
+      <a href="#" data-section="membership">Gói thành viên</a>
+      <a href="#" data-section="missions">Nhiệm vụ</a>
+      <a href="#" data-section="trends">Xu hướng</a>
+      <a href="#" data-section="affiliate">Affiliate</a>
+    </nav>
+  </aside>
+  <main>
+    <div id="dashboard" class="section active">
+      <div class="header"><h2>Analytics</h2><button class="btn">Xuất báo cáo</button></div>
+      <div class="grid">
+        <div class="card"><div class="label">Doanh thu tháng</div><div class="value">42.5M</div></div>
+        <div class="card"><div class="label">Người dùng active</div><div class="value">1,284</div></div>
+        <div class="card"><div class="label">AI usage</div><div class="value">8,420</div></div>
+        <div class="card"><div class="label">Giao dịch</div><div class="value">156</div></div>
+      </div>
+    </div>
+    <div id="users" class="section">
+      <div class="header"><h2>Quản lý người dùng</h2></div>
+      <table>
+        <thead><tr><th>User</th><th>Gói</th><th>Tủ đồ</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Minh Anh</td><td><span class="badge">Free</span></td><td>24/50</td><td>Active</td><td><button class="btn">Freeze</button></td></tr>
+          <tr><td>Lan Hương</td><td><span class="badge">Premium</span></td><td>89</td><td>Active</td><td><button class="btn">Freeze</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="community" class="section">
+      <div class="header"><h2>Kiểm duyệt cộng đồng</h2></div>
+      <table>
+        <thead><tr><th>Tin đăng</th><th>Loại</th><th>Báo cáo</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Váy midi hoa nhí</td><td>Bán</td><td>0</td><td><button class="btn">Duyệt</button></td></tr>
+          <tr><td>Áo khoác denim</td><td>Trao đổi</td><td>1</td><td><button class="btn">Gỡ</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="membership" class="section">
+      <div class="header"><h2>Gói & giá</h2></div>
+      <table>
+        <thead><tr><th>Gói</th><th>Giá</th><th>AI</th><th>Tủ đồ</th></tr></thead>
+        <tbody>
+          <tr><td>Free</td><td>0đ</td><td>10/tháng</td><td>50</td></tr>
+          <tr><td>Premium</td><td>99.000đ</td><td>∞</td><td>∞</td></tr>
+          <tr><td>Elite</td><td>199.000đ</td><td>∞</td><td>∞</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="missions" class="section">
+      <div class="header"><h2>Nhiệm vụ</h2><button class="btn">+ Tạo nhiệm vụ</button></div>
+      <table>
+        <thead><tr><th>Nhiệm vụ</th><th>Phần thưởng</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+          <tr><td>Điểm danh hàng ngày</td><td>+1 AI</td><td>Active</td></tr>
+          <tr><td>Mời bạn bè</td><td>+5 AI</td><td>Active</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="trends" class="section">
+      <div class="header"><h2>Xu hướng thời trang</h2><button class="btn">+ Thêm trend</button></div>
+      <table>
+        <thead><tr><th>Tên</th><th>Mùa</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Coastal Grandmother</td><td>Summer 2025</td><td><button class="btn">Sửa</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="affiliate" class="section">
+      <div class="header"><h2>Banner & sản phẩm affiliate</h2><button class="btn">+ Thêm</button></div>
+      <table>
+        <thead><tr><th>Sản phẩm</th><th>Link</th><th>Vị trí</th></tr></thead>
+        <tbody>
+          <tr><td>Blazer linen</td><td>affiliate.example/1</td><td>Home banner</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    document.querySelectorAll('nav a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('nav a').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        a.classList.add('active');
+        document.getElementById(a.dataset.section).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
