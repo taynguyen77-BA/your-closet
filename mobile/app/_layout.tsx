@@ -43,7 +43,6 @@ export default function RootLayout() {
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="auth" />
           <Stack.Screen
             name="community/index"
             options={{ headerShown: true, title: 'Cộng đồng Pass đồ', presentation: 'card' }}
