@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page() { return <AdminCollectionPage config={{ collection: "users", title: "Quản lý người dùng", description: "Users, suspend, ban, membership", manage: "users.manage", statuses: ["active", "suspended", "banned"], fields: [{ key: "username", label: "User" }, { key: "email", label: "Email" }, { key: "plan", label: "Gói" }, { key: "status", label: "Trạng thái" }, { key: "lastActiveAt", label: "Hoạt động" }] }} />; }

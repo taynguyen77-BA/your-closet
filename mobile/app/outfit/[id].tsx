@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
@@ -9,6 +9,7 @@ import { useTheme } from '@/theme';
 
 export default function OutfitDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
   const { colors, spacing, radius } = useTheme();
   const outfit = useAppStore((s) => s.outfits.find((o) => o.id === id));
 
@@ -59,7 +60,7 @@ export default function OutfitDetailScreen() {
           )}
         </GlassCard>
       )}
-      <Button label="Thử ngay" style={{ marginTop: spacing.xl }} />
+      <Button label="Thử ngay" onPress={() => router.push(`/(tabs)/try-on?outfitId=${outfit.id}`)} style={{ marginTop: spacing.xl }} />
     </ScrollView>
   );
 }

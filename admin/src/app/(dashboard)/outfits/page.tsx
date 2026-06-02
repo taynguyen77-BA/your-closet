@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page(){return <AdminCollectionPage config={{collection:"outfits",title:"Outfits",description:"Outfit curation",manage:"outfits.manage",fields:[{key:"name",label:"Outfit"},{key:"username",label:"User"},{key:"saves",label:"Saves"},{key:"wears",label:"Wears"},{key:"createdAt",label:"Created"}]}}/>}

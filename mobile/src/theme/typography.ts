@@ -9,26 +9,26 @@ export const fontFamily = {
 
 export const typography: Record<string, TextStyle> = {
   display: {
-    fontSize: 28,
-    fontWeight: '700',
-    letterSpacing: -0.5,
-    lineHeight: 34,
+    fontSize: 36,
+    fontWeight: '800',
+    letterSpacing: -1,
+    lineHeight: 41,
   },
   h1: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: -0.3,
     lineHeight: 30,
   },
   h2: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     letterSpacing: -0.2,
     lineHeight: 26,
   },
   h3: {
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 22,
   },
   body: {

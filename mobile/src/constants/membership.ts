@@ -1,4 +1,17 @@
-import type { MembershipPlan } from '@/models';
+import type { MembershipPlan, Mission, PlanLimit } from '@/models';
+
+export const PLAN_LIMITS: Record<MembershipPlan, PlanLimit> = {
+  free: { id: 'free', label: 'Miễn phí', aiMonthly: 10, closetItems: 50 },
+  premium: { id: 'premium', label: 'Premium', aiMonthly: -1, closetItems: -1 },
+  elite: { id: 'elite', label: 'Elite', aiMonthly: -1, closetItems: -1 },
+};
+
+export const DEFAULT_MISSIONS: Mission[] = [
+  { id: 'daily-checkin', type: 'daily_checkin', title: 'Điểm danh hàng ngày', description: 'Mở app mỗi ngày để nhận thêm lượt AI', rewardAiTries: 1, progress: 0, target: 1, isCompleted: false, isClaimed: false, isActive: true },
+  { id: 'watch-ad', type: 'watch_ad', title: 'Xem quảng cáo', description: 'Xem video quảng cáo mẫu để nhận thưởng', rewardAiTries: 2, progress: 0, target: 1, isCompleted: false, isClaimed: false, isActive: true },
+  { id: 'invite-friend', type: 'invite_friend', title: 'Mời bạn bè', description: 'Mời một người bạn tham gia Your Closet', rewardAiTries: 5, progress: 0, target: 1, isCompleted: false, isClaimed: false, isActive: true },
+  { id: 'share-outfit', type: 'share_outfit', title: 'Chia sẻ outfit', description: 'Chia sẻ một outfit hoặc ảnh thử đồ', rewardAiTries: 2, progress: 0, target: 1, isCompleted: false, isClaimed: false, isActive: true },
+];
 
 export interface PlanFeature {
   id: MembershipPlan;
@@ -17,8 +30,8 @@ export const MEMBERSHIP_PLANS: PlanFeature[] = [
     name: 'Miễn phí',
     priceVnd: 0,
     priceLabel: '0đ/tháng',
-    aiGenerations: '10 lượt AI/tháng',
-    closetLimit: 'Tối đa 50 món',
+    aiGenerations: `${PLAN_LIMITS.free.aiMonthly} lượt AI/tháng`,
+    closetLimit: `Tối đa ${PLAN_LIMITS.free.closetItems} món`,
     features: ['Gợi ý outfit cơ bản', 'Cộng đồng Pass đồ'],
   },
   {

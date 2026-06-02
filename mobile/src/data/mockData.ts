@@ -8,6 +8,7 @@ import type {
   WardrobeEvent,
   WeatherInfo,
 } from '@/models';
+import { DEFAULT_MISSIONS } from '@/constants/membership';
 
 export const mockUser: User = {
   id: 'user-1',
@@ -19,6 +20,7 @@ export const mockUser: User = {
   plan: 'free',
   aiUsageRemaining: 7,
   aiUsageMonthlyLimit: 10,
+  aiQuotaPeriod: new Date().toISOString().slice(0, 7),
   closetItemLimit: 50,
   closetItemCount: 24,
   createdAt: new Date().toISOString(),
@@ -188,41 +190,11 @@ export const mockTrends: FashionTrend[] = [
   },
 ];
 
-export const mockMissions: Mission[] = [
-  {
-    id: 'm1',
-    title: 'Điểm danh hàng ngày',
-    description: 'Mở app mỗi ngày để nhận thêm lượt AI',
-    type: 'daily_checkin',
-    rewardAiTries: 1,
-    progress: 1,
-    target: 1,
-    isCompleted: true,
-    isClaimed: false,
-  },
-  {
-    id: 'm2',
-    title: 'Xem quảng cáo',
-    description: 'Xem 1 video quảng cáo',
-    type: 'watch_ad',
-    rewardAiTries: 2,
-    progress: 0,
-    target: 1,
-    isCompleted: false,
-    isClaimed: false,
-  },
-  {
-    id: 'm3',
-    title: 'Mời bạn bè',
-    description: 'Mời 3 người bạn tham gia',
-    type: 'invite_friend',
-    rewardAiTries: 5,
-    progress: 1,
-    target: 3,
-    isCompleted: false,
-    isClaimed: false,
-  },
-];
+export const mockMissions: Mission[] = DEFAULT_MISSIONS.map((mission) => (
+  mission.type === 'daily_checkin'
+    ? { ...mission, progress: 1, isCompleted: true }
+    : mission
+));
 
 export const mockCommunityListings: CommunityListing[] = [
   {
@@ -241,6 +213,8 @@ export const mockCommunityListings: CommunityListing[] = [
     gender: 'female',
     location: 'Hà Nội',
     tags: ['dress', 'floral', 'summer'],
+    status: 'approved',
+    reportsCount: 0,
     createdAt: '2025-05-20',
   },
   {
@@ -257,12 +231,28 @@ export const mockCommunityListings: CommunityListing[] = [
     gender: 'male',
     location: 'TP.HCM',
     tags: ['jacket', 'denim'],
+    status: 'approved',
+    reportsCount: 0,
     createdAt: '2025-05-22',
   },
+  {
+    id: 'l3',
+    userId: 'user-1',
+    sellerName: 'Minh Anh',
+    sellerAvatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200',
+    clothingItemId: 'c4',
+    title: 'Túi crossbody đen',
+    description: 'Túi da dễ phối, form gọn xinh cho đi học hoặc cafe.',
+    imageUrls: ['https://images.unsplash.com/photo-1584917865442-de89fe76af837?w=400'],
+    condition: 'like_new',
+    listingType: 'sale',
+    price: 420000,
+    size: 'Freesize',
+    gender: 'Unisex',
+    location: 'TP.HCM',
+    tags: ['bag', 'daily'],
+    status: 'pending_review',
+    reportsCount: 0,
+    createdAt: '2026-06-02',
+  },
 ];
-
-export const PLAN_LIMITS = {
-  free: { aiMonthly: 10, closetItems: 50, label: 'Miễn phí' },
-  premium: { aiMonthly: -1, closetItems: -1, label: 'Premium' },
-  elite: { aiMonthly: -1, closetItems: -1, label: 'Elite' },
-} as const;

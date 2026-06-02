@@ -14,11 +14,11 @@ export function GlassCard({ children, style, intensity = 40 }: GlassCardProps) {
 
   if (Platform.OS === 'ios') {
     return (
-      <View style={[styles.wrap, { borderRadius: radius.lg }, style]}>
+      <View style={[styles.wrap, { borderRadius: radius.xl, shadowColor: colors.shadow }, style]}>
         <BlurView
           intensity={intensity}
           tint={isDark ? 'dark' : 'light'}
-          style={[styles.blur, { borderRadius: radius.lg, borderColor: colors.border }]}
+          style={[styles.blur, { borderRadius: radius.xl, borderColor: colors.border }]}
         >
           {children}
         </BlurView>
@@ -32,7 +32,7 @@ export function GlassCard({ children, style, intensity = 40 }: GlassCardProps) {
         styles.fallback,
         {
           backgroundColor: colors.surface,
-          borderRadius: radius.lg,
+          borderRadius: radius.xl,
           borderColor: colors.border,
           shadowColor: colors.shadow,
         },
@@ -45,7 +45,7 @@ export function GlassCard({ children, style, intensity = 40 }: GlassCardProps) {
 }
 
 const styles = StyleSheet.create({
-  wrap: { overflow: 'hidden' },
+  wrap: { overflow: 'hidden', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.12, shadowRadius: 20 },
   blur: {
     overflow: 'hidden',
     borderWidth: 1,

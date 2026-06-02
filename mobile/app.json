@@ -39,6 +39,13 @@
         {
           "locationWhenInUsePermission": "Cho phép vị trí để gợi ý trang phục theo thời tiết."
         }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Cho phép truy cập thư viện để tải ảnh thử đồ về máy.",
+          "savePhotosPermission": "Cho phép lưu ảnh thử đồ vào thư viện."
+        }
       ]
     ],
     "experiments": {

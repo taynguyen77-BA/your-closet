@@ -1,108 +1,184 @@
 import { create } from 'zustand';
 import {
-  mockClothing,
-  mockCommunityListings,
-  mockEvents,
-  mockMissions,
-  mockOutfits,
-  mockTrends,
-  mockUser,
-  mockWeather,
+  mockClothing, mockCommunityListings, mockEvents, mockMissions, mockOutfits,
+  mockTrends, mockUser, mockWeather,
 } from '@/data/mockData';
 import type {
-  ClothingItem,
-  CommunityListing,
-  FashionTrend,
-  Mission,
-  Outfit,
-  User,
-  WardrobeEvent,
-  WeatherInfo,
+  ClothingItem, CommunityListing, FashionTrend, ListingReport, MarketplaceMessage, MembershipPlan,
+  Mission, Outfit, PlanLimit, TradeOffer, Transaction, User, WardrobeEvent, WeatherInfo,
 } from '@/models';
+import { isFirebaseConfigured } from '@/services/firebase/config';
+import { getFirebaseAuth } from '@/services/firebase/config';
+import { signInAnonymously } from 'firebase/auth';
+import {
+  clothesService, clothingImagesService, eventsService, listingReportsService, listingsService,
+  marketplaceMessagesService, missionsService, outfitsService, planLimitsService, tradeOffersService,
+  transactionsService, userMissionsService, usersService,
+} from '@/services/firebase';
+import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
+
+const FALLBACK_USER_ID = 'user-1';
+const useMocks = __DEV__ && !isFirebaseConfigured();
+type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 interface AppState {
-  user: User;
-  weather: WeatherInfo;
-  clothing: ClothingItem[];
-  outfits: Outfit[];
-  events: WardrobeEvent[];
-  trends: FashionTrend[];
-  missions: Mission[];
-  communityListings: CommunityListing[];
-  savedOutfitIds: string[];
-  closetViewMode: 'grid' | 'list';
-
+  user: User; weather: WeatherInfo; clothing: ClothingItem[]; outfits: Outfit[];
+  events: WardrobeEvent[]; trends: FashionTrend[]; missions: Mission[];
+  communityListings: CommunityListing[]; savedOutfitIds: string[];
+  closetViewMode: 'grid' | 'list'; loadState: LoadState; error?: string;
+  planLimits: Record<MembershipPlan, PlanLimit>;
+  initialize: () => Promise<void>;
   setClosetViewMode: (mode: 'grid' | 'list') => void;
-  toggleFavorite: (id: string) => void;
-  saveOutfit: (id: string) => void;
-  useAiTry: () => boolean;
-  claimMission: (id: string) => void;
-  addClothing: (item: ClothingItem) => void;
+  toggleFavorite: (id: string) => Promise<void>;
+  saveOutfit: (id: string) => Promise<void>;
+  addClothingToOutfit: (clothingId: string, outfitId: string) => Promise<void>;
+  canUseAiTry: () => boolean;
+  consumeAiTry: (persist?: boolean) => Promise<void>;
+  completeMission: (id: string) => Promise<void>;
+  claimMission: (id: string) => Promise<void>;
+  createClothing: (item: Omit<ClothingItem, 'id' | 'imageUrl'>, localImageUri: string) => Promise<void>;
+  updateClothing: (id: string, patch: Partial<ClothingItem>) => Promise<void>;
+  deleteClothing: (id: string) => Promise<void>;
+  createEvent: (event: Omit<WardrobeEvent, 'id'>) => Promise<void>;
+  updateEvent: (id: string, patch: Partial<WardrobeEvent>) => Promise<void>;
+  deleteEvent: (id: string) => Promise<void>;
+  createListing: (listing: Omit<CommunityListing, 'id'>) => Promise<void>;
+  updateListing: (id: string, patch: Partial<CommunityListing>) => Promise<void>;
+  deleteListing: (id: string) => Promise<void>;
+  sendMarketplaceMessage: (message: Omit<MarketplaceMessage, 'id'>) => Promise<void>;
+  createTradeOffer: (offer: Omit<TradeOffer, 'id'>) => Promise<void>;
+  createListingReport: (report: Omit<ListingReport, 'id' | 'status'>) => Promise<void>;
+  createTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<Transaction>;
 }
 
+const reportError = (set: (patch: Partial<AppState>) => void, error: unknown) => {
+  set({ error: error instanceof Error ? error.message : 'Đã có lỗi xảy ra.' });
+};
+const currentQuotaPeriod = () => new Date().toISOString().slice(0, 7);
+const missionRewardPeriod = (mission: Mission) => mission.type === 'daily_checkin'
+  ? new Date().toISOString().slice(0, 10)
+  : currentQuotaPeriod();
+const userMissionId = (userId: string, missionId: string) => `${userId}_${missionId}`;
+const applyPlanLimit = (user: User, limits: Record<MembershipPlan, PlanLimit>) => {
+  const limit = limits[user.plan];
+  const reset = user.aiQuotaPeriod !== currentQuotaPeriod();
+  return {
+    ...user,
+    aiQuotaPeriod: currentQuotaPeriod(),
+    aiUsageMonthlyLimit: limit.aiMonthly,
+    aiUsageRemaining: reset ? limit.aiMonthly : user.aiUsageRemaining,
+    closetItemLimit: limit.closetItems,
+  };
+};
+const mergeMissionState = (definitions: Mission[], progress: Mission[]) => definitions
+  .filter((mission) => mission.isActive !== false)
+  .map((mission) => {
+    const saved = progress.find((item) => item.missionId === mission.id);
+    const rewardPeriod = missionRewardPeriod(mission);
+    return saved?.rewardPeriod === rewardPeriod
+      ? { ...mission, ...saved, id: mission.id }
+      : { ...mission, id: mission.id, progress: 0, isCompleted: false, isClaimed: false, rewardPeriod };
+  });
+
 export const useAppStore = create<AppState>((set, get) => ({
-  user: mockUser,
-  weather: mockWeather,
-  clothing: mockClothing,
-  outfits: mockOutfits,
-  events: mockEvents,
-  trends: mockTrends,
-  missions: mockMissions,
-  communityListings: mockCommunityListings,
-  savedOutfitIds: ['o2'],
-  closetViewMode: 'grid',
-
-  setClosetViewMode: (mode) => set({ closetViewMode: mode }),
-
-  toggleFavorite: (id) =>
-    set((state) => ({
-      clothing: state.clothing.map((c) =>
-        c.id === id ? { ...c, isFavorite: !c.isFavorite } : c,
-      ),
-    })),
-
-  saveOutfit: (id) =>
-    set((state) => ({
-      savedOutfitIds: state.savedOutfitIds.includes(id)
-        ? state.savedOutfitIds
-        : [...state.savedOutfitIds, id],
-      outfits: state.outfits.map((o) =>
-        o.id === id ? { ...o, isSaved: true } : o,
-      ),
-    })),
-
-  useAiTry: () => {
-    const { user } = get();
-    if (user.plan !== 'free') return true;
-    if (user.aiUsageRemaining <= 0) return false;
-    set({
-      user: { ...user, aiUsageRemaining: user.aiUsageRemaining - 1 },
-    });
-    return true;
+  user: mockUser, weather: mockWeather, clothing: useMocks ? mockClothing : [],
+  outfits: useMocks ? mockOutfits : [], events: useMocks ? mockEvents : [],
+  trends: mockTrends, missions: useMocks ? mockMissions : [],
+  communityListings: useMocks ? mockCommunityListings : [],
+  savedOutfitIds: ['o2'], closetViewMode: 'grid', loadState: 'idle',
+  planLimits: PLAN_LIMITS,
+  initialize: async () => {
+    if (useMocks) return set({ loadState: 'ready', user: applyPlanLimit(get().user, PLAN_LIMITS), missions: mergeMissionState(DEFAULT_MISSIONS, get().missions) });
+    set({ loadState: 'loading', error: undefined });
+    try {
+      const auth = getFirebaseAuth();
+      const credential = auth.currentUser ? undefined : await signInAnonymously(auth);
+      const userId = auth.currentUser?.uid ?? credential?.user.uid ?? FALLBACK_USER_ID;
+      const [user, clothing, outfits, events, missions, userMissions, remoteLimits, approvedListings, ownListings] = await Promise.all([
+        usersService.get(userId), clothesService.list(userId), outfitsService.list(userId),
+        eventsService.list(userId), missionsService.list(), userMissionsService.list(userId),
+        planLimitsService.list(), listingsService.listBy('status', 'approved'), listingsService.list(userId),
+      ]);
+      const communityListings = [...approvedListings, ...ownListings.filter((listing) => !approvedListings.some((approved) => approved.id === listing.id))];
+      const planLimits = remoteLimits.reduce((all, limit) => ({ ...all, [limit.id]: limit }), PLAN_LIMITS);
+      const currentUser = applyPlanLimit(user ?? { ...mockUser, id: userId }, planLimits);
+      if (!user) await usersService.create(currentUser);
+      const missionDefinitions = missions.length ? missions : DEFAULT_MISSIONS;
+      const mergedMissions = mergeMissionState(missionDefinitions, userMissions);
+      set({
+        user: currentUser, clothing, outfits, events, missions: mergedMissions, planLimits, communityListings,
+        savedOutfitIds: outfits.filter((item) => item.isSaved).map((item) => item.id),
+        loadState: 'ready',
+      });
+    } catch (error) { reportError(set, error); set({ loadState: 'error' }); }
   },
-
-  claimMission: (id) =>
-    set((state) => {
-      const mission = state.missions.find((m) => m.id === id);
-      if (!mission || !mission.isCompleted || mission.isClaimed) return state;
-      return {
-        missions: state.missions.map((m) =>
-          m.id === id ? { ...m, isClaimed: true } : m,
-        ),
-        user: {
-          ...state.user,
-          aiUsageRemaining:
-            state.user.aiUsageRemaining + mission.rewardAiTries,
-        },
-      };
-    }),
-
-  addClothing: (item) =>
-    set((state) => ({
-      clothing: [item, ...state.clothing],
-      user: {
-        ...state.user,
-        closetItemCount: state.user.closetItemCount + 1,
-      },
-    })),
+  setClosetViewMode: (closetViewMode) => set({ closetViewMode }),
+  toggleFavorite: async (id) => {
+    const item = get().clothing.find((value) => value.id === id); if (!item) return;
+    const patch = { isFavorite: !item.isFavorite };
+    set({ clothing: get().clothing.map((value) => value.id === id ? { ...value, ...patch } : value) });
+    if (!useMocks) try { await clothesService.update(id, patch); } catch (error) { reportError(set, error); }
+  },
+  saveOutfit: async (id) => {
+    set({ savedOutfitIds: [...new Set([...get().savedOutfitIds, id])], outfits: get().outfits.map((o) => o.id === id ? { ...o, isSaved: true } : o) });
+    if (!useMocks) try { await outfitsService.update(id, { isSaved: true }); } catch (error) { reportError(set, error); }
+  },
+  addClothingToOutfit: async (clothingId, outfitId) => {
+    const clothing = get().clothing.find((item) => item.id === clothingId);
+    const outfit = get().outfits.find((item) => item.id === outfitId);
+    if (!clothing || !outfit || outfit.items.some((item) => item.clothingId === clothingId)) return;
+    const items = [...outfit.items, { clothingId, name: clothing.name, type: clothing.type }];
+    if (!useMocks) await outfitsService.update(outfitId, { items });
+    set({ outfits: get().outfits.map((item) => item.id === outfitId ? { ...item, items } : item) });
+  },
+  canUseAiTry: () => {
+    const { user } = get(); return user.plan !== 'free' || user.aiUsageRemaining > 0;
+  },
+  consumeAiTry: async (persist = true) => {
+    const { user } = get(); if (user.plan !== 'free' || user.aiUsageRemaining <= 0) return;
+    const updated = { ...user, aiUsageRemaining: user.aiUsageRemaining - 1 }; set({ user: updated });
+    if (persist && !useMocks) reportError(set, new Error('Quota production phải được cập nhật bởi AI backend.'));
+  },
+  completeMission: async (id) => {
+    if (!useMocks) throw new Error('Nhiệm vụ production phải được cập nhật bởi backend.');
+    const mission = get().missions.find((item) => item.id === id);
+    if (!mission || mission.isCompleted || mission.isClaimed) return;
+    const completed = { ...mission, progress: mission.target, isCompleted: true, completedAt: new Date().toISOString(), rewardPeriod: missionRewardPeriod(mission) };
+    set({ missions: get().missions.map((item) => item.id === id ? completed : item) });
+  },
+  claimMission: async (id) => {
+    if (!useMocks) throw new Error('Phần thưởng production phải được cấp bởi backend.');
+    const mission = get().missions.find((m) => m.id === id); if (!mission || !mission.isCompleted || mission.isClaimed) return;
+    const user = { ...get().user, aiUsageRemaining: get().user.aiUsageRemaining + mission.rewardAiTries };
+    const claimed = { ...mission, isClaimed: true, claimedAt: new Date().toISOString() };
+    set({ missions: get().missions.map((m) => m.id === id ? claimed : m), user });
+  },
+  createClothing: async (item, uri) => {
+    try {
+      const imageUrl = useMocks ? uri : await clothingImagesService.upload(item.userId, uri);
+      const created = useMocks ? { ...item, id: `c-${Date.now()}`, imageUrl } : await clothesService.create({ ...item, imageUrl });
+      const user = { ...get().user, closetItemCount: get().user.closetItemCount + 1 };
+      set({ clothing: [created, ...get().clothing], user });
+      if (!useMocks) await usersService.update(user.id, { closetItemCount: user.closetItemCount });
+    } catch (error) { reportError(set, error); throw error; }
+  },
+  updateClothing: async (id, patch) => { if (!useMocks) await clothesService.update(id, patch); set({ clothing: get().clothing.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteClothing: async (id) => { if (!useMocks) await clothesService.remove(id); set({ clothing: get().clothing.filter((item) => item.id !== id) }); },
+  createEvent: async (value) => { const item = useMocks ? { ...value, id: `e-${Date.now()}` } : await eventsService.create(value); set({ events: [item, ...get().events] }); },
+  updateEvent: async (id, patch) => { if (!useMocks) await eventsService.update(id, patch); set({ events: get().events.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteEvent: async (id) => { if (!useMocks) await eventsService.remove(id); set({ events: get().events.filter((item) => item.id !== id) }); },
+  createListing: async (value) => { const item = useMocks ? { ...value, id: `l-${Date.now()}` } : await listingsService.create(value); set({ communityListings: [item, ...get().communityListings] }); },
+  updateListing: async (id, patch) => { if (!useMocks) await listingsService.update(id, patch); set({ communityListings: get().communityListings.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteListing: async (id) => { if (!useMocks) await listingsService.remove(id); set({ communityListings: get().communityListings.filter((item) => item.id !== id) }); },
+  sendMarketplaceMessage: async (value) => { if (!useMocks) await marketplaceMessagesService.create(value); },
+  createTradeOffer: async (value) => { if (!useMocks) await tradeOffersService.create(value); },
+  createListingReport: async (value) => {
+    const report = { ...value, status: 'open' as const };
+    if (!useMocks) await listingReportsService.create(report);
+    set({ communityListings: get().communityListings.map((item) => item.id === value.listingId ? { ...item, reportsCount: item.reportsCount + 1 } : item) });
+  },
+  createTransaction: async (value) => {
+    const transaction = useMocks ? { ...value, id: `tx-${Date.now()}` } : await transactionsService.create(value);
+    return transaction;
+  },
 }));

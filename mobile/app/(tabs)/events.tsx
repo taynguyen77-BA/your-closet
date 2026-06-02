@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Alert, StyleSheet, TextInput, View } from 'react-native';
 import { Screen } from '@/components/layout/Screen';
 import { OutfitCard } from '@/components/outfit/OutfitCard';
@@ -11,13 +12,20 @@ import type { Outfit } from '@/models';
 import { aiService } from '@/services/ai/aiService';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
+import { DataState } from '@/components/ui/DataState';
+import type { EventType } from '@/models';
 
 export default function EventsScreen() {
+  const router = useRouter();
   const { colors, spacing, radius } = useTheme();
   const events = useAppStore((s) => s.events);
   const clothing = useAppStore((s) => s.clothing);
   const weather = useAppStore((s) => s.weather);
-  const useAiTry = useAppStore((s) => s.useAiTry);
+  const canUseAiTry = useAppStore((s) => s.canUseAiTry);
+  const consumeAiTry = useAppStore((s) => s.consumeAiTry);
+  const createEvent = useAppStore((s) => s.createEvent);
+  const loadState = useAppStore((s) => s.loadState);
+  const error = useAppStore((s) => s.error);
 
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
@@ -25,19 +33,32 @@ export default function EventsScreen() {
   const [eventType, setEventType] = useState('party');
   const [suggestions, setSuggestions] = useState<Partial<Outfit>[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const saveEvent = async () => {
+    if (!name || !date || !location) return Alert.alert('Thiếu thông tin', 'Nhập tên, ngày và địa điểm sự kiện.');
+    setSaving(true);
+    try {
+      await createEvent({ userId: useAppStore.getState().user.id, name, date, location, eventType: eventType as EventType, linkedOutfitIds: [], createdAt: new Date().toISOString() });
+      setName(''); setDate(''); setLocation('');
+      Alert.alert('Đã lưu', 'Sự kiện đã được lưu.');
+    } catch { Alert.alert('Không thể lưu', 'Kiểm tra kết nối Firebase rồi thử lại.'); }
+    finally { setSaving(false); }
+  };
 
   const suggestOutfit = async () => {
-    if (!useAiTry()) {
+    if (!canUseAiTry()) {
       Alert.alert('Hết lượt AI', 'Nâng cấp hoặc hoàn thành nhiệm vụ để có thêm lượt.');
       return;
     }
     setLoading(true);
-    const results = await aiService.suggestOutfits({
-      weather,
-      wardrobe: clothing,
-    });
-    setSuggestions(results);
-    setLoading(false);
+    try {
+      const result = await aiService.suggestOutfits(useAppStore.getState().user.id, { weather, wardrobe: clothing });
+      setSuggestions(result.data);
+      if (result.data.length > 0 && result.quotaChargeEligible) await consumeAiTry(!result.quotaManagedByBackend);
+      if (result.fallbackMessage) Alert.alert('Gợi ý dự phòng', result.fallbackMessage);
+    } catch {
+      Alert.alert('Chưa thể tạo gợi ý', 'Thử phối một áo, một quần hoặc váy và đôi giày phù hợp với thời tiết hôm nay.');
+    } finally { setLoading(false); }
   };
 
   const inputStyle = [
@@ -69,7 +90,7 @@ export default function EventsScreen() {
           onPress={suggestOutfit}
           style={{ marginTop: spacing.md }}
         />
-        <Button label="Lưu sự kiện" variant="secondary" style={{ marginTop: spacing.sm }} />
+        <Button label={saving ? 'Đang lưu...' : 'Lưu sự kiện'} variant="secondary" onPress={saveEvent} style={{ marginTop: spacing.sm }} />
       </GlassCard>
 
       {suggestions.length > 0 && (
@@ -102,11 +123,12 @@ export default function EventsScreen() {
           <AppText variant="bodySmall" muted style={{ marginVertical: 8 }}>
             Tủ đồ chưa đủ để tạo outfit. Xem sản phẩm affiliate được đề xuất.
           </AppText>
-          <Button label="Xem sản phẩm" variant="accent" />
+          <Button label="Xem sản phẩm" variant="accent" onPress={() => router.push('/shopping')} />
         </GlassCard>
       )}
 
       <SectionHeader title="Sự kiện của bạn" />
+      <DataState loading={loadState === 'loading'} error={error} empty={events.length === 0} emptyText="Bạn chưa có sự kiện nào." />
       {events.map((e) => (
         <GlassCard key={e.id} style={{ marginBottom: spacing.md }}>
           <AppText variant="h3">{e.name}</AppText>

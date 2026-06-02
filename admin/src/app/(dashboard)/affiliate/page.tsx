@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page(){return <AdminCollectionPage config={{collection:"affiliate_products",title:"Affiliate",description:"Products and campaigns",manage:"affiliate.manage",allowCreate:true,allowDelete:true,fields:[{key:"name",label:"Product"},{key:"store",label:"Store"},{key:"clicks",label:"Clicks"},{key:"conversions",label:"Conversions"},{key:"isActive",label:"Active"}]}}/>}

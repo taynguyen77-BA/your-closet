@@ -62,7 +62,7 @@ export function OutfitCard({ outfit, compact }: OutfitCardProps) {
             variant="primary"
             small
             icon="shirt-outline"
-            onPress={() => router.push('/(tabs)/try-on')}
+            onPress={() => router.push(`/(tabs)/try-on?outfitId=${outfit.id}`)}
             style={{ flex: 1, marginRight: 8 }}
           />
           <Button

@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page() { return <AdminCollectionPage config={{ collection: "missions", title: "Nhiệm vụ & Thưởng", description: "Missions, rewards, abuse detection", manage: "missions.manage", allowCreate: true, allowDelete: true, fields: [{ key: "title", label: "Mission" }, { key: "type", label: "Type" }, { key: "rewardAiTries", label: "Reward AI" }, { key: "completionRate", label: "Completion" }, { key: "claimsCount", label: "Claims" }, { key: "isActive", label: "Active" }] }} />; }

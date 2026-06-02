@@ -1,9 +1,9 @@
 import { useColorScheme } from 'react-native';
-import { darkColors, lightColors, type AppColors } from './colors';
+import { darkColors, gradients, lightColors, type AppColors } from './colors';
 import { radius, spacing } from './spacing';
 import { typography } from './typography';
 
-export { darkColors, lightColors, radius, spacing, typography };
+export { darkColors, gradients, lightColors, radius, spacing, typography };
 export type { AppColors };
 
 export function useTheme() {
@@ -13,6 +13,7 @@ export function useTheme() {
 
   return {
     colors,
+    gradients,
     isDark,
     spacing,
     radius,

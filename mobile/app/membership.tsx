@@ -1,27 +1,39 @@
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { MEMBERSHIP_PLANS, PAYMENT_METHODS } from '@/constants/membership';
 import { useTheme } from '@/theme';
+import { useAppStore } from '@/stores/appStore';
 
 export default function MembershipScreen() {
   const { colors, spacing, radius } = useTheme();
+  const router = useRouter();
+  const planLimits = useAppStore((state) => state.planLimits);
+  const user = useAppStore((state) => state.user);
+  const outfitCount = useAppStore((state) => state.outfits.length);
+  const avoidedPurchases = useAppStore((state) => state.clothing.filter((item) => item.timesWorn > 7).length);
   const [selectedPlan, setSelectedPlan] = useState<string>('premium');
   const [payment, setPayment] = useState('vnpay');
 
   const checkout = () => {
-    const plan = MEMBERSHIP_PLANS.find((p) => p.id === selectedPlan);
-    const method = PAYMENT_METHODS.find((m) => m.id === payment);
-    Alert.alert(
-      'Thanh toán',
-      `Gói ${plan?.name} qua ${method?.label}. Tích hợp VNPay/MoMo/Apple Pay sẽ kết nối Firebase Functions.`,
-    );
+    router.push(`/payment/prepare?plan=${selectedPlan}&method=${payment}`);
   };
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg }}>
+      <AppText variant="bodySmall" muted>GIÁ TRỊ BẠN ĐÃ NHẬN</AppText>
+      <AppText variant="display">Phong cách tốt hơn, ít tốn công hơn</AppText>
+      <View style={styles.valueRow}>
+        {[[`${outfitCount}`, 'outfit đã tạo'], [`${outfitCount * 20}m`, 'thời gian tiết kiệm'], [`${avoidedPurchases}`, 'món được mặc lại']].map(([value, label]) => <View key={label} style={[styles.valueCard, { backgroundColor: colors.beige, borderRadius: radius.md }]}><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText></View>)}
+      </View>
+      <View style={[styles.current, { backgroundColor: colors.primary, borderRadius: radius.xl }]}>
+        <AppText variant="caption" color={colors.accent}>GÓI HIỆN TẠI</AppText>
+        <AppText variant="h2" color={colors.textInverse}>{planLimits[user.plan].label}</AppText>
+        <AppText variant="bodySmall" color={colors.warmGray}>{user.aiUsageRemaining}/{user.aiUsageMonthlyLimit} credits AI còn lại · {user.closetItemCount} món trong tủ</AppText>
+      </View>
       {MEMBERSHIP_PLANS.map((plan) => (
         <GlassCard
           key={plan.id}
@@ -44,7 +56,9 @@ export default function MembershipScreen() {
             {plan.priceLabel}
           </AppText>
           <AppText variant="bodySmall" muted>
-            {plan.aiGenerations} · {plan.closetLimit}
+            {planLimits[plan.id].aiMonthly < 0 ? 'Không giới hạn AI' : `${planLimits[plan.id].aiMonthly} lượt AI/tháng`}
+            {' · '}
+            {planLimits[plan.id].closetItems < 0 ? 'Tủ đồ không giới hạn' : `Tối đa ${planLimits[plan.id].closetItems} món`}
           </AppText>
           {plan.features.map((f) => (
             <AppText key={f} variant="bodySmall" style={{ marginTop: 4 }}>
@@ -83,6 +97,9 @@ export default function MembershipScreen() {
 }
 
 const styles = StyleSheet.create({
+  valueRow: { flexDirection: 'row', gap: 8, marginVertical: 16 },
+  valueCard: { flex: 1, padding: 10, minHeight: 76 },
+  current: { padding: 16, marginBottom: 20 },
   planHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 },
   payments: { flexDirection: 'row', flexWrap: 'wrap' },
