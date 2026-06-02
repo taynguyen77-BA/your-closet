@@ -9,6 +9,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function MenuRow({
   icon,
@@ -33,7 +34,7 @@ function MenuRow({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { colors, spacing, radius } = useTheme();
+  const { colors, gradients, spacing, radius } = useTheme();
   const user = useAppStore((s) => s.user);
   const planInfo = useAppStore((s) => s.planLimits[s.user.plan]);
   const styleXp = useAppStore((s) => s.clothing.length * 20 + s.outfits.length * 40 + s.savedOutfitIds.length * 30);
@@ -42,6 +43,11 @@ export default function ProfileScreen() {
 
   return (
     <Screen>
+      <LinearGradient colors={gradients.hero} style={[styles.cover, { borderRadius: radius.xxl }]}>
+        <Ionicons name="sparkles" size={24} color="#fff" />
+        <AppText variant="caption" color="#fff">FASHION PROFILE</AppText>
+        <AppText variant="h1" color="#fff">Your style diary</AppText>
+      </LinearGradient>
       <View style={styles.profileHeader}>
         <Image
           source={{ uri: user.avatarUrl }}
@@ -56,6 +62,10 @@ export default function ProfileScreen() {
             {user.preferences?.join(' · ')}
           </AppText>
         </View>
+      </View>
+
+      <View style={styles.achievements}>
+        {[['ribbon-outline', 'Trend Scout'], ['heart-outline', 'Closet Crush'], ['sparkles-outline', 'AI Muse']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: radius.xl }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.accentDark} /><AppText variant="caption">{label}</AppText></View>)}
       </View>
 
       <View style={[styles.level, { backgroundColor: colors.lavender, borderRadius: radius.xl }]}>
@@ -110,7 +120,8 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  profileHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
+  cover: { minHeight: 142, padding: 18, justifyContent: 'flex-end', gap: 4 },
+  profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -26, marginBottom: 18, paddingHorizontal: 12 },
   avatar: { width: 80, height: 80 },
   planActions: { flexDirection: 'row', marginTop: 16 },
   menuRow: { flexDirection: 'row', alignItems: 'center' },
@@ -119,4 +130,6 @@ const styles = StyleSheet.create({
   levelTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   progress: { height: 7, borderRadius: 99, overflow: 'hidden', marginTop: 12 },
   progressFill: { height: '100%' },
+  achievements: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  achievement: { flex: 1, padding: 10, gap: 6, minHeight: 76, justifyContent: 'space-between' },
 });

@@ -5,9 +5,10 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { DataState } from '@/components/ui/DataState';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function MissionsScreen() {
-  const { colors, spacing } = useTheme();
+  const { colors, gradients, spacing, radius } = useTheme();
   const missions = useAppStore((s) => s.missions);
   const claimMission = useAppStore((s) => s.claimMission);
   const completeMission = useAppStore((s) => s.completeMission);
@@ -15,7 +16,7 @@ export default function MissionsScreen() {
   const error = useAppStore((s) => s.error);
   const runMissionAction = async (action: () => Promise<void>) => {
     try { await action(); }
-    catch { Alert.alert('Chưa thể cập nhật', 'Tính năng nhiệm vụ cần backend production để xác thực phần thưởng.'); }
+    catch { Alert.alert('Experience Mode', 'Nhiệm vụ này sẽ được đồng bộ khi trải nghiệm cloud sẵn sàng.'); }
   };
 
   return (
@@ -25,9 +26,11 @@ export default function MissionsScreen() {
       contentContainerStyle={{ padding: spacing.lg }}
       style={{ backgroundColor: colors.background }}
       ListHeaderComponent={
-        <AppText variant="bodySmall" muted style={{ marginBottom: spacing.lg }}>
-          Hoàn thành nhiệm vụ để nhận thêm lượt AI miễn phí
-        </AppText>
+        <LinearGradient colors={gradients.premium} style={[styles.hero, { borderRadius: radius.xxl }]}>
+          <AppText variant="caption" color="#fff">GLOW-UP CLUB</AppText>
+          <AppText variant="display" color="#fff">Little wins, more style.</AppText>
+          <AppText color="#fff">Hoàn thành nhiệm vụ để nhận thêm lượt AI và nâng fashion XP.</AppText>
+        </LinearGradient>
       }
       ListEmptyComponent={<DataState loading={loadState === 'loading'} error={error} empty emptyText="Hiện chưa có nhiệm vụ nào." />}
       renderItem={({ item }) => {
@@ -77,6 +80,7 @@ export default function MissionsScreen() {
 }
 
 const styles = StyleSheet.create({
+  hero: { padding: 20, gap: 5, marginBottom: 16 },
   bar: { height: 6, borderRadius: 3, overflow: 'hidden' },
   fill: { height: '100%' },
 });

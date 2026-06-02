@@ -9,6 +9,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
+import { FloatingActionButton } from '@/components/ui/FashionUi';
 import type { CommunityListing } from '@/models';
 
 type HubTab = 'feed' | 'challenges' | 'exchange' | 'marketplace' | 'mine';
@@ -94,6 +95,7 @@ export default function CommunityHubScreen() {
           {mine.length ? <View style={styles.grid}>{mine.map((item) => listingCard(item, true))}</View> : <LinearGradient colors={gradients.marketplace} style={[styles.empty, { borderRadius: radius.xl }]}><Ionicons name="shirt-outline" size={38} color={colors.textInverse} /><AppText variant="h2" color={colors.textInverse}>Tủ đồ bạn có món nào muốn pass?</AppText><AppText variant="bodySmall" color={colors.textInverse}>Đăng món đầu tiên để tìm đúng người hợp vibe.</AppText><Button label="Đăng món đầu tiên" small variant="secondary" onPress={() => router.push('/community/create')} style={{ marginTop: 12, alignSelf: 'flex-start' }} /></LinearGradient>}
         </>}
       </View>
+      <FloatingActionButton onPress={() => router.push('/community/create')} />
     </Screen>
   );
 }
@@ -103,10 +105,10 @@ const styles = StyleSheet.create({
   heroActions: { flexDirection: 'row', marginTop: 16 },
   tabs: { paddingVertical: 16 },
   tab: { paddingHorizontal: 14, paddingVertical: 9, borderRadius: 99, borderWidth: 1, marginRight: 8 },
-  post: { padding: 10, marginBottom: 16, shadowOpacity: 0.08, shadowRadius: 18 },
+  post: { padding: 10, marginBottom: 16, shadowOpacity: 0.12, shadowRadius: 22, shadowOffset: { width: 0, height: 8 } },
   author: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingHorizontal: 2 },
   avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  look: { height: 390, width: '100%', borderRadius: 18 },
+  look: { height: 420, width: '100%', borderRadius: 24 },
   social: { flexDirection: 'row', alignItems: 'center', gap: 7, paddingVertical: 11 },
   sectionTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   challenge: { padding: 18, marginBottom: 12 },

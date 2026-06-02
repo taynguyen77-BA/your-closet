@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
   fallback: {
     borderWidth: 1,
     padding: 16,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
     elevation: 3,
   },
 });

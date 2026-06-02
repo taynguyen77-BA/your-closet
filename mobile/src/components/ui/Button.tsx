@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTheme } from '@/theme';
 import { AppText } from './AppText';
 
@@ -28,6 +29,8 @@ export function Button({
   pill = true,
 }: ButtonProps) {
   const { colors, gradients, radius } = useTheme();
+  const scale = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   const bg =
     variant === 'primary'
@@ -51,9 +54,12 @@ export function Button({
   </>;
   const gradient = variant === 'ai' ? gradients.ai : variant === 'community' ? gradients.community : gradients.primary;
   return (
+    <Animated.View style={[style, animatedStyle]}>
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      onPressIn={() => { scale.value = withSpring(0.97); }}
+      onPressOut={() => { scale.value = withSpring(1); }}
       style={({ pressed }) => [
         styles.base,
         {
@@ -65,7 +71,6 @@ export function Button({
           borderWidth: variant === 'ghost' ? 1 : 0,
           borderColor: colors.border,
         },
-        style,
       ]}
     >
       {variant === 'primary' || variant === 'ai' || variant === 'community'
@@ -73,6 +78,7 @@ export function Button({
         : null}
       {content}
     </Pressable>
+    </Animated.View>
   );
 }
 

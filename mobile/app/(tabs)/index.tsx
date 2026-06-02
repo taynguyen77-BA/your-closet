@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Screen } from '@/components/layout/Screen';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -36,6 +37,21 @@ export default function HomeScreen() {
           <Pressable onPress={() => router.push('/(tabs)/profile')}>
             <Image source={{ uri: user.avatarUrl }} style={[styles.avatar, { borderRadius: radius.full }]} />
           </Pressable>
+        </View>
+
+        <Animated.View entering={FadeInDown.duration(420)}>
+          <LinearGradient colors={gradients.hero} style={[styles.editorial, { borderRadius: radius.xxl }]}>
+            <View style={styles.editorialSpark}><Ionicons name="sparkles" size={22} color="#fff" /></View>
+            <AppText variant="caption" color="#fff">YOUR AI STYLIST</AppText>
+            <AppText variant="display" color="#fff">Soft looks, big mood.</AppText>
+            <AppText color="#fff">I found a dreamy outfit direction for your day. Ready to style your main character moment?</AppText>
+            <Button label="Style me with AI" variant="secondary" icon="sparkles" onPress={() => router.push('/(tabs)/try-on')} style={{ alignSelf: 'flex-start', marginTop: 14 }} />
+          </LinearGradient>
+        </Animated.View>
+
+        <View style={styles.moodRow}>
+          <View style={[styles.mood, { backgroundColor: colors.pink, borderRadius: radius.xl }]}><Ionicons name="heart-outline" size={22} color={colors.community} /><AppText variant="caption" muted>DAILY VIBE</AppText><AppText variant="h3">Romantic casual</AppText></View>
+          <View style={[styles.mood, { backgroundColor: colors.sky, borderRadius: radius.xl }]}><Ionicons name="flower-outline" size={22} color={colors.deepPurple} /><AppText variant="caption" muted>MOOD</AppText><AppText variant="h3">Easy glow</AppText></View>
         </View>
 
         <LinearGradient colors={gradients.sunshine} style={[styles.weather, { borderRadius: radius.xl }]}>
@@ -141,7 +157,11 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 },
   avatar: { width: 48, height: 48 },
-  weather: { padding: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  editorial: { padding: 20, minHeight: 210, justifyContent: 'flex-end', overflow: 'hidden' },
+  editorialSpark: { position: 'absolute', right: 24, top: 22, width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' },
+  moodRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
+  mood: { flex: 1, padding: 14, minHeight: 108, justifyContent: 'space-between' },
+  weather: { padding: 13, marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   streak: { padding: 16, marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   xp: { padding: 8, borderRadius: 99, backgroundColor: 'rgba(255,255,255,0.18)' },
   event: { width: 190, padding: 14, marginRight: 10 },

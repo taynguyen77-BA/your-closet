@@ -13,7 +13,7 @@ export const radius = {
   sm: 8,
   md: 12,
   lg: 18,
-  xl: 24,
-  xxl: 30,
+  xl: 28,
+  xxl: 34,
   full: 999,
 } as const;

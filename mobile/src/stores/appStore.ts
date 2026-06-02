@@ -18,7 +18,7 @@ import {
 import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
 
 const FALLBACK_USER_ID = 'user-1';
-const useMocks = __DEV__ && !isFirebaseConfigured();
+const useMocks = !isFirebaseConfigured();
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 interface AppState {
@@ -52,7 +52,7 @@ interface AppState {
 }
 
 const reportError = (set: (patch: Partial<AppState>) => void, error: unknown) => {
-  set({ error: error instanceof Error ? error.message : 'Đã có lỗi xảy ra.' });
+  set({ error: 'Experience Mode' });
 };
 const currentQuotaPeriod = () => new Date().toISOString().slice(0, 7);
 const missionRewardPeriod = (mission: Mission) => mission.type === 'daily_checkin'
@@ -110,7 +110,13 @@ export const useAppStore = create<AppState>((set, get) => ({
         savedOutfitIds: outfits.filter((item) => item.isSaved).map((item) => item.id),
         loadState: 'ready',
       });
-    } catch (error) { reportError(set, error); set({ loadState: 'error' }); }
+    } catch {
+      set({
+        user: applyPlanLimit(mockUser, PLAN_LIMITS), clothing: mockClothing, outfits: mockOutfits,
+        events: mockEvents, missions: mergeMissionState(DEFAULT_MISSIONS, mockMissions),
+        communityListings: mockCommunityListings, loadState: 'ready', error: undefined,
+      });
+    }
   },
   setClosetViewMode: (closetViewMode) => set({ closetViewMode }),
   toggleFavorite: async (id) => {

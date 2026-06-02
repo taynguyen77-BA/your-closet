@@ -31,7 +31,7 @@ export default function SettingsScreen() {
         </View>
       </GlassCard>
       <AppText variant="bodySmall" muted style={{ marginTop: spacing.lg }}>
-        Quyền riêng tư: dữ liệu được mã hóa qua Firebase. Báo cáo vi phạm qua mục Cộng đồng.
+        Quyền riêng tư: dữ liệu của bạn được bảo vệ khi đồng bộ cloud. Báo cáo vi phạm qua mục Cộng đồng.
       </AppText>
     </View>
   );

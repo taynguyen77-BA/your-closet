@@ -41,7 +41,7 @@ export default function EventsScreen() {
       await createEvent({ userId: useAppStore.getState().user.id, name, date, location, eventType: eventType as EventType, linkedOutfitIds: [], createdAt: new Date().toISOString() });
       setName(''); setDate(''); setLocation('');
       Alert.alert('Đã lưu', 'Sự kiện đã được lưu.');
-    } catch { Alert.alert('Không thể lưu', 'Kiểm tra kết nối Firebase rồi thử lại.'); }
+    } catch { Alert.alert('Chưa lưu được', 'Thử lại sau một chút nhé. Experience Mode vẫn sẵn sàng để bạn khám phá app.'); }
     finally { setSaving(false); }
   };
 

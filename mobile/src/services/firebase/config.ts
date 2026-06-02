@@ -31,10 +31,7 @@ export function isFirebaseConfigured(): boolean {
 
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
-    const missing = requiredFirebaseConfig.filter(([, value]) => !value).map(([name]) => name);
-    throw new Error(
-      `Firebase chưa được cấu hình. Thiếu: ${missing.join(', ')}`,
-    );
+    throw new Error('Experience Mode');
   }
   if (!app) {
     app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);

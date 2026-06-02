@@ -46,7 +46,7 @@ export default function ClosetScreen() {
     if (useAppStore.getState().user.closetItemCount >= useAppStore.getState().user.closetItemLimit) return Alert.alert('Tủ đồ đã đầy', 'Nâng cấp gói thành viên để thêm nhiều món đồ hơn.');
     let result;
     try { result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 }); }
-    catch { return Alert.alert('Không thể mở thư viện ảnh', 'Kiểm tra quyền truy cập ảnh rồi thử lại.'); }
+    catch { return Alert.alert('Chưa mở được thư viện ảnh', 'Kiểm tra quyền truy cập ảnh rồi thử lại nhé.'); }
     if (result.canceled || !result.assets[0]) return;
     if (!canUseAiTry()) return Alert.alert('Hết lượt AI', 'Nâng cấp hoặc hoàn thành nhiệm vụ để nhận diện thêm quần áo.');
     setSaving(true);
@@ -57,7 +57,7 @@ export default function ClosetScreen() {
       await createClothing(newItem, result.assets[0].uri);
       if (aiResult.quotaChargeEligible) await consumeAiTry(!aiResult.quotaManagedByBackend);
       Alert.alert('Đã thêm vào tủ', `AI nhận diện: ${meta.suggestedName}`);
-    } catch { Alert.alert('Không thể lưu', 'Kiểm tra kết nối Firebase rồi thử lại.'); }
+    } catch { Alert.alert('Chưa thêm được món đồ', 'Thử lại sau một chút nhé. Experience Mode vẫn lưu các trải nghiệm local của bạn.'); }
     finally { setSaving(false); }
   };
 
