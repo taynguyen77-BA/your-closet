@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page() { return <AdminCollectionPage config={{ collection: "ai_logs", title: "Hệ thống AI", description: "Usage logs and processing status", fields: [{ key: "username", label: "User" }, { key: "type", label: "Loại" }, { key: "status", label: "Status" }, { key: "processingMs", label: "Processing ms" }, { key: "errorMessage", label: "Error" }, { key: "createdAt", label: "Thời gian" }] }} />; }

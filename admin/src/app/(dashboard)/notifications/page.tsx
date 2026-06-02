@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page() { return <AdminCollectionPage config={{ collection: "notification_templates", title: "Thông báo", description: "Push templates and scheduling", manage: "notifications.manage", allowCreate: true, allowDelete: true, fields: [{ key: "name", label: "Template" }, { key: "title", label: "Title" }, { key: "channel", label: "Channel" }, { key: "scheduledAt", label: "Scheduled" }, { key: "sentCount", label: "Sent" }] }} />; }

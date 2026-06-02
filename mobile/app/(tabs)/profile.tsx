@@ -7,7 +7,6 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
-import { PLAN_LIMITS } from '@/data/mockData';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 
@@ -36,7 +35,10 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { colors, spacing, radius } = useTheme();
   const user = useAppStore((s) => s.user);
-  const planInfo = PLAN_LIMITS[user.plan];
+  const planInfo = useAppStore((s) => s.planLimits[s.user.plan]);
+  const styleXp = useAppStore((s) => s.clothing.length * 20 + s.outfits.length * 40 + s.savedOutfitIds.length * 30);
+  const styleLevel = Math.max(1, Math.floor(styleXp / 200) + 1);
+  const levelProgress = styleXp % 200;
 
   return (
     <Screen>
@@ -54,6 +56,12 @@ export default function ProfileScreen() {
             {user.preferences?.join(' · ')}
           </AppText>
         </View>
+      </View>
+
+      <View style={[styles.level, { backgroundColor: colors.lavender, borderRadius: radius.xl }]}>
+        <View style={styles.levelTop}><View><AppText variant="caption" muted>STYLE LEVEL {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h2">Fashion Explorer</AppText></View><AppText variant="label" color={colors.accentDark}>{levelProgress} / 200 XP</AppText></View>
+        <View style={[styles.progress, { backgroundColor: colors.surfaceGlass }]}><View style={[styles.progressFill, { backgroundColor: colors.accentDark, width: `${(levelProgress / 200) * 100}%` }]} /></View>
+        <AppText variant="bodySmall" muted style={{ marginTop: 7 }}>Còn {200 - levelProgress} XP để mở cấp độ tiếp theo</AppText>
       </View>
 
       <GlassCard style={{ marginBottom: spacing.lg }}>
@@ -84,11 +92,11 @@ export default function ProfileScreen() {
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <MenuRow icon="add-circle-outline" label="Đăng tin mới" onPress={() => router.push('/community/create')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="list-outline" label="Tin đăng của tôi" onPress={() => router.push('/community')} />
+        <MenuRow icon="list-outline" label="Tin đăng của tôi" onPress={() => router.push('/community?filter=mine')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="bookmark-outline" label="Outfit đã lưu" onPress={() => {}} />
+        <MenuRow icon="bookmark-outline" label="Outfit đã lưu" onPress={() => router.push('/outfits?filter=saved')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="time-outline" label="Lịch sử outfit" onPress={() => {}} />
+        <MenuRow icon="time-outline" label="Lịch sử outfit" onPress={() => router.push('/outfits')} />
       </GlassCard>
 
       <SectionHeader title="Cài đặt" />
@@ -107,4 +115,8 @@ const styles = StyleSheet.create({
   planActions: { flexDirection: 'row', marginTop: 16 },
   menuRow: { flexDirection: 'row', alignItems: 'center' },
   divider: { height: 1 },
+  level: { padding: 16, marginBottom: 16 },
+  levelTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  progress: { height: 7, borderRadius: 99, overflow: 'hidden', marginTop: 12 },
+  progressFill: { height: '100%' },
 });

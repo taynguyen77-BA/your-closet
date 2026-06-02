@@ -21,6 +21,8 @@ export type EventType =
   | 'other';
 
 export type ListingType = 'sale' | 'trade' | 'giveaway';
+export type ListingStatus = 'pending_review' | 'approved' | 'rejected';
+export type TransactionStatus = 'pending' | 'paid' | 'shipped' | 'handed_over' | 'completed' | 'cancelled';
 
 export type MissionType =
   | 'daily_checkin'
@@ -39,6 +41,7 @@ export interface User {
   plan: MembershipPlan;
   aiUsageRemaining: number;
   aiUsageMonthlyLimit: number;
+  aiQuotaPeriod: string;
   closetItemLimit: number;
   closetItemCount: number;
   planExpiresAt?: string;
@@ -112,6 +115,7 @@ export interface FashionTrend {
 
 export interface Mission {
   id: string;
+  missionId?: string;
   title: string;
   description: string;
   type: MissionType;
@@ -120,6 +124,17 @@ export interface Mission {
   target: number;
   isCompleted: boolean;
   isClaimed: boolean;
+  isActive?: boolean;
+  completedAt?: string;
+  claimedAt?: string;
+  rewardPeriod?: string;
+}
+
+export interface PlanLimit {
+  id: MembershipPlan;
+  label: string;
+  aiMonthly: number;
+  closetItems: number;
 }
 
 export interface CommunityListing {
@@ -138,6 +153,9 @@ export interface CommunityListing {
   gender?: string;
   location: string;
   tags: string[];
+  status: ListingStatus;
+  moderationNote?: string;
+  reportsCount: number;
   createdAt: string;
 }
 
@@ -147,8 +165,38 @@ export interface Transaction {
   sellerId: string;
   listingId: string;
   amount: number;
+  platformFeePercentage: number;
   platformFee: number;
-  status: 'pending' | 'completed' | 'cancelled';
+  status: TransactionStatus;
+  createdAt: string;
+}
+
+export interface MarketplaceMessage {
+  id: string;
+  listingId: string;
+  senderId: string;
+  sellerId: string;
+  body: string;
+  createdAt: string;
+}
+
+export interface TradeOffer {
+  id: string;
+  listingId: string;
+  buyerId: string;
+  sellerId: string;
+  offeredClothingItemId?: string;
+  message: string;
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
+  createdAt: string;
+}
+
+export interface ListingReport {
+  id: string;
+  listingId: string;
+  reporterId: string;
+  reason: string;
+  status: 'open' | 'reviewing' | 'resolved' | 'dismissed';
   createdAt: string;
 }
 

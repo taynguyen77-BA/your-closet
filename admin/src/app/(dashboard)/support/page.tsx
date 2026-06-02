@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page(){return <AdminCollectionPage config={{collection:"support_tickets",title:"Hỗ trợ",description:"Support tickets",manage:"support.manage",statuses:["open","in_progress","resolved","closed"],fields:[{key:"subject",label:"Subject"},{key:"username",label:"User"},{key:"priority",label:"Priority"},{key:"status",label:"Status"}]}}/>}

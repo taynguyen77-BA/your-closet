@@ -7,7 +7,9 @@ AI-powered fashion mobile app — quản lý tủ đồ, gợi ý outfit, thử 
 ```
 Your Closet/
 ├── mobile/          # Expo (React Native) — iOS, Android, Web
-├── admin/           # Admin dashboard (responsive HTML)
+├── admin/           # Next.js Admin CMS (RBAC dashboard)
+├── firebase/        # Firestore + Storage security rules
+├── firebase.json
 └── README.md
 ```
 
@@ -25,8 +27,9 @@ Your Closet/
 
 ```bash
 cd mobile
-cp .env.example .env   # điền Firebase keys
+cp .env.example .env   # điền đủ Firebase keys
 npm install
+npm run typecheck
 npm start
 ```
 
@@ -79,27 +82,80 @@ mobile/
 ## Firebase setup
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
-2. Bật Authentication, Firestore, Storage, Cloud Messaging
+2. Bật Authentication (bao gồm Anonymous), Firestore, Storage, Cloud Messaging
 3. Copy config vào `mobile/.env`
-4. Deploy Firestore rules & Cloud Functions cho AI/payments (bước tiếp theo)
+4. Cấu hình AI backend trong `mobile/.env`:
+
+```bash
+EXPO_PUBLIC_ENABLE_REAL_AI=true
+EXPO_PUBLIC_AI_API_BASE_URL=https://your-cloud-function.example.com/ai
+```
+
+Mobile chỉ gửi Firebase ID token và dữ liệu đầu vào đến backend. Không đặt Gemini, OpenAI,
+hoặc khóa AI provider nào trong biến `EXPO_PUBLIC_*`.
+5. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
 
 ### Firestore collections (đề xuất)
 
-`users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `listings`, `transactions`, `notifications`
+`users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `listings`, `transactions`, `notifications`, `ai_logs`
+
+### AI backend contract
+
+Backend xác thực `Authorization: Bearer <Firebase ID token>`, giữ khóa provider phía server,
+và triển khai:
+
+- `POST /clothing/detect` multipart (`image`)
+- `POST /outfits/recommend` JSON
+- `POST /try-on/generate` multipart (`image`, `outfitItemIds`, `scene`)
+- `POST /style-profile/analyze` JSON
+
+Client có timeout 12 giây, retry một lần cho lỗi mạng, và tự chuyển sang mock fallback khi
+backend không khả dụng. Production backend phải ghi `ai_logs` và trừ quota bằng transaction
+phía server sau khi provider trả kết quả thành công; client chỉ giảm bộ đếm hiển thị sau khi
+nhận kết quả và không ghi đè quota production. Local mock mode tự ghi log để hỗ trợ dev.
+Tiến độ nhiệm vụ và cấp thưởng production cũng phải đi qua backend; Firestore rules không cho
+client tự tăng quota hoặc tự đánh dấu nhiệm vụ hoàn tất.
+
+Ảnh tủ đồ được giới hạn ở định dạng ảnh và tối đa 10 MB trong cả client lẫn Storage rules.
+Storage URL hiện được đọc công khai để ảnh tin đăng cộng đồng đã duyệt có thể hiển thị; không
+dùng bucket này cho ảnh riêng tư hoặc ảnh thử đồ.
 
 ## Admin portal
 
-Mở `admin/index.html` trong trình duyệt — dashboard quản lý users, cộng đồng, gói, nhiệm vụ, trends, affiliate.
+```bash
+cd admin
+cp .env.example .env.local
+npm install
+npm run lint
+npm run build
+npm run dev
+```
 
-Production: deploy lên Firebase Hosting hoặc Vercel với auth admin.
+Next.js CMS với RBAC (6 roles), 18+ modules, charts, real-time activity feed.
+
+Chỉ bật demo local bằng `NEXT_PUBLIC_DEMO_MODE=true`. Xem `admin/README.md`.
+
+Production: deploy Vercel/Firebase Hosting + Firebase Admin auth.
+
+## Kiểm tra trước khi deploy
+
+```bash
+cd mobile && npm run typecheck
+cd ../admin && npm run lint && npm run build
+cd .. && firebase deploy --only firestore:rules,storage
+```
+
+Trước production, cấu hình webhook thanh toán phía server. Mobile chỉ được tạo transaction
+`pending`; client không được tự chuyển trạng thái thanh toán.
 
 ## Bước tiếp theo (production)
 
-- [ ] Cloud Functions: Gemini outfit + clothing detection + try-on
+- [ ] Cloud Functions: triển khai AI backend contract với provider secrets và quota transaction phía server
 - [ ] VNPay/MoMo webhooks
 - [ ] Push notifications (FCM)
 - [ ] Image moderation (Vision API)
 - [ ] EAS Build cho App Store / Play Store
+- [ ] Xóa ảnh Storage mồ côi khi tạo/xóa món đồ thất bại bằng Cloud Function
 
 ## License
 

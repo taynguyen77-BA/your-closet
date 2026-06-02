@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page() { return <AdminCollectionPage config={{ collection: "reports", title: "Kiểm duyệt & Báo cáo", description: "User reports and content review", manage: "moderation.action", statuses: ["reviewing", "resolved", "dismissed"], fields: [{ key: "id", label: "Report" }, { key: "targetType", label: "Target" }, { key: "targetId", label: "Target ID" }, { key: "reason", label: "Reason" }, { key: "status", label: "Status" }] }} />; }

@@ -1,0 +1,2 @@
+import { AdminCollectionPage } from "@/components/shared/admin-collection-page";
+export default function Page(){return <AdminCollectionPage config={{collection:"trends",title:"Xu hướng",description:"Fashion trends",manage:"trends.manage",allowCreate:true,allowDelete:true,fields:[{key:"name",label:"Trend"},{key:"category",label:"Category"},{key:"status",label:"Status"},{key:"views",label:"Views"}]}}/>}

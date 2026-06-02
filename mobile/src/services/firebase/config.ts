@@ -11,6 +11,14 @@ const firebaseConfig = {
   messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? '',
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID ?? '',
 };
+const requiredFirebaseConfig = [
+  ['EXPO_PUBLIC_FIREBASE_API_KEY', firebaseConfig.apiKey],
+  ['EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN', firebaseConfig.authDomain],
+  ['EXPO_PUBLIC_FIREBASE_PROJECT_ID', firebaseConfig.projectId],
+  ['EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET', firebaseConfig.storageBucket],
+  ['EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID', firebaseConfig.messagingSenderId],
+  ['EXPO_PUBLIC_FIREBASE_APP_ID', firebaseConfig.appId],
+] as const;
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
@@ -18,13 +26,14 @@ let db: Firestore | undefined;
 let storage: FirebaseStorage | undefined;
 
 export function isFirebaseConfigured(): boolean {
-  return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+  return requiredFirebaseConfig.every(([, value]) => Boolean(value));
 }
 
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
+    const missing = requiredFirebaseConfig.filter(([, value]) => !value).map(([name]) => name);
     throw new Error(
-      'Firebase chưa được cấu hình. Thêm biến EXPO_PUBLIC_FIREBASE_* vào .env',
+      `Firebase chưa được cấu hình. Thiếu: ${missing.join(', ')}`,
     );
   }
   if (!app) {

@@ -1,92 +1,39 @@
-import type { ClothingItem, Outfit, WardrobeEvent, WeatherInfo } from '@/models';
+import { aiUsageLogsService } from '@/services/firebase';
+import { isFirebaseConfigured } from '@/services/firebase/config';
+import { BackendAiProvider, MockAiProvider } from './providers';
+import type { AiFeature, AiProvider, AiResult, AiUsageLog, OutfitSuggestionInput, StyleProfileInput, VirtualTryOnInput } from './types';
 
-export interface DetectedClothingMeta {
-  type: ClothingItem['type'];
-  material?: string;
-  color: string;
-  style?: string;
-  season?: string[];
-  tags: string[];
-  suggestedName: string;
-}
+export * from './types';
+export { AiServiceError } from './providers';
 
-export interface OutfitSuggestionInput {
-  weather: WeatherInfo;
-  wardrobe: ClothingItem[];
-  events?: WardrobeEvent[];
-  stylePreferences?: string[];
-}
-
-const MOCK_DETECTION: DetectedClothingMeta = {
-  type: 'top',
-  material: 'Cotton blend',
-  color: 'Soft Pink',
-  style: 'Casual',
-  season: ['spring', 'summer'],
-  tags: ['casual', 'everyday'],
-  suggestedName: 'Áo thun pastel',
+const enableRealAi = process.env.EXPO_PUBLIC_ENABLE_REAL_AI === 'true';
+const mock = new MockAiProvider();
+const provider: AiProvider = enableRealAi ? new BackendAiProvider() : mock;
+const costs: Record<AiFeature, number> = {
+  clothing_detection: 0.002, outfit_recommendation: 0.01, virtual_try_on: 0.08, style_profile: 0.015,
 };
+
+async function log(userId: string, feature: AiFeature, inputSummary: string, resultStatus: AiUsageLog['resultStatus']) {
+  if (enableRealAi || !isFirebaseConfigured()) return;
+  try { await aiUsageLogsService.create({ userId, feature, inputSummary, resultStatus, costEstimate: resultStatus === 'success' ? costs[feature] : 0, createdAt: new Date().toISOString() }); }
+  catch { /* AI output should remain usable when analytics logging is unavailable. */ }
+}
+
+async function run<T>(userId: string, feature: AiFeature, summary: string, action: (selected: AiProvider) => Promise<T>): Promise<AiResult<T>> {
+  try {
+    const data = await action(provider);
+    await log(userId, feature, summary, 'success');
+    return { data, source: enableRealAi ? 'real' : 'mock', quotaChargeEligible: true, quotaManagedByBackend: enableRealAi };
+  } catch {
+    const data = await action(mock);
+    await log(userId, feature, summary, 'fallback');
+    return { data, source: 'mock', quotaChargeEligible: false, quotaManagedByBackend: false, fallbackMessage: 'AI đang bận. Ứng dụng đã chuẩn bị một gợi ý cơ bản để bạn tiếp tục.' };
+  }
+}
 
 export const aiService = {
-  async detectClothingFromImage(_uri: string): Promise<DetectedClothingMeta> {
-    await delay(800);
-    return MOCK_DETECTION;
-  },
-
-  async suggestOutfits(input: OutfitSuggestionInput): Promise<Partial<Outfit>[]> {
-    await delay(1200);
-    const tops = input.wardrobe.filter((c) => c.type === 'top');
-    const bottoms = input.wardrobe.filter((c) => c.type === 'bottom');
-    const shoes = input.wardrobe.filter((c) => c.type === 'shoes');
-
-    if (!tops.length || !bottoms.length) return [];
-
-    return [
-      {
-        name: `Gợi ý cho ${input.weather.condition}`,
-        items: [
-          { clothingId: tops[0].id, name: tops[0].name, type: tops[0].type },
-          {
-            clothingId: bottoms[0].id,
-            name: bottoms[0].name,
-            type: bottoms[0].type,
-          },
-          ...(shoes[0]
-            ? [
-                {
-                  clothingId: shoes[0].id,
-                  name: shoes[0].name,
-                  type: shoes[0].type,
-                },
-              ]
-            : []),
-        ],
-        aiExplanation: `Phù hợp ${input.weather.temperature}°C tại ${input.weather.location}. AI chọn tông màu hài hòa với tủ đồ hiện tại.`,
-        weatherCompatibility: `${input.weather.condition}, ${input.weather.temperature}°C`,
-        colorMatching: 'Neutral & pastel harmony',
-        styleMatching: 'Personal style match 90%',
-        matchingScore: 90,
-      },
-    ];
-  },
-
-  async generateVirtualTryOn(
-    _userPhotoUri: string,
-    _outfitItemIds: string[],
-    scene: string,
-  ): Promise<string> {
-    await delay(2000);
-    const sceneImages: Record<string, string> = {
-      beach: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800',
-      urban: 'https://images.unsplash.com/photo-1483985988355-763728ebc55b?w=800',
-      party: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800',
-      office: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800',
-      casual: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800',
-    };
-    return sceneImages[scene] ?? sceneImages.casual;
-  },
+  detectClothingFromImage: (userId: string, uri: string) => run(userId, 'clothing_detection', 'One clothing image', (p) => p.detectClothingFromImage(uri)),
+  suggestOutfits: (userId: string, input: OutfitSuggestionInput) => run(userId, 'outfit_recommendation', `${input.wardrobe.length} wardrobe items; ${input.weather.condition}`, (p) => p.suggestOutfits(input)),
+  generateVirtualTryOn: (userId: string, input: VirtualTryOnInput) => run(userId, 'virtual_try_on', `${input.outfitItemIds.length} outfit items; scene=${input.scene}`, (p) => p.generateVirtualTryOn(input)),
+  analyzeStyleProfile: (userId: string, input: StyleProfileInput) => run(userId, 'style_profile', `${input.wardrobe.length} wardrobe items`, (p) => p.analyzeStyleProfile(input)),
 };
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}

@@ -3,9 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
+import { useAppStore } from '@/stores/appStore';
 
 export default function RootLayout() {
   const scheme = useColorScheme();
+  const initialize = useAppStore((state) => state.initialize);
+  useEffect(() => { void initialize(); }, [initialize]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -45,6 +49,9 @@ export default function RootLayout() {
             name="settings"
             options={{ headerShown: true, title: 'Cài đặt', presentation: 'card' }}
           />
+          <Stack.Screen name="outfits" options={{ headerShown: true, title: 'Outfit', presentation: 'card' }} />
+          <Stack.Screen name="shopping" options={{ headerShown: true, title: 'Mua sắm gợi ý', presentation: 'card' }} />
+          <Stack.Screen name="payment/prepare" options={{ headerShown: true, title: 'Chuẩn bị thanh toán', presentation: 'card' }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

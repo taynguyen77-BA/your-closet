@@ -1,31 +1,32 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Platform, View } from 'react-native';
 import { useTheme } from '@/theme';
 
 export default function TabLayout() {
-  const { colors, isDark } = useTheme();
+  const { colors, gradients } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.accentDark,
+        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-          height: Platform.OS === 'ios' ? 88 : 64,
+          borderTopColor: 'transparent',
+          height: Platform.OS === 'ios' ? 92 : 68,
           paddingBottom: Platform.OS === 'ios' ? 28 : 8,
           paddingTop: 8,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '500' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '600' },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Trang chủ',
+          title: 'Hôm nay',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
@@ -41,20 +42,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="events"
+        name="try-on"
         options={{
-          title: 'Sự kiện',
+          title: 'AI Stylist',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar-outline" size={size} color={color} />
+            <LinearGradient colors={gradients.ai} style={{ width: 52, height: 52, marginTop: -21, borderRadius: 26, alignItems: 'center', justifyContent: 'center', shadowColor: colors.ai, shadowOpacity: 0.34, shadowRadius: 10 }}>
+              <Ionicons name="sparkles" size={size - 2} color={colors.textInverse} />
+            </LinearGradient>
           ),
         }}
       />
       <Tabs.Screen
-        name="try-on"
+        name="community"
         options={{
-          title: 'Thử đồ',
+          title: 'Cộng đồng',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="scan-outline" size={size} color={color} />
+            <Ionicons name="people-outline" size={size} color={color} />
           ),
         }}
       />
@@ -67,6 +70,7 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="events" options={{ href: null }} />
     </Tabs>
   );
 }
