@@ -33,11 +33,18 @@ export type MissionType =
 
 export interface User {
   id: string;
+  name?: string;
   username: string;
   email: string;
   avatarUrl?: string;
   fashionStyle?: string;
   preferences?: string[];
+  favoriteColors?: string[];
+  fashionGoals?: string[];
+  authProvider?: string;
+  hasCompletedOnboarding?: boolean;
+  status?: 'active' | 'suspended' | 'banned';
+  lastLoginAt?: string;
   plan: MembershipPlan;
   aiUsageRemaining: number;
   aiUsageMonthlyLimit: number;

@@ -16,7 +16,7 @@ export default function MissionsScreen() {
   const error = useAppStore((s) => s.error);
   const runMissionAction = async (action: () => Promise<void>) => {
     try { await action(); }
-    catch { Alert.alert('Experience Mode', 'Nhiệm vụ này sẽ được đồng bộ khi trải nghiệm cloud sẵn sàng.'); }
+    catch { Alert.alert('Chế độ trải nghiệm', 'Nhiệm vụ này sẽ được đồng bộ khi dịch vụ trực tuyến sẵn sàng.'); }
   };
 
   return (

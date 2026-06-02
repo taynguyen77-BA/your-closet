@@ -7,6 +7,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { MEMBERSHIP_PLANS, PAYMENT_METHODS } from '@/constants/membership';
 import { useTheme } from '@/theme';
 import { useAppStore } from '@/stores/appStore';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function MembershipScreen() {
   const { colors, spacing, radius } = useTheme();
@@ -19,6 +20,7 @@ export default function MembershipScreen() {
   const [payment, setPayment] = useState('vnpay');
 
   const checkout = () => {
+    if (!useAuthStore.getState().requireAccount()) return;
     router.push(`/payment/prepare?plan=${selectedPlan}&method=${payment}`);
   };
 

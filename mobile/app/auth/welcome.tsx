@@ -1,0 +1,4 @@
+import { useRouter } from 'expo-router';
+import { View } from 'react-native';
+import { AuthScreen } from '@/components/auth/AuthScreen'; import { Button } from '@/components/ui/Button'; import { AppText } from '@/components/ui/AppText'; import { useAuthStore } from '@/stores/authStore';
+export default function Welcome() { const router = useRouter(); const guest = useAuthStore((s) => s.continueAsGuest); return <AuthScreen title="Mặc đúng vibe, mỗi ngày." subtitle="Tủ đồ thông minh, outfit xinh và một chút AI để bạn có thêm thời gian tận hưởng phong cách riêng."><AppText variant="h2">Bắt đầu hành trình của bạn</AppText><View style={{ gap: 10, marginTop: 16 }}><Button label="Đăng nhập" onPress={() => router.push('/auth/login')} /><Button label="Tạo tài khoản" variant="secondary" onPress={() => router.push('/auth/register')} /><Button label="Trải nghiệm ngay" variant="ghost" onPress={() => { guest(); router.replace('/(tabs)'); }} /></View></AuthScreen>; }

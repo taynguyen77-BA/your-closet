@@ -13,6 +13,6 @@ export async function authorize(request: NextRequest, permission: Permission): P
   if (!token) throw new Error("UNAUTHORIZED");
   const decoded = await adminAuth.verifyIdToken(token);
   const role = decoded.adminRole as AdminRole | undefined;
-  if (!role || !hasPermission(role, permission)) throw new Error("FORBIDDEN");
+  if (decoded.admin !== true || !role || !hasPermission(role, permission)) throw new Error("FORBIDDEN");
   return { uid: decoded.uid, role };
 }

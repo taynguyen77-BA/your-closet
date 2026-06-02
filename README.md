@@ -82,7 +82,7 @@ mobile/
 ## Firebase setup
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
-2. Bật Authentication (bao gồm Anonymous), Firestore, Storage, Cloud Messaging
+2. Bật Authentication Email/Password, Firestore, Storage, Cloud Messaging
 3. Copy config vào `mobile/.env`
 4. Cấu hình AI backend trong `mobile/.env`:
 
@@ -94,6 +94,10 @@ EXPO_PUBLIC_AI_API_BASE_URL=https://your-cloud-function.example.com/ai
 Mobile chỉ gửi Firebase ID token và dữ liệu đầu vào đến backend. Không đặt Gemini, OpenAI,
 hoặc khóa AI provider nào trong biến `EXPO_PUBLIC_*`.
 5. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
+
+Nếu chưa điền Firebase config, mobile tự chạy **Experience Mode** với mock data cục bộ. Người dùng
+vẫn xem được luồng demo, nhưng các hành động cần lưu dữ liệu sẽ mời tạo tài khoản. Ứng dụng không
+hiển thị lỗi cấu hình Firebase kỹ thuật cho người dùng cuối.
 
 ### Firestore collections (đề xuất)
 
@@ -136,6 +140,32 @@ Next.js CMS với RBAC (6 roles), 18+ modules, charts, real-time activity feed.
 Chỉ bật demo local bằng `NEXT_PUBLIC_DEMO_MODE=true`. Xem `admin/README.md`.
 
 Production: deploy Vercel/Firebase Hosting + Firebase Admin auth.
+
+### Admin Firebase Auth và custom claims
+
+Admin production đăng nhập bằng Firebase Auth. Tạo admin user trong Firebase Authentication, sau đó
+đặt custom claims từ môi trường server tin cậy bằng Firebase Admin SDK:
+
+```js
+await admin.auth().setCustomUserClaims(uid, {
+  admin: true,
+  adminRole: "super_admin", // admin | moderator | support | marketing | finance
+});
+```
+
+Admin cần đăng nhập lại sau khi claims thay đổi để nhận ID token mới. Portal kiểm tra cả `admin: true`
+và `adminRole`, tự xóa token hết hạn, rồi chuyển về `/login`.
+
+Biến môi trường admin:
+
+```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+FIREBASE_SERVICE_ACCOUNT_JSON={"project_id":"...","client_email":"...","private_key":"..."}
+NEXT_PUBLIC_DEMO_MODE=false
+```
+
+Chỉ dùng `NEXT_PUBLIC_DEMO_MODE=true` khi chạy local demo. Demo mode giữ bộ tài khoản mẫu và RBAC,
+không dùng cho production.
 
 ## Kiểm tra trước khi deploy
 

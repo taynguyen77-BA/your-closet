@@ -10,16 +10,18 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isCheckingSession = useAuthStore((s) => s.isCheckingSession);
+  const initializeSession = useAuthStore((s) => s.initializeSession);
+  useEffect(() => { initializeSession(); }, [initializeSession]);
 
   useEffect(() => {
-    if (!isAuthenticated && pathname !== "/login") {
+    if (!isCheckingSession && !isAuthenticated && pathname !== "/login") {
       router.replace("/login");
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [isAuthenticated, isCheckingSession, pathname, router]);
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (isCheckingSession) return <div className="flex h-screen items-center justify-center bg-background text-sm text-muted-foreground">Đang kiểm tra phiên đăng nhập...</div>;
+  if (!isAuthenticated) return null;
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

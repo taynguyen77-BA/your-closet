@@ -1,9 +1,9 @@
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 
@@ -24,7 +24,7 @@ export default function OutfitDetailScreen() {
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg }}>
       {outfit.previewImageUrl && (
-        <Image source={{ uri: outfit.previewImageUrl }} style={[styles.hero, { borderRadius: radius.lg }]} />
+        <SafeImage source={{ uri: outfit.previewImageUrl }} style={[styles.hero, { borderRadius: radius.lg }]} fallbackLabel="ẢNH OUTFIT" />
       )}
       <AppText variant="h1" style={{ marginTop: spacing.lg }}>
         {outfit.name}

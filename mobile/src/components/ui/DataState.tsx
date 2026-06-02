@@ -11,7 +11,7 @@ export function DataState({ loading, error, empty, emptyText }: {
     <View style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
       {loading ? <ActivityIndicator color={colors.accentDark} /> : null}
       <AppText variant="bodySmall" muted style={{ marginTop: loading ? spacing.sm : 0, textAlign: 'center' }}>
-        {loading ? 'Đang tải dữ liệu...' : error ? 'Experience Mode · Dữ liệu local đang sẵn sàng.' : emptyText}
+        {loading ? 'Đang tải dữ liệu...' : error ? 'Chế độ trải nghiệm · Dữ liệu trên thiết bị đang sẵn sàng.' : emptyText}
       </AppText>
     </View>
   );

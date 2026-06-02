@@ -29,9 +29,19 @@ export function isFirebaseConfigured(): boolean {
   return requiredFirebaseConfig.every(([, value]) => Boolean(value));
 }
 
+export function getMissingFirebaseConfig(): string[] {
+  return requiredFirebaseConfig.filter(([, value]) => !value).map(([key]) => key);
+}
+
+export function getFirebaseStatus() {
+  const missing = getMissingFirebaseConfig();
+  return { isConfigured: missing.length === 0, isExperienceMode: missing.length > 0, missing };
+}
+
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
-    throw new Error('Experience Mode');
+    if (__DEV__) console.warn('Firebase is not configured. Starting Experience Mode.', getMissingFirebaseConfig());
+    throw new Error('FIREBASE_NOT_CONFIGURED');
   }
   if (!app) {
     app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);

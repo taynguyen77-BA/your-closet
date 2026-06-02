@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTheme } from '@/theme';
@@ -28,19 +27,19 @@ export function Button({
   small,
   pill = true,
 }: ButtonProps) {
-  const { colors, gradients, radius } = useTheme();
+  const { colors, radius } = useTheme();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   const bg =
     variant === 'primary'
-      ? 'transparent'
+      ? colors.primary
       : variant === 'accent'
         ? colors.accent
         : variant === 'ai' || variant === 'community'
-          ? 'transparent'
+          ? colors.primary
           : variant === 'secondary'
-          ? colors.beige
+          ? 'transparent'
           : 'transparent';
 
   const textColor =
@@ -52,7 +51,6 @@ export function Button({
     {icon ? <Ionicons name={icon} size={small ? 16 : 18} color={textColor} style={styles.icon} /> : null}
     <AppText variant="label" style={{ color: textColor, fontSize: small ? 13 : 14 }}>{label}</AppText>
   </>;
-  const gradient = variant === 'ai' ? gradients.ai : variant === 'community' ? gradients.community : gradients.primary;
   return (
     <Animated.View style={[style, animatedStyle]}>
     <Pressable
@@ -68,14 +66,11 @@ export function Button({
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
           paddingVertical: small ? 8 : 12,
           paddingHorizontal: small ? 12 : 16,
-          borderWidth: variant === 'ghost' ? 1 : 0,
-          borderColor: colors.border,
+          borderWidth: variant === 'secondary' || variant === 'ghost' ? 1 : 0,
+          borderColor: variant === 'secondary' ? colors.primary : colors.border,
         },
       ]}
     >
-      {variant === 'primary' || variant === 'ai' || variant === 'community'
-        ? <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: pill ? radius.full : radius.md }]} />
-        : null}
       {content}
     </Pressable>
     </Animated.View>

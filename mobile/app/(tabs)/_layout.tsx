@@ -1,35 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Platform, View } from 'react-native';
 import { useTheme } from '@/theme';
 
 export default function TabLayout() {
-  const { colors, gradients } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarActiveBackgroundColor: colors.beige,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarInactiveTintColor: '#C4B8AD',
         tabBarStyle: {
-          backgroundColor: colors.surface,
+          backgroundColor: colors.background,
           borderTopColor: 'transparent',
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
           position: 'absolute',
-          shadowColor: colors.shadow,
-          shadowOpacity: 0.16,
-          shadowRadius: 14,
-          shadowOffset: { width: 0, height: -4 },
-          elevation: 10,
           height: Platform.OS === 'ios' ? 92 : 68,
           paddingBottom: Platform.OS === 'ios' ? 28 : 8,
           paddingTop: 8,
         },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
+        tabBarLabelStyle: { fontSize: 9, fontWeight: '500', letterSpacing: 0.5 },
         tabBarItemStyle: { borderRadius: 18 },
       }}
     >
@@ -56,9 +49,9 @@ export default function TabLayout() {
         options={{
           title: 'AI Stylist',
           tabBarIcon: ({ color, size }) => (
-            <LinearGradient colors={gradients.ai} style={{ width: 52, height: 52, marginTop: -21, borderRadius: 26, alignItems: 'center', justifyContent: 'center', shadowColor: colors.ai, shadowOpacity: 0.34, shadowRadius: 10 }}>
-              <Ionicons name="sparkles" size={size - 2} color={colors.textInverse} />
-            </LinearGradient>
+            <View style={{ width: 40, height: 40, marginTop: -13, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary }}>
+              <Ionicons name="sparkles" size={size - 2} color={colors.accent} />
+            </View>
           ),
         }}
       />

@@ -41,7 +41,7 @@ export default function EventsScreen() {
       await createEvent({ userId: useAppStore.getState().user.id, name, date, location, eventType: eventType as EventType, linkedOutfitIds: [], createdAt: new Date().toISOString() });
       setName(''); setDate(''); setLocation('');
       Alert.alert('Đã lưu', 'Sự kiện đã được lưu.');
-    } catch { Alert.alert('Chưa lưu được', 'Thử lại sau một chút nhé. Experience Mode vẫn sẵn sàng để bạn khám phá app.'); }
+    } catch { Alert.alert('Chưa lưu được', 'Thử lại sau một chút nhé. Chế độ trải nghiệm vẫn sẵn sàng để bạn khám phá ứng dụng.'); }
     finally { setSaving(false); }
   };
 
@@ -67,7 +67,7 @@ export default function EventsScreen() {
   ];
 
   return (
-    <Screen>
+    <Screen bottomOffset={96}>
       <AppText variant="display" style={{ marginBottom: spacing.md }}>
         Sự kiện
       </AppText>
@@ -79,7 +79,7 @@ export default function EventsScreen() {
         <TextInput placeholder="Ngày (YYYY-MM-DD)" value={date} onChangeText={setDate} style={inputStyle} />
         <TextInput placeholder="Địa điểm" value={location} onChangeText={setLocation} style={inputStyle} />
         <TextInput
-          placeholder="Loại: wedding, party, work, travel..."
+          placeholder="Loại: đám cưới, tiệc, công việc, du lịch..."
           value={eventType}
           onChangeText={setEventType}
           style={inputStyle}
@@ -121,7 +121,7 @@ export default function EventsScreen() {
         <GlassCard style={{ marginTop: spacing.lg }}>
           <AppText variant="h3">Gợi ý mua sắm</AppText>
           <AppText variant="bodySmall" muted style={{ marginVertical: 8 }}>
-            Tủ đồ chưa đủ để tạo outfit. Xem sản phẩm affiliate được đề xuất.
+            Tủ đồ chưa đủ để tạo bộ đồ. Xem các sản phẩm được đề xuất.
           </AppText>
           <Button label="Xem sản phẩm" variant="accent" onPress={() => router.push('/shopping')} />
         </GlassCard>
@@ -136,7 +136,7 @@ export default function EventsScreen() {
             {e.date} · {e.location} · {e.eventType}
           </AppText>
           {e.dressCode && (
-            <AppText variant="bodySmall">Dress code: {e.dressCode}</AppText>
+            <AppText variant="bodySmall">Quy định trang phục: {e.dressCode}</AppText>
           )}
         </GlassCard>
       ))}

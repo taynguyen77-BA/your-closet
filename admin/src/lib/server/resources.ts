@@ -7,6 +7,7 @@ import type { Permission } from "@/lib/rbac";
 
 const permissions: Record<string, { view: Permission; manage?: Permission }> = {
   users: { view: "users.view", manage: "users.manage" },
+  clothes: { view: "users.view" },
   plan_limits: { view: "membership.view", manage: "membership.manage" },
   subscriptions: { view: "membership.view", manage: "membership.manage" },
   transactions: { view: "transactions.view", manage: "transactions.manage" },
@@ -21,6 +22,7 @@ const permissions: Record<string, { view: Permission; manage?: Permission }> = {
   outfits: { view: "outfits.view", manage: "outfits.manage" },
   affiliate_products: { view: "affiliate.view", manage: "affiliate.manage" },
   admin_logs: { view: "audit.view" },
+  security_logs: { view: "security.view" },
 };
 const allowed = new Set<string>(Object.values(FIRESTORE_COLLECTIONS));
 const json = (data: unknown, status = 200) => NextResponse.json(data, { status });
@@ -44,6 +46,14 @@ export async function list(request: NextRequest, collection: string) {
     await access(request, collection);
     const snapshot = await adminDb.collection(collection).limit(250).get();
     return json(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+  } catch (error) { return fail(error); }
+}
+export async function get(request: NextRequest, collection: string, id: string) {
+  try {
+    await access(request, collection);
+    const snapshot = await adminDb.collection(collection).doc(id).get();
+    if (!snapshot.exists) return json({ error: "NOT_FOUND" }, 404);
+    return json({ id: snapshot.id, ...snapshot.data() });
   } catch (error) { return fail(error); }
 }
 export async function create(request: NextRequest, collection: string) {

@@ -34,9 +34,8 @@ NEXT_PUBLIC_FIREBASE_API_KEY=...
 FIREBASE_SERVICE_ACCOUNT_JSON='{"project_id":"...","client_email":"...","private_key":"..."}'
 ```
 
-Admin Firebase users must receive an `adminRole` custom claim matching one of the roles in
-`src/lib/rbac.ts`. Firestore rules additionally recognize the boolean `admin` custom claim
-for direct Firebase access.
+Admin Firebase users must receive `admin: true` and an `adminRole` custom claim matching one
+of the roles in `src/lib/rbac.ts`. Both claims are required by the portal and API.
 
 ### Optional demo mode
 

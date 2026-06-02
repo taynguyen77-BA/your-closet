@@ -42,6 +42,11 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("tuado-admin-token");
+      localStorage.removeItem("tuado-admin-auth");
+      window.location.assign("/login");
+    }
     const body = await res.json().catch(() => undefined);
     throw new ApiError(res.statusText, res.status, body);
   }

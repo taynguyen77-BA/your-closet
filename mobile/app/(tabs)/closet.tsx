@@ -1,27 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
-import { ClosetItemCard, EmptyClosetState, FilterPill, FloatingActionButton, GradientScreenHeader, SearchBar, StatBubble } from '@/components/ui/FashionUi';
+import { ClosetItemCard, EmptyClosetState, FilterPill, FloatingActionButton, GradientScreenHeader, SearchBar } from '@/components/ui/FashionUi';
 import type { ClothingItem } from '@/models';
 import { aiService } from '@/services/ai/aiService';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
+import { useAuthStore } from '@/stores/authStore';
 
 type Filter = 'all' | 'top' | 'bottom' | 'dress' | 'shoes' | 'bag' | 'favorites' | 'rarely';
 const FILTERS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'All' }, { key: 'top', label: 'Tops' }, { key: 'bottom', label: 'Bottoms' },
-  { key: 'dress', label: 'Dress' }, { key: 'shoes', label: 'Shoes' }, { key: 'bag', label: 'Bags' },
-  { key: 'favorites', label: 'Favorites' }, { key: 'rarely', label: 'Rarely worn' },
+  { key: 'all', label: 'Tất cả' }, { key: 'top', label: 'Áo' }, { key: 'bottom', label: 'Quần' },
+  { key: 'dress', label: 'Váy' }, { key: 'shoes', label: 'Giày' }, { key: 'bag', label: 'Túi' },
+  { key: 'favorites', label: 'Yêu thích' }, { key: 'rarely', label: 'Ít mặc' },
 ];
 
 export default function ClosetScreen() {
   const router = useRouter();
-  const { colors, gradients, spacing, radius } = useTheme();
+  const { colors, spacing, radius } = useTheme();
   const clothing = useAppStore((s) => s.clothing);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const createClothing = useAppStore((s) => s.createClothing);
@@ -42,6 +42,7 @@ export default function ClosetScreen() {
   });
 
   const pickImage = async () => {
+    if (!useAuthStore.getState().requireAccount()) return;
     if (saving) return;
     if (useAppStore.getState().user.closetItemCount >= useAppStore.getState().user.closetItemLimit) return Alert.alert('Tủ đồ đã đầy', 'Nâng cấp gói thành viên để thêm nhiều món đồ hơn.');
     let result;
@@ -57,23 +58,27 @@ export default function ClosetScreen() {
       await createClothing(newItem, result.assets[0].uri);
       if (aiResult.quotaChargeEligible) await consumeAiTry(!aiResult.quotaManagedByBackend);
       Alert.alert('Đã thêm vào tủ', `AI nhận diện: ${meta.suggestedName}`);
-    } catch { Alert.alert('Chưa thêm được món đồ', 'Thử lại sau một chút nhé. Experience Mode vẫn lưu các trải nghiệm local của bạn.'); }
+    } catch { Alert.alert('Chưa thêm được món đồ', 'Thử lại sau một chút nhé. Chế độ trải nghiệm vẫn lưu dữ liệu trên thiết bị của bạn.'); }
     finally { setSaving(false); }
   };
 
   const header = <View style={{ gap: spacing.md }}>
-    <GradientScreenHeader eyebrow="SMART WARDROBE" title="Your Closet, Your Vibe" subtitle="Mix, match, repeat — AI helps you glow up." />
-    <LinearGradient colors={gradients.dark} style={[styles.health, { borderRadius: radius.xl }]}>
-      <View style={{ flex: 1 }}><AppText variant="caption" color={colors.lemon}>WARDROBE HEALTH</AppText><AppText variant="h1" color={colors.textInverse}>{wardrobeScore}/100 · Looking fresh</AppText><AppText variant="bodySmall" color={colors.warmGray}>AI says: your everyday base is strong. Add one statement piece for more outfit range.</AppText><Button label="AI phối đồ" small variant="ai" icon="sparkles" onPress={() => router.push('/(tabs)/try-on')} style={{ alignSelf: 'flex-start', marginTop: 10 }} /></View>
-      <View style={[styles.score, { borderColor: colors.lemon }]}><AppText variant="h2" color={colors.textInverse}>{wardrobeScore}</AppText></View>
-    </LinearGradient>
-    <View style={styles.stats}><StatBubble icon="shirt-outline" value={clothing.length} label="Total items" tint={colors.pink} /><StatBubble icon="heart" value={favorites} label="Favorites" tint={colors.lavender} delay={60} /><StatBubble icon="time-outline" value={rarelyWorn} label="Rarely worn" tint={colors.mint} delay={120} /><StatBubble icon="sparkles" value={outfitPotential} label="Outfit potential" tint={colors.lemon} delay={180} /></View>
-    <View style={styles.toolbar}><Button label={saving ? 'Adding...' : 'Add item'} icon="camera-outline" onPress={pickImage} disabled={saving} style={{ flex: 1 }} /><Button label="AI phối đồ" variant="secondary" icon="sparkles-outline" onPress={() => router.push('/(tabs)/try-on')} style={{ marginLeft: 8 }} /></View>
+    <GradientScreenHeader eyebrow="TỦ ĐỒ THÔNG MINH" title="Tủ đồ của bạn, phong cách của bạn" subtitle="Phối mới mỗi ngày với gợi ý từ AI." />
+    <View style={[styles.health, { borderRadius: radius.xl, backgroundColor: colors.primary }]}>
+      <View style={styles.healthTop}><View style={{ flex: 1 }}><AppText variant="caption" color={colors.accent}>SỨC KHỎE TỦ ĐỒ</AppText><AppText variant="h1" color={colors.textInverse}>{wardrobeScore}/100 · Đang rất ổn</AppText></View><AppText variant="h2" color={colors.accent}>{wardrobeScore}</AppText></View>
+      <AppText variant="bodySmall" color={colors.warmGray}>Nền tảng tủ đồ tốt. Thêm một món nổi bật để phối đa dạng hơn.</AppText>
+      <View style={[styles.healthBar, { backgroundColor: colors.warmGray }]}><View style={[styles.healthFill, { backgroundColor: colors.accent, width: `${wardrobeScore}%` }]} /></View>
+      <Pressable onPress={() => router.push('/(tabs)/try-on')} style={[styles.healthCta, { borderTopColor: colors.warmGray }]}><AppText variant="label" color={colors.accent}>AI phối đồ →</AppText></Pressable>
+    </View>
+    <View style={[styles.statsCard, { borderRadius: radius.xl, borderColor: colors.border, backgroundColor: colors.surface }]}>
+      {[['shirt-outline', clothing.length, 'TỔNG SỐ MÓN'], ['heart', favorites, 'YÊU THÍCH'], ['time-outline', rarelyWorn, 'ÍT MẶC'], ['sparkles', outfitPotential, 'KHẢ NĂNG PHỐI']].map(([icon, value, label], index) => <View key={label as string} style={[styles.statCell, index % 2 === 0 && styles.statRightBorder, index < 2 && styles.statBottomBorder, { borderColor: colors.border }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={18} color={colors.accentDark} /><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText></View>)}
+    </View>
+    <View style={styles.toolbar}><Button label={saving ? 'Đang thêm...' : 'Thêm món'} icon="camera-outline" onPress={pickImage} disabled={saving} style={{ flex: 1 }} /><Button label="AI phối đồ" variant="secondary" icon="sparkles-outline" onPress={() => router.push('/(tabs)/try-on')} style={{ marginLeft: 8 }} /></View>
     <SearchBar value={search} onChangeText={setSearch} />
     <ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.filters}>{FILTERS.map((item) => <FilterPill key={item.key} label={item.label} active={filter === item.key} onPress={() => setFilter(item.key)} />)}</View></ScrollView>
-    <View style={styles.section}><View><AppText variant="h2">Your pieces</AppText><AppText variant="bodySmall" muted>{filtered.length} items ready to style</AppText></View><Pressable onPress={() => setFilter('all')}><Ionicons name="options-outline" size={22} color={colors.accentDark} /></Pressable></View>
+    <View style={styles.section}><View><AppText variant="h2">Các món đồ của bạn</AppText><AppText variant="bodySmall" muted>{filtered.length} món sẵn sàng để phối</AppText></View><Pressable onPress={() => setFilter('all')}><Ionicons name="options-outline" size={22} color={colors.accentDark} /></Pressable></View>
   </View>;
 
-  return <View style={{ flex: 1, backgroundColor: colors.background }}><FlatList data={filtered} numColumns={2} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={styles.row} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 112 }} ListHeaderComponent={header} ListEmptyComponent={<EmptyClosetState onPress={() => void pickImage()} />} showsVerticalScrollIndicator={false} /><FloatingActionButton onPress={() => void pickImage()} /></View>;
+  return <View style={{ flex: 1, backgroundColor: colors.background }}><FlatList data={filtered} numColumns={2} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={styles.row} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 190 }} ListHeaderComponent={header} ListEmptyComponent={<EmptyClosetState onPress={() => void pickImage()} />} showsVerticalScrollIndicator={false} /><FloatingActionButton onPress={() => void pickImage()} /></View>;
 }
-const styles = StyleSheet.create({ health: { padding: 17, flexDirection: 'row', alignItems: 'center' }, score: { width: 60, height: 60, borderRadius: 30, borderWidth: 3, alignItems: 'center', justifyContent: 'center', marginLeft: 10 }, stats: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, toolbar: { flexDirection: 'row' }, filters: { flexDirection: 'row', gap: 8, paddingBottom: 2 }, section: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 3, marginBottom: 12 }, row: { justifyContent: 'space-between' } });
+const styles = StyleSheet.create({ health: { padding: 16, gap: 8 }, healthTop: { flexDirection: 'row', alignItems: 'center' }, healthBar: { height: 6, borderRadius: 3, overflow: 'hidden' }, healthFill: { height: '100%' }, healthCta: { borderTopWidth: 1, paddingTop: 10, marginTop: 2 }, statsCard: { flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1 }, statCell: { width: '50%', minHeight: 88, padding: 12, gap: 3 }, statRightBorder: { borderRightWidth: 1 }, statBottomBorder: { borderBottomWidth: 1 }, toolbar: { flexDirection: 'row' }, filters: { flexDirection: 'row', gap: 8, paddingBottom: 2 }, section: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 3, marginBottom: 12 }, row: { justifyContent: 'space-between' } });

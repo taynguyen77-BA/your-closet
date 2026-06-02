@@ -16,7 +16,7 @@ export function SectionHeader({ title, actionLabel, onAction }: SectionHeaderPro
       <AppText variant="h2">{title}</AppText>
       {actionLabel && onAction ? (
         <Pressable onPress={onAction}>
-          <AppText variant="label" color="#9B7A8A">
+          <AppText variant="label" color="#1E1712">
             {actionLabel}
           </AppText>
         </Pressable>
