@@ -1,8 +1,12 @@
 export const gradients = {
+  hero: ['#FF2D92', '#8B5CF6', '#38BDF8'] as const,
   primary: ['#FF3D9A', '#FF7A59'] as const,
   ai: ['#8B5CF6', '#38BDF8'] as const,
+  closet: ['#FF2D92', '#7C3AED'] as const,
   community: ['#FF4F8B', '#FF9A62'] as const,
   marketplace: ['#25D9B8', '#4DBBFF'] as const,
+  premium: ['#7C3AED', '#FF3D9A', '#FFB547'] as const,
+  dark: ['#211231', '#45205F'] as const,
   sunshine: ['#FFE45C', '#FF9A62'] as const,
   deep: ['#6D28D9', '#A855F7'] as const,
 } as const;
@@ -10,7 +14,7 @@ export const gradients = {
 export const lightColors = {
   primary: '#FF3D9A',
   secondary: '#7C3AED',
-  background: '#FFF9FC',
+  background: '#FFFBF5',
   backgroundTint: '#F8F5FF',
   surface: '#FFFFFF',
   surfaceGlass: 'rgba(255, 255, 255, 0.82)',

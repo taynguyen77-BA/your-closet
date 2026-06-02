@@ -12,15 +12,25 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
+        tabBarActiveBackgroundColor: colors.beige,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: 'transparent',
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          position: 'absolute',
+          shadowColor: colors.shadow,
+          shadowOpacity: 0.16,
+          shadowRadius: 14,
+          shadowOffset: { width: 0, height: -4 },
+          elevation: 10,
           height: Platform.OS === 'ios' ? 92 : 68,
           paddingBottom: Platform.OS === 'ios' ? 28 : 8,
           paddingTop: 8,
         },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
+        tabBarItemStyle: { borderRadius: 18 },
       }}
     >
       <Tabs.Screen
