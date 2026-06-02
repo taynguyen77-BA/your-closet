@@ -7,7 +7,7 @@ import {
 import { PLAN_LIMITS } from '@/constants/membership';
 import type { User } from '@/models';
 import { getFirebaseAuth, getFirebaseStatus } from '@/services/firebase/config';
-import { usersService } from '@/services/firebase';
+import { usersService } from '@/services/api/resources';
 
 const GUEST_ID = 'user-1';
 let unsubscribe: (() => void) | undefined;

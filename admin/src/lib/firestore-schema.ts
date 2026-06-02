@@ -14,6 +14,9 @@ export const FIRESTORE_COLLECTIONS = {
   userMissions: "user_missions",
   rewards: "rewards",
   listings: "listings",
+  marketplaceMessages: "marketplace_messages",
+  tradeOffers: "trade_offers",
+  listingReports: "listing_reports",
   transactions: "transactions",
   notifications: "notifications",
   reports: "reports",
@@ -30,3 +33,15 @@ export const FIRESTORE_COLLECTIONS = {
 
 export type FirestoreCollection =
   (typeof FIRESTORE_COLLECTIONS)[keyof typeof FIRESTORE_COLLECTIONS];
+
+export const COLLECTION_CONTRACTS = {
+  users: { ownerField: "id", adminManaged: true },
+  clothes: { ownerField: "userId" }, outfits: { ownerField: "userId", adminManaged: true },
+  events: { ownerField: "userId" }, user_missions: { ownerField: "userId" },
+  listings: { ownerField: "userId", publicStatus: "approved", adminManaged: true },
+  transactions: { ownerField: "buyerId", readOnly: true }, notifications: { ownerField: "userId" },
+  ai_logs: { ownerField: "userId", readOnly: true }, support_tickets: { ownerField: "userId", adminManaged: true },
+  plan_limits: { publicStatus: "active", adminManaged: true }, missions: { publicStatus: "active", adminManaged: true },
+  trends: { publicStatus: "published", adminManaged: true }, affiliate_products: { publicStatus: "active", adminManaged: true },
+  notification_templates: { adminManaged: true }, subscriptions: { ownerField: "userId", adminManaged: true },
+} as const;

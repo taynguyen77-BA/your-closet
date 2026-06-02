@@ -4,25 +4,32 @@ import {
   mockTrends, mockUser, mockWeather,
 } from '@/data/mockData';
 import type {
-  ClothingItem, CommunityListing, FashionTrend, ListingReport, MarketplaceMessage, MembershipPlan,
+  AffiliateProduct, ClothingItem, CommunityListing, FashionTrend, ListingReport, MarketplaceMessage, MembershipPlan,
   Mission, Outfit, PlanLimit, TradeOffer, Transaction, User, WardrobeEvent, WeatherInfo,
 } from '@/models';
-import { isFirebaseConfigured } from '@/services/firebase/config';
 import { useAuthStore } from '@/stores/authStore';
 import {
-  clothesService, clothingImagesService, eventsService, listingReportsService, listingsService,
+  affiliateProductsService, clothesService, eventsService, listingReportsService, listingsService,
   marketplaceMessagesService, missionsService, outfitsService, planLimitsService, tradeOffersService,
-  transactionsService, userMissionsService, usersService,
-} from '@/services/firebase';
+  transactionsService, trendsService, userMissionsService, usersService,
+} from '@/services/api/resources';
+import { clothingImagesService } from '@/services/firebase';
 import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
 
-const useMocks = () => !isFirebaseConfigured() || useAuthStore.getState().isGuest;
+const useMocks = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
+const emptyUser: User = { id: '', username: '', email: '', plan: 'free', aiUsageRemaining: 0, aiUsageMonthlyLimit: 0, aiQuotaPeriod: '', closetItemLimit: 0, closetItemCount: 0, createdAt: '' };
+const emptyPlanLimits: Record<MembershipPlan, PlanLimit> = {
+  free: { id: 'free', label: '—', aiMonthly: 0, closetItems: 0 },
+  premium: { id: 'premium', label: '—', aiMonthly: 0, closetItems: 0 },
+  elite: { id: 'elite', label: '—', aiMonthly: 0, closetItems: 0 },
+};
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 interface AppState {
   user: User; weather: WeatherInfo; clothing: ClothingItem[]; outfits: Outfit[];
   events: WardrobeEvent[]; trends: FashionTrend[]; missions: Mission[];
   communityListings: CommunityListing[]; savedOutfitIds: string[];
+  affiliateProducts: AffiliateProduct[];
   closetViewMode: 'grid' | 'list'; loadState: LoadState; error?: string;
   planLimits: Record<MembershipPlan, PlanLimit>;
   initialize: () => Promise<void>;
@@ -51,7 +58,7 @@ interface AppState {
 }
 
 const reportError = (set: (patch: Partial<AppState>) => void, error: unknown) => {
-  set({ error: 'Experience Mode' });
+  set({ error: error instanceof Error ? error.message : 'Không thể đồng bộ dữ liệu. Thử lại nhé.' });
 };
 const currentQuotaPeriod = () => new Date().toISOString().slice(0, 7);
 const missionRewardPeriod = (mission: Mission) => mission.type === 'daily_checkin'
@@ -80,44 +87,43 @@ const mergeMissionState = (definitions: Mission[], progress: Mission[]) => defin
   });
 
 export const useAppStore = create<AppState>((set, get) => ({
-  user: mockUser, weather: mockWeather, clothing: useMocks() ? mockClothing : [],
+  user: useMocks() ? mockUser : emptyUser, weather: mockWeather, clothing: useMocks() ? mockClothing : [],
   outfits: useMocks() ? mockOutfits : [], events: useMocks() ? mockEvents : [],
-  trends: mockTrends, missions: useMocks() ? mockMissions : [],
+  trends: useMocks() ? mockTrends : [], missions: useMocks() ? mockMissions : [],
   communityListings: useMocks() ? mockCommunityListings : [],
+  affiliateProducts: [],
   savedOutfitIds: ['o2'], closetViewMode: 'grid', loadState: 'idle',
-  planLimits: PLAN_LIMITS,
+  planLimits: useMocks() ? PLAN_LIMITS : emptyPlanLimits,
   initialize: async () => {
     if (useMocks()) return set({ loadState: 'ready', user: applyPlanLimit(mockUser, PLAN_LIMITS), clothing: mockClothing, outfits: mockOutfits, events: mockEvents, communityListings: mockCommunityListings, missions: mergeMissionState(DEFAULT_MISSIONS, mockMissions) });
-    const authUser = useAuthStore.getState().appUser;
-    if (!authUser) return set({ loadState: 'idle', clothing: [], outfits: [], events: [], communityListings: [], missions: [] });
     set({ loadState: 'loading', error: undefined });
     try {
+      const authUser = useAuthStore.getState().appUser;
+      const [remoteLimits, missionDefinitions, trends, approvedListings, affiliateProducts] = await Promise.all([
+        planLimitsService.list({ status: 'active' }), missionsService.list({ status: 'active' }),
+        trendsService.list({ status: 'published' }), listingsService.list({ status: 'approved' }),
+        affiliateProductsService.list({ status: 'active' }),
+      ]);
+      const planLimits = remoteLimits.reduce((all, limit) => ({ ...all, [limit.id]: limit }), { ...emptyPlanLimits });
+      if (!authUser) return set({ loadState: 'ready', planLimits, trends, missions: missionDefinitions, communityListings: approvedListings, affiliateProducts, clothing: [], outfits: [], events: [], savedOutfitIds: [] });
       const userId = authUser.id;
-      const [user, clothing, outfits, events, missions, userMissions, remoteLimits, approvedListings, ownListings] = await Promise.all([
-        usersService.get(userId), clothesService.list(userId), outfitsService.list(userId),
-        eventsService.list(userId), missionsService.list(), userMissionsService.list(userId),
-        planLimitsService.list(), listingsService.listBy('status', 'approved'), listingsService.list(userId),
+      const [user, clothing, outfits, events, userMissions, ownListings] = await Promise.all([
+        usersService.get(userId), clothesService.list({ userId }), outfitsService.list({ userId }),
+        eventsService.list({ userId }), userMissionsService.list({ userId }), listingsService.list({ userId }),
       ]);
       const communityListings = [...approvedListings, ...ownListings.filter((listing) => !approvedListings.some((approved) => approved.id === listing.id))];
-      const planLimits = remoteLimits.reduce((all, limit) => ({ ...all, [limit.id]: limit }), PLAN_LIMITS);
-      const currentUser = applyPlanLimit(user ?? { ...mockUser, id: userId }, planLimits);
-      if (!user) await usersService.create(currentUser);
-      const missionDefinitions = missions.length ? missions : DEFAULT_MISSIONS;
+      const currentUser = applyPlanLimit(user, planLimits);
       const mergedMissions = mergeMissionState(missionDefinitions, userMissions);
       set({
-        user: currentUser, clothing, outfits, events, missions: mergedMissions, planLimits, communityListings,
+        user: currentUser, clothing, outfits, events, trends, missions: mergedMissions, planLimits, communityListings, affiliateProducts,
         savedOutfitIds: outfits.filter((item) => item.isSaved).map((item) => item.id),
         loadState: 'ready',
       });
     } catch {
-      set({
-        user: applyPlanLimit(mockUser, PLAN_LIMITS), clothing: mockClothing, outfits: mockOutfits,
-        events: mockEvents, missions: mergeMissionState(DEFAULT_MISSIONS, mockMissions),
-        communityListings: mockCommunityListings, loadState: 'ready', error: undefined,
-      });
+      set({ loadState: 'error', error: 'Không thể tải dữ liệu. Kiểm tra kết nối rồi thử lại nhé.' });
     }
   },
-  resetSession: () => set({ user: mockUser, clothing: [], outfits: [], events: [], communityListings: [], missions: [], savedOutfitIds: [], loadState: 'idle', error: undefined }),
+  resetSession: () => set({ user: useMocks() ? mockUser : emptyUser, clothing: [], outfits: [], events: [], communityListings: [], affiliateProducts: [], missions: [], savedOutfitIds: [], loadState: 'idle', error: undefined }),
   setClosetViewMode: (closetViewMode) => set({ closetViewMode }),
   toggleFavorite: async (id) => {
     const item = get().clothing.find((value) => value.id === id); if (!item) return;

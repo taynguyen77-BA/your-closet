@@ -24,8 +24,9 @@ export default function RootLayout() {
   const resetSession = useAppStore((state) => state.resetSession);
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
   const { isAuthLoading, isAuthenticated, isGuest, hasCompletedOnboarding } = useAuthStore();
+  const routeKey = segments.join('/');
   useEffect(() => { initializeAuth(); }, [initializeAuth]);
-  useEffect(() => { if (!isAuthLoading && (isAuthenticated || isGuest)) void initialize(); }, [initialize, isAuthLoading, isAuthenticated, isGuest]);
+  useEffect(() => { if (!isAuthLoading && (isAuthenticated || isGuest)) void initialize(); }, [initialize, isAuthLoading, isAuthenticated, isGuest, routeKey]);
   useEffect(() => { if (!isAuthLoading && !isAuthenticated && !isGuest) resetSession(); }, [isAuthLoading, isAuthenticated, isGuest, resetSession]);
   useEffect(() => {
     if (isAuthLoading) return;

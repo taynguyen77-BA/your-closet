@@ -108,7 +108,7 @@ export interface Mission {
 
 export interface CommunityListing {
   id: string;
-  sellerId: string;
+  userId: string;
   sellerName: string;
   title: string;
   listingType: ListingType;

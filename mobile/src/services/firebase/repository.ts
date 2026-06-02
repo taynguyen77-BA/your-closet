@@ -1,56 +1,5 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { getFirebaseDb, getFirebaseStorage } from './config';
-
-type Entity = { id: string };
-const clean = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
-
-export function createRepository<T extends Entity>(collectionName: string) {
-  return {
-    async list(userId?: string): Promise<T[]> {
-      const source = userId
-        ? query(collection(getFirebaseDb(), collectionName), where('userId', '==', userId))
-        : collection(getFirebaseDb(), collectionName);
-      const snapshot = await getDocs(source);
-      return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as T);
-    },
-    async listBy(field: keyof T & string, value: unknown): Promise<T[]> {
-      const snapshot = await getDocs(query(collection(getFirebaseDb(), collectionName), where(field, '==', value)));
-      return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as T);
-    },
-    async get(id: string): Promise<T | undefined> {
-      const snapshot = await getDoc(doc(getFirebaseDb(), collectionName, id));
-      return snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as T) : undefined;
-    },
-    async create(value: Omit<T, 'id'> & { id?: string }): Promise<T> {
-      const { id, ...data } = value;
-      if (id) {
-        await setDoc(doc(getFirebaseDb(), collectionName, id), clean(data));
-        return { id, ...data } as T;
-      }
-      const created = await addDoc(collection(getFirebaseDb(), collectionName), clean(data));
-      return { id: created.id, ...data } as T;
-    },
-    async update(id: string, patch: Partial<T>): Promise<void> {
-      const { id: _id, ...data } = patch;
-      await updateDoc(doc(getFirebaseDb(), collectionName, id), clean(data));
-    },
-    async remove(id: string): Promise<void> {
-      await deleteDoc(doc(getFirebaseDb(), collectionName, id));
-    },
-  };
-}
+import { getFirebaseStorage } from './config';
 
 export async function uploadImage(userId: string, uri: string): Promise<string> {
   if (!uri) throw new Error('Không tìm thấy ảnh để tải lên.');

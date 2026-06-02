@@ -51,5 +51,7 @@ export async function apiFetch<T>(
     throw new ApiError(res.statusText, res.status, body);
   }
 
-  return res.json() as Promise<T>;
+  if (res.status === 204) return undefined as T;
+  const payload = await res.json() as { data?: T } | T;
+  return typeof payload === "object" && payload !== null && "data" in payload ? payload.data as T : payload as T;
 }

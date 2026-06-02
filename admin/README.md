@@ -31,6 +31,7 @@ Production mode uses Firebase Authentication and verifies ID tokens in the Next.
 
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_API_URL=https://your-api.example.com
 FIREBASE_SERVICE_ACCOUNT_JSON='{"project_id":"...","client_email":"...","private_key":"..."}'
 ```
 
@@ -78,7 +79,19 @@ Use **Settings → Demo: Switch RBAC role** to preview sidebar permissions witho
 
 - `GET /api/dashboard` — Firestore KPI aggregates
 - `GET|POST /api/resources/:collection` — guarded Firestore list/create
-- `PATCH|DELETE /api/resources/:collection/:id` — guarded Firestore update/delete
+- `GET|PATCH|DELETE /api/resources/:collection/:id` — guarded Firestore detail/update/delete
+
+List endpoints support `limit`, `cursor`, `status`, `userId`, and `search`. Resource responses use:
+
+```json
+{ "data": [], "meta": { "total": 0, "limit": 50, "cursor": null } }
+```
+
+Seed CMS data before first production run:
+
+```bash
+npm run seed
+```
 
 ## Production
 

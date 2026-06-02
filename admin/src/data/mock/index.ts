@@ -343,7 +343,7 @@ export const missions: Mission[] = [
 export const listings: CommunityListing[] = [
   {
     id: "L-2841",
-    sellerId: "u4",
+    userId: "u4",
     sellerName: "spam_user_99",
     title: "Áo Gucci siêu rẻ",
     listingType: "sale",
@@ -355,7 +355,7 @@ export const listings: CommunityListing[] = [
   },
   {
     id: "L-2839",
-    sellerId: "u2",
+    userId: "u2",
     sellerName: "lan_huong",
     title: "Váy midi vintage",
     listingType: "sale",

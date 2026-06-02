@@ -19,8 +19,9 @@ Your Closet/
 |-------|-----------|
 | Mobile | Expo SDK 56, React Native, TypeScript, Expo Router |
 | State | Zustand |
-| Backend | Firebase (Auth, Firestore, Storage, FCM) — scaffold sẵn |
-| AI | Service layer mock → kết nối Gemini/Cloud Functions |
+| Backend API | Next.js API routes + Firebase Admin SDK |
+| Data source | Firestore single source of truth |
+| AI | Backend provider; mock chỉ khi `EXPO_PUBLIC_DEMO_MODE=true` |
 | Payments | VNPay, MoMo, Apple/Google Pay — UI + constants |
 
 ## Chạy mobile app
@@ -59,9 +60,10 @@ mobile/
     ├── models/             # TypeScript domain models
     ├── stores/             # Zustand global state
     ├── services/
+    │   ├── api/            # Next.js API client + resources
     │   ├── ai/             # AI outfit, detection, try-on
-    │   └── firebase/       # Firebase init
-    ├── data/               # Mock data (dev)
+    │   └── firebase/       # Firebase Auth + Storage upload
+    ├── data/               # Mock data, chỉ dùng explicit demo mode
     └── constants/
 ```
 
@@ -83,7 +85,7 @@ mobile/
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
 2. Bật Authentication Email/Password, Firestore, Storage, Cloud Messaging
-3. Copy config vào `mobile/.env`
+3. Copy Firebase config và `EXPO_PUBLIC_API_URL` vào `mobile/.env`
 4. Cấu hình AI backend trong `mobile/.env`:
 
 ```bash
@@ -95,13 +97,15 @@ Mobile chỉ gửi Firebase ID token và dữ liệu đầu vào đến backend.
 hoặc khóa AI provider nào trong biến `EXPO_PUBLIC_*`.
 5. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
 
-Nếu chưa điền Firebase config, mobile tự chạy **Experience Mode** với mock data cục bộ. Người dùng
-vẫn xem được luồng demo, nhưng các hành động cần lưu dữ liệu sẽ mời tạo tài khoản. Ứng dụng không
-hiển thị lỗi cấu hình Firebase kỹ thuật cho người dùng cuối.
+Mobile đọc business data qua Next.js API; Firebase client SDK chỉ dùng cho Auth và Storage upload.
+Nếu chưa đăng nhập, mobile chỉ đọc public config/data như plans, trends, affiliate products và
+approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUBLIC_DEMO_MODE=true`.
 
 ### Firestore collections (đề xuất)
 
-`users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `listings`, `transactions`, `notifications`, `ai_logs`
+`users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `plan_limits`, `user_missions`,
+`listings`, `transactions`, `subscriptions`, `notification_templates`, `notifications`,
+`affiliate_products`, `support_tickets`, `ai_logs`
 
 ### AI backend contract
 
@@ -113,8 +117,7 @@ và triển khai:
 - `POST /try-on/generate` multipart (`image`, `outfitItemIds`, `scene`)
 - `POST /style-profile/analyze` JSON
 
-Client có timeout 12 giây, retry một lần cho lỗi mạng, và tự chuyển sang mock fallback khi
-backend không khả dụng. Production backend phải ghi `ai_logs` và trừ quota bằng transaction
+Client không tự chuyển sang mock khi backend production không khả dụng. Production backend phải ghi `ai_logs` và trừ quota bằng transaction
 phía server sau khi provider trả kết quả thành công; client chỉ giảm bộ đếm hiển thị sau khi
 nhận kết quả và không ghi đè quota production. Local mock mode tự ghi log để hỗ trợ dev.
 Tiến độ nhiệm vụ và cấp thưởng production cũng phải đi qua backend; Firestore rules không cho
@@ -160,12 +163,22 @@ Biến môi trường admin:
 
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_API_URL=https://your-api.example.com
 FIREBASE_SERVICE_ACCOUNT_JSON={"project_id":"...","client_email":"...","private_key":"..."}
 NEXT_PUBLIC_DEMO_MODE=false
 ```
 
 Chỉ dùng `NEXT_PUBLIC_DEMO_MODE=true` khi chạy local demo. Demo mode giữ bộ tài khoản mẫu và RBAC,
 không dùng cho production.
+
+### Seed dữ liệu CMS ban đầu
+
+```bash
+cd admin
+npm run seed
+# tùy chọn local staging:
+npm run seed -- --with-demo-users
+```
 
 ## Kiểm tra trước khi deploy
 

@@ -53,6 +53,7 @@ export interface User {
   closetItemCount: number;
   planExpiresAt?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ClothingItem {
@@ -70,6 +71,7 @@ export interface ClothingItem {
   isFavorite: boolean;
   timesWorn: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface OutfitItemRef {
@@ -92,6 +94,8 @@ export interface Outfit {
   eventId?: string;
   isSaved: boolean;
   createdAt: string;
+  updatedAt?: string;
+  status?: 'active' | 'hidden' | 'removed';
 }
 
 export interface WardrobeEvent {
@@ -106,6 +110,7 @@ export interface WardrobeEvent {
   mood?: string;
   linkedOutfitIds: string[];
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface FashionTrend {
@@ -118,6 +123,9 @@ export interface FashionTrend {
   previewImageUrl?: string;
   matchingItemIds: string[];
   missingItemSuggestions: string[];
+  status?: 'draft' | 'scheduled' | 'published' | 'archived';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Mission {
@@ -135,6 +143,9 @@ export interface Mission {
   completedAt?: string;
   claimedAt?: string;
   rewardPeriod?: string;
+  status?: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface PlanLimit {
@@ -142,6 +153,11 @@ export interface PlanLimit {
   label: string;
   aiMonthly: number;
   closetItems: number;
+  status?: 'active' | 'inactive';
+  updatedAt?: string;
+  priceLabel?: string;
+  features?: string[];
+  badge?: string;
 }
 
 export interface CommunityListing {
@@ -164,6 +180,7 @@ export interface CommunityListing {
   moderationNote?: string;
   reportsCount: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Transaction {
@@ -176,6 +193,7 @@ export interface Transaction {
   platformFee: number;
   status: TransactionStatus;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface MarketplaceMessage {
@@ -185,6 +203,7 @@ export interface MarketplaceMessage {
   sellerId: string;
   body: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface TradeOffer {
@@ -196,6 +215,7 @@ export interface TradeOffer {
   message: string;
   status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ListingReport {
@@ -205,6 +225,7 @@ export interface ListingReport {
   reason: string;
   status: 'open' | 'reviewing' | 'resolved' | 'dismissed';
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface AppNotification {
@@ -215,6 +236,19 @@ export interface AppNotification {
   type: 'event' | 'ai' | 'mission' | 'community' | 'membership';
   read: boolean;
   createdAt: string;
+  updatedAt?: string;
+}
+
+export interface AffiliateProduct {
+  id: string;
+  name: string;
+  store: string;
+  link: string;
+  imageUrl?: string;
+  priceLabel?: string;
+  status?: 'active' | 'inactive';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface WeatherInfo {
