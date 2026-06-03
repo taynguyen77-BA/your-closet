@@ -10,7 +10,7 @@ export async function uploadImage(userId: string, uri: string): Promise<string> 
   if (blob.size === 0) throw new Error('Ảnh đã chọn đang trống.');
   if (blob.size > 10 * 1024 * 1024) throw new Error('Ảnh vượt quá giới hạn 10 MB.');
   const extension = blob.type === 'image/png' ? 'png' : blob.type === 'image/webp' ? 'webp' : 'jpg';
-  const path = `clothes/${userId}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${extension}`;
+  const path = `users/${userId}/clothes/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${extension}`;
   const storageRef = ref(getFirebaseStorage(), path);
   await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' });
   return getDownloadURL(storageRef);

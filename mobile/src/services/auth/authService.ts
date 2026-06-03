@@ -12,10 +12,14 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPhoneNumber,
+  signInWithCredential,
   signInWithPopup,
   signOut,
   updateProfile as updateFirebaseProfile,
 } from 'firebase/auth';
+import { AuthRequest } from 'expo-auth-session/build/AuthRequest';
+import { makeRedirectUri } from 'expo-auth-session/build/AuthSession';
+import { Prompt, ResponseType } from 'expo-auth-session/build/AuthRequest.types';
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { PLAN_LIMITS } from '@/constants/membership';
@@ -30,6 +34,8 @@ let phoneConfirmation: ConfirmationResult | null = null;
 const now = () => new Date().toISOString();
 const auth = () => getFirebaseAuth();
 const db = () => getFirebaseFirestore();
+const redirectUri = () => makeRedirectUri({ scheme: 'tudocuaban', path: 'auth/callback', preferLocalhost: true });
+const env = (key: string) => process.env[key]?.trim() ?? '';
 
 export function friendlyAuthError(error: unknown): string {
   const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
@@ -59,7 +65,9 @@ export function profileFromFirebaseUser(firebaseUser: FirebaseUser, provider: Au
   const displayName = firebaseUser.displayName ?? '';
   return {
     id: firebaseUser.uid,
+    uid: firebaseUser.uid,
     name: displayName,
+    displayName,
     username: '',
     email: firebaseUser.email ?? '',
     avatarUrl: firebaseUser.photoURL ?? undefined,
@@ -105,14 +113,47 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithGoogle() {
-  if (Platform.OS !== 'web') throw new Error('Google Sign-In trên iOS/Android cần cấu hình native client ID trong Firebase Console và app.json.');
-  const credential = await signInWithPopup(auth(), new GoogleAuthProvider());
+  const clientId = Platform.select({
+    ios: env('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'),
+    android: env('EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID'),
+    default: env('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'),
+  });
+  if (!clientId) throw new Error('Thiếu Google Client ID. Điền EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID/IOS/ANDROID trong mobile/.env và bật Google provider trong Firebase.');
+  if (Platform.OS === 'web') {
+    const credential = await signInWithPopup(auth(), new GoogleAuthProvider());
+    return ensureUserProfile(credential.user, 'google');
+  }
+  const request = new AuthRequest({
+    clientId,
+    redirectUri: redirectUri(),
+    responseType: ResponseType.IdToken,
+    scopes: ['openid', 'profile', 'email'],
+    usePKCE: false,
+    prompt: Prompt.SelectAccount,
+  });
+  const result = await request.promptAsync({ authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth' });
+  if (result.type !== 'success' || !result.params.id_token) throw new Error('Google login chưa hoàn tất. Kiểm tra OAuth redirect URI và native client ID.');
+  const credential = await signInWithCredential(auth(), GoogleAuthProvider.credential(result.params.id_token));
   return ensureUserProfile(credential.user, 'google');
 }
 
 export async function loginWithFacebook() {
-  if (Platform.OS !== 'web') throw new Error('Facebook Login trên iOS/Android cần cấu hình Facebook app ID và native SDK.');
-  const credential = await signInWithPopup(auth(), new FacebookAuthProvider());
+  const appId = env('EXPO_PUBLIC_FACEBOOK_APP_ID');
+  if (!appId) throw new Error('Thiếu EXPO_PUBLIC_FACEBOOK_APP_ID. Bật Facebook provider trong Firebase và cấu hình OAuth redirect URI.');
+  if (Platform.OS === 'web') {
+    const credential = await signInWithPopup(auth(), new FacebookAuthProvider());
+    return ensureUserProfile(credential.user, 'facebook');
+  }
+  const request = new AuthRequest({
+    clientId: appId,
+    redirectUri: redirectUri(),
+    responseType: ResponseType.Token,
+    scopes: ['public_profile', 'email'],
+    usePKCE: false,
+  });
+  const result = await request.promptAsync({ authorizationEndpoint: 'https://www.facebook.com/v18.0/dialog/oauth' });
+  if (result.type !== 'success' || !result.params.access_token) throw new Error('Facebook login chưa hoàn tất. Kiểm tra Facebook App ID và OAuth redirect URI.');
+  const credential = await signInWithCredential(auth(), FacebookAuthProvider.credential(result.params.access_token));
   return ensureUserProfile(credential.user, 'facebook');
 }
 
@@ -142,7 +183,7 @@ export async function updateUserProfile(uid: string, patch: Partial<User>) {
   }
 }
 
-export async function uploadAvatar(uid: string, uri: string) {
+export async function uploadAvatarFile(uid: string, uri: string) {
   const response = await fetch(uri);
   const blob = await response.blob();
   if (!blob.type.startsWith('image/')) throw new Error('Tệp đã chọn không phải là ảnh.');
@@ -152,12 +193,14 @@ export async function uploadAvatar(uid: string, uri: string) {
   return getDownloadURL(storageRef);
 }
 
+export const uploadAvatar = uploadAvatarFile;
+
 export async function getBiometricEnabled() {
   if (Platform.OS === 'web') return false;
   return (await SecureStore.getItemAsync(BIOMETRIC_ENABLED_KEY)) === 'true';
 }
 
-export async function enableBiometric() {
+export async function enableBiometricPreference() {
   if (Platform.OS === 'web') throw new Error('Sinh trắc học không hỗ trợ trên web.');
   const compatible = await LocalAuthentication.hasHardwareAsync();
   const enrolled = await LocalAuthentication.isEnrolledAsync();
@@ -166,11 +209,11 @@ export async function enableBiometric() {
   return true;
 }
 
-export async function disableBiometric() {
+export async function disableBiometricPreference() {
   if (Platform.OS !== 'web') await SecureStore.deleteItemAsync(BIOMETRIC_ENABLED_KEY);
 }
 
-export async function verifyBiometric() {
+export async function verifyDeviceBiometric() {
   if (Platform.OS === 'web') return true;
   const enabled = await getBiometricEnabled();
   if (!enabled) return true;
@@ -181,6 +224,10 @@ export async function verifyBiometric() {
   });
   return result.success;
 }
+
+export const enableBiometric = enableBiometricPreference;
+export const disableBiometric = disableBiometricPreference;
+export const verifyBiometric = verifyDeviceBiometric;
 
 export function assertFirebaseReady() {
   const status = getFirebaseStatus();

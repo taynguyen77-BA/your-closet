@@ -89,9 +89,10 @@ mobile/
 4. Copy Firebase web config và `EXPO_PUBLIC_API_URL` vào `mobile/.env`
 5. Phone Auth: thêm domain web vào Authorized domains; với iOS/Android cấu hình APNs/SHA-1/SHA-256 theo Firebase Console hoặc dùng backend OTP bridge
 6. Google Sign-In: thêm OAuth client IDs web/iOS/Android; điền `EXPO_PUBLIC_GOOGLE_*` nếu native sign-in được bật
-7. Facebook Login: cấu hình Facebook App ID/secret trong Firebase provider và điền `EXPO_PUBLIC_FACEBOOK_APP_ID` cho native build
-8. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
-9. Cấu hình AI backend trong `mobile/.env`:
+7. Google/Facebook native OAuth redirect URI: dùng scheme `tudocuaban://auth/callback` cho development build/native app; web dùng domain trong Firebase Authorized domains.
+8. Facebook Login: cấu hình Facebook App ID/secret trong Firebase provider và điền `EXPO_PUBLIC_FACEBOOK_APP_ID` cho native build
+9. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
+10. Cấu hình AI backend trong `mobile/.env`:
 
 ```bash
 EXPO_PUBLIC_ENABLE_REAL_AI=true
@@ -116,6 +117,8 @@ approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUB
 - First launch: splash checks Firebase config, local onboarding flag, Firebase Auth session, and biometric preference.
 - New user: splash → onboarding → auth welcome → phone/email/Google/Facebook login.
 - Returning user: Firebase session creates/updates `users/{uid}` and updates `lastLoginAt`.
+- Phone OTP works with Firebase reCAPTCHA on Expo web. Expo Go/native requires Firebase native verification setup or a backend OTP bridge; the app shows a clear setup message instead of pretending native OTP is ready.
+- Google/Facebook use Expo AuthSession on native and Firebase popup on web, then sign into Firebase with provider credentials.
 - Profile fields users may edit directly: display name, username, avatar, fashion style, preferences, gender/date of birth, biometric flag.
 - Plan, quota, payment, and moderation fields are protected by Firestore rules and must be changed by trusted backend/admin code.
 - Sign out clears Firebase session and secure biometric preference, but keeps `onboardingCompleted`.

@@ -1,16 +1,23 @@
-import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { cert, getApps, initializeApp, type ServiceAccount } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 
 function getApp() {
   if (getApps().length) return getApps()[0];
   const json = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
-  if (!json && process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
-    return initializeApp({ credential: cert({ projectId: process.env.FIREBASE_PROJECT_ID, clientEmail: process.env.FIREBASE_CLIENT_EMAIL, privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n") }) });
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  if (!json && projectId && clientEmail && privateKey) {
+    return initializeApp({ credential: cert({ projectId, clientEmail, privateKey: privateKey.replace(/\\n/g, "\n") }) });
   }
-  if (!json) return initializeApp();
+  if (!json) {
+    throw new Error("Firebase Admin is not configured. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY.");
+  }
   try {
-    return initializeApp({ credential: cert(JSON.parse(json)) });
+    const serviceAccount = JSON.parse(json) as ServiceAccount & { private_key?: string };
+    if (serviceAccount.private_key) serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+    return initializeApp({ credential: cert(serviceAccount) });
   } catch {
     throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON is not valid JSON.");
   }

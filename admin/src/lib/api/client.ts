@@ -21,7 +21,9 @@ export async function apiFetch<T>(
   path: string,
   options?: RequestInit & { params?: Record<string, string> }
 ): Promise<T> {
-  const url = new URL(path, BASE_URL || "http://localhost");
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "http://localhost";
+  const url = new URL(path, BASE_URL || origin);
   const query = options?.params;
   if (query) {
     Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v));
@@ -29,7 +31,8 @@ export async function apiFetch<T>(
 
   const init: RequestInit = { ...(options ?? {}) };
   delete (init as RequestInit & { params?: Record<string, string> }).params;
-  const demoRole = typeof window === "undefined" ? null : localStorage.getItem("tuado-admin-role");
+  const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const demoRole = demoMode && typeof window !== "undefined" ? localStorage.getItem("tuado-admin-role") : null;
   const token = typeof window === "undefined" ? null : localStorage.getItem("tuado-admin-token");
   const res = await fetch(url.toString(), {
     ...init,
@@ -48,7 +51,11 @@ export async function apiFetch<T>(
       window.location.assign("/login");
     }
     const body = await res.json().catch(() => undefined);
-    throw new ApiError(res.statusText, res.status, body);
+    const message =
+      body && typeof body === "object" && "error" in body
+        ? String((body as { error: unknown }).error)
+        : res.statusText || `HTTP ${res.status}`;
+    throw new ApiError(message, res.status, body);
   }
 
   if (res.status === 204) return undefined as T;
