@@ -1,9 +1,8 @@
 export type AdminRole =
   | "super_admin"
-  | "admin"
+  | "content_manager"
   | "moderator"
   | "support"
-  | "marketing"
   | "finance";
 
 export type Permission =
@@ -77,7 +76,7 @@ const ROLE_PERMISSIONS: Record<AdminRole, Permission[]> = {
     "security.view",
     "audit.view",
   ],
-  admin: [
+  content_manager: [
     "dashboard.view",
     "users.view",
     "users.manage",
@@ -127,20 +126,6 @@ const ROLE_PERMISSIONS: Record<AdminRole, Permission[]> = {
     "notifications.view",
     "membership.view",
   ],
-  marketing: [
-    "dashboard.view",
-    "trends.view",
-    "trends.manage",
-    "affiliate.view",
-    "affiliate.manage",
-    "notifications.view",
-    "notifications.manage",
-    "content.view",
-    "content.manage",
-    "analytics.view",
-    "outfits.view",
-    "outfits.manage",
-  ],
   finance: [
     "dashboard.view",
     "transactions.view",
@@ -154,10 +139,9 @@ const ROLE_PERMISSIONS: Record<AdminRole, Permission[]> = {
 
 export const ROLE_LABELS: Record<AdminRole, string> = {
   super_admin: "Super Admin",
-  admin: "Admin",
+  content_manager: "Content Manager",
   moderator: "Moderator",
   support: "Support Staff",
-  marketing: "Marketing Staff",
   finance: "Finance Staff",
 };
 

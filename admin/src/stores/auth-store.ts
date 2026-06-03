@@ -76,10 +76,11 @@ export const useAuthStore = create<AuthState>()(
           if (!apiKey) return false;
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password, returnSecureToken: true }) });
           if (!response.ok) return false;
-          const session = await response.json() as { idToken: string; localId: string; email: string; displayName?: string };
-          const payload = JSON.parse(atob(session.idToken.split(".")[1])) as { admin?: boolean; adminRole?: AdminRole };
-          if (payload.admin !== true || !payload.adminRole) return false;
-          const admin = { id: session.localId, email: session.email, name: session.displayName || session.email, role: payload.adminRole };
+          const session = await response.json() as { idToken: string };
+          const sessionResponse = await fetch("/api/admin/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ idToken: session.idToken }) });
+          if (!sessionResponse.ok) return false;
+          const payload = await sessionResponse.json() as { data: AuthAdmin };
+          const admin = payload.data;
           localStorage.setItem("tuado-admin-token", session.idToken); localStorage.setItem("tuado-admin-role", admin.role);
           set({ admin, isAuthenticated: true, isCheckingSession: false }); return true;
         }

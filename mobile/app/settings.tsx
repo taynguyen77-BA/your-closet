@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useTheme } from '@/theme';
+import { Button } from '@/components/ui/Button';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function SettingsScreen() {
   const { colors, spacing } = useTheme();
+  const { biometricEnabled, enableBiometric, disableBiometric, authError, logout } = useAuthStore();
   const [pushEnabled, setPushEnabled] = useState(true);
   const [eventReminders, setEventReminders] = useState(true);
   const [dailySuggestions, setDailySuggestions] = useState(true);
@@ -30,9 +33,20 @@ export default function SettingsScreen() {
           <Switch value={dailySuggestions} onValueChange={setDailySuggestions} trackColor={{ true: colors.accent }} />
         </View>
       </GlassCard>
+      <GlassCard style={{ marginTop: spacing.md }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+          <View style={{ flex: 1 }}>
+            <AppText variant="body">Đăng nhập bằng Face ID / Vân tay</AppText>
+            <AppText variant="bodySmall" muted>Yêu cầu xác minh sinh trắc học khi mở app.</AppText>
+          </View>
+          <Switch value={biometricEnabled} onValueChange={(value) => { void (value ? enableBiometric() : disableBiometric()); }} trackColor={{ true: colors.accent }} />
+        </View>
+        {authError ? <AppText variant="bodySmall" muted style={{ marginTop: 8 }}>{authError}</AppText> : null}
+      </GlassCard>
       <AppText variant="bodySmall" muted style={{ marginTop: spacing.lg }}>
         Quyền riêng tư: dữ liệu của bạn được bảo vệ khi đồng bộ cloud. Báo cáo vi phạm qua mục Cộng đồng.
       </AppText>
+      <Button label="Đăng xuất" variant="secondary" onPress={() => { void logout(); }} style={{ marginTop: spacing.lg }} />
     </View>
   );
 }

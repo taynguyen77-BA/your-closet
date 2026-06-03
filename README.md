@@ -81,12 +81,17 @@ mobile/
 | Premium | ∞ | ∞ |
 | Elite | ∞ + stylist AI | ∞ |
 
-## Firebase setup
+## Firebase auth setup
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
-2. Bật Authentication Email/Password, Firestore, Storage, Cloud Messaging
-3. Copy Firebase config và `EXPO_PUBLIC_API_URL` vào `mobile/.env`
-4. Cấu hình AI backend trong `mobile/.env`:
+2. Bật Authentication providers: Email/Password, Phone, Google, Facebook
+3. Bật Firestore, Storage, Cloud Messaging
+4. Copy Firebase web config và `EXPO_PUBLIC_API_URL` vào `mobile/.env`
+5. Phone Auth: thêm domain web vào Authorized domains; với iOS/Android cấu hình APNs/SHA-1/SHA-256 theo Firebase Console hoặc dùng backend OTP bridge
+6. Google Sign-In: thêm OAuth client IDs web/iOS/Android; điền `EXPO_PUBLIC_GOOGLE_*` nếu native sign-in được bật
+7. Facebook Login: cấu hình Facebook App ID/secret trong Firebase provider và điền `EXPO_PUBLIC_FACEBOOK_APP_ID` cho native build
+8. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
+9. Cấu hình AI backend trong `mobile/.env`:
 
 ```bash
 EXPO_PUBLIC_ENABLE_REAL_AI=true
@@ -95,9 +100,8 @@ EXPO_PUBLIC_AI_API_BASE_URL=https://your-cloud-function.example.com/ai
 
 Mobile chỉ gửi Firebase ID token và dữ liệu đầu vào đến backend. Không đặt Gemini, OpenAI,
 hoặc khóa AI provider nào trong biến `EXPO_PUBLIC_*`.
-5. Deploy rules bằng `firebase deploy --only firestore:rules,storage`
-
-Mobile đọc business data qua Next.js API; Firebase client SDK chỉ dùng cho Auth và Storage upload.
+Mobile đọc business data qua Next.js API; Firebase client SDK dùng cho Auth, Firestore user profile,
+biometric preference sync, và Storage avatar/wardrobe upload.
 Nếu chưa đăng nhập, mobile chỉ đọc public config/data như plans, trends, affiliate products và
 approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUBLIC_DEMO_MODE=true`.
 
@@ -105,7 +109,16 @@ approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUB
 
 `users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `plan_limits`, `user_missions`,
 `listings`, `transactions`, `subscriptions`, `notification_templates`, `notifications`,
-`affiliate_products`, `support_tickets`, `ai_logs`
+`affiliate_products`, `support_tickets`, `ai_logs`, `adminUsers`
+
+### Mobile authentication flow
+
+- First launch: splash checks Firebase config, local onboarding flag, Firebase Auth session, and biometric preference.
+- New user: splash → onboarding → auth welcome → phone/email/Google/Facebook login.
+- Returning user: Firebase session creates/updates `users/{uid}` and updates `lastLoginAt`.
+- Profile fields users may edit directly: display name, username, avatar, fashion style, preferences, gender/date of birth, biometric flag.
+- Plan, quota, payment, and moderation fields are protected by Firestore rules and must be changed by trusted backend/admin code.
+- Sign out clears Firebase session and secure biometric preference, but keeps `onboardingCompleted`.
 
 ### AI backend contract
 
@@ -138,7 +151,7 @@ npm run build
 npm run dev
 ```
 
-Next.js CMS với RBAC (6 roles), 18+ modules, charts, real-time activity feed.
+Next.js CMS với RBAC roles: `super_admin`, `content_manager`, `moderator`, `finance`, `support`.
 
 Chỉ bật demo local bằng `NEXT_PUBLIC_DEMO_MODE=true`. Xem `admin/README.md`.
 
@@ -146,18 +159,37 @@ Production: deploy Vercel/Firebase Hosting + Firebase Admin auth.
 
 ### Admin Firebase Auth và custom claims
 
-Admin production đăng nhập bằng Firebase Auth. Tạo admin user trong Firebase Authentication, sau đó
-đặt custom claims từ môi trường server tin cậy bằng Firebase Admin SDK:
+Admin production đăng nhập bằng Firebase Auth email/password. Tạo admin user trong Firebase Authentication,
+sau đó tạo `adminUsers/{uid}` trong Firestore hoặc đặt custom claims từ môi trường server tin cậy.
+
+`adminUsers/{uid}`:
+
+```json
+{
+  "uid": "firebase-auth-uid",
+  "email": "admin@example.com",
+  "name": "Admin Name",
+  "role": "super_admin",
+  "avatarUrl": "",
+  "status": "active",
+  "createdAt": "2026-06-03T00:00:00.000Z",
+  "updatedAt": "2026-06-03T00:00:00.000Z",
+  "lastLoginAt": "2026-06-03T00:00:00.000Z"
+}
+```
+
+Tuỳ chọn custom claims:
 
 ```js
 await admin.auth().setCustomUserClaims(uid, {
   admin: true,
-  adminRole: "super_admin", // admin | moderator | support | marketing | finance
+  adminRole: "super_admin", // super_admin | content_manager | moderator | finance | support
 });
 ```
 
-Admin cần đăng nhập lại sau khi claims thay đổi để nhận ID token mới. Portal kiểm tra cả `admin: true`
-và `adminRole`, tự xóa token hết hạn, rồi chuyển về `/login`.
+Admin cần đăng nhập lại sau khi claims thay đổi để nhận ID token mới. Portal xác minh Firebase ID token
+qua server, kiểm tra custom claims hoặc `adminUsers`, chặn `status: disabled`, cập nhật `lastLoginAt`,
+tự xóa token hết hạn, rồi chuyển về `/login`.
 
 Biến môi trường admin:
 

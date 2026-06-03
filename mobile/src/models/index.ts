@@ -36,12 +36,18 @@ export interface User {
   name?: string;
   username: string;
   email: string;
+  phoneNumber?: string;
   avatarUrl?: string;
+  displayName?: string;
+  gender?: string;
+  dateOfBirth?: string;
   fashionStyle?: string;
   preferences?: string[];
   favoriteColors?: string[];
   fashionGoals?: string[];
   authProvider?: string;
+  provider?: 'phone' | 'google' | 'facebook' | 'email' | string;
+  biometricEnabled?: boolean;
   hasCompletedOnboarding?: boolean;
   status?: 'active' | 'suspended' | 'banned';
   lastLoginAt?: string;

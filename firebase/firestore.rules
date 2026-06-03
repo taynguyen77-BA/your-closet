@@ -2,7 +2,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
-      return request.auth != null && request.auth.token.admin == true;
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid))
+      );
+    }
+    function isActiveAdmin() {
+      return isAdmin() &&
+        get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.status != 'disabled';
+    }
+    function adminRole() {
+      return request.auth.token.adminRole != null
+        ? request.auth.token.adminRole
+        : get(/databases/$(database)/documents/adminUsers/$(request.auth.uid)).data.role;
+    }
+    function hasAnyRole(roles) {
+      return isActiveAdmin() && adminRole() in roles;
     }
     function ownsExisting() {
       return request.auth != null && request.auth.uid == resource.data.userId;
@@ -19,10 +34,15 @@ service cloud.firestore {
       allow update: if request.auth != null &&
         request.auth.uid == userId &&
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'name', 'username', 'avatarUrl', 'closetItemCount', 'fashionStyle', 'preferences',
-          'favoriteColors', 'fashionGoals', 'hasCompletedOnboarding', 'lastLoginAt', 'updatedAt'
+          'name', 'displayName', 'username', 'avatarUrl', 'phoneNumber', 'gender', 'dateOfBirth',
+          'fashionStyle', 'preferences', 'favoriteColors', 'fashionGoals', 'biometricEnabled',
+          'hasCompletedOnboarding', 'lastLoginAt', 'updatedAt'
         ]);
-      allow read, write: if isAdmin();
+      allow read, write: if isActiveAdmin();
+    }
+    match /adminUsers/{adminUserId} {
+      allow read: if isActiveAdmin();
+      allow create, update, delete: if hasAnyRole(['super_admin']);
     }
     match /clothes/{itemId} {
       allow read, delete: if ownsExisting();
@@ -41,15 +61,15 @@ service cloud.firestore {
     }
     match /missions/{missionId} {
       allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow write: if hasAnyRole(['super_admin', 'content_manager']);
     }
     match /plan_limits/{planId} {
       allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow write: if hasAnyRole(['super_admin', 'finance']);
     }
     match /user_missions/{progressId} {
       allow read: if ownsExisting();
-      allow write: if isAdmin();
+      allow write: if isActiveAdmin();
     }
     match /listings/{listingId} {
       allow read: if resource.data.status == 'approved' || isAdmin() ||
@@ -61,7 +81,7 @@ service cloud.firestore {
         request.auth.uid == resource.data.userId &&
         request.resource.data.userId == resource.data.userId &&
         request.resource.data.status == resource.data.status;
-      allow update: if isAdmin();
+      allow update: if hasAnyRole(['super_admin', 'moderator']);
       allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
     }
     match /transactions/{txId} {
@@ -70,7 +90,7 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.buyerId &&
         request.resource.data.status == 'pending';
       allow update: if false;
-      allow update, delete: if isAdmin();
+      allow update, delete: if hasAnyRole(['super_admin', 'finance', 'support']);
     }
     match /marketplace_messages/{messageId} {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.senderId;
@@ -90,32 +110,32 @@ service cloud.firestore {
     }
     match /listing_reports/{reportId} {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.reporterId;
-      allow read: if request.auth != null && request.auth.uid == resource.data.reporterId || isAdmin();
-      allow update: if isAdmin();
+      allow read: if request.auth != null && request.auth.uid == resource.data.reporterId || isActiveAdmin();
+      allow update: if hasAnyRole(['super_admin', 'moderator', 'support']);
     }
     match /notifications/{notificationId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow create: if isAdmin();
+      allow create: if isActiveAdmin();
     }
     match /ai_logs/{logId} {
       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
       allow read: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow read: if isAdmin();
+      allow read: if isActiveAdmin();
     }
     match /subscriptions/{id} {
-      allow read, write: if isAdmin();
+      allow read, write: if hasAnyRole(['super_admin', 'finance']);
     }
     match /reports/{id} {
-      allow read, write: if isAdmin();
+      allow read, write: if isActiveAdmin();
     }
     match /notification_templates/{id} {
-      allow read, write: if isAdmin();
+      allow read, write: if hasAnyRole(['super_admin', 'content_manager', 'support']);
     }
     match /admin_logs/{id} {
-      allow read, write: if isAdmin();
+      allow read, write: if hasAnyRole(['super_admin']);
     }
     match /security_logs/{id} {
-      allow read, write: if isAdmin();
+      allow read, write: if hasAnyRole(['super_admin', 'support']);
     }
   }
 }

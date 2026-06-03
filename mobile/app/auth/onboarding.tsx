@@ -1,2 +1,39 @@
-import { useState } from 'react'; import { useRouter } from 'expo-router'; import { AuthScreen } from '@/components/auth/AuthScreen'; import { AuthInput } from '@/components/auth/AuthInput'; import { Button } from '@/components/ui/Button'; import { AppText } from '@/components/ui/AppText'; import { useAuthStore } from '@/stores/authStore';
-export default function Onboarding(){const router=useRouter();const save=useAuthStore(s=>s.updateOnboarding);const[username,setUsername]=useState('');const[style,setStyle]=useState('');const[colors,setColors]=useState('');const[goals,setGoals]=useState('');const[avatar,setAvatar]=useState('');const[saving,setSaving]=useState(false);return <AuthScreen title="Cho stylist AI hiểu bạn hơn" subtitle="Một chút sở thích để những gợi ý đầu tiên gần với vibe của bạn."><AppText variant="h3" style={{marginBottom:10}}>Hồ sơ phong cách</AppText><AuthInput placeholder="Username" autoCapitalize="none" value={username} onChangeText={setUsername}/><AuthInput placeholder="Phong cách yêu thích · minimal, Y2K..." value={style} onChangeText={setStyle}/><AuthInput placeholder="Màu yêu thích · pastel, đen, beige..." value={colors} onChangeText={setColors}/><AuthInput placeholder="Mục tiêu · phối đồ đi làm, du lịch..." value={goals} onChangeText={setGoals}/><AuthInput placeholder="Avatar URL · không bắt buộc" autoCapitalize="none" value={avatar} onChangeText={setAvatar}/><Button label={saving?'Đang lưu...':'Hoàn tất'} disabled={!username.trim()||saving} onPress={async()=>{setSaving(true);await save({username:username.trim(),fashionStyle:style.trim(),favoriteColors:colors.split(',').map(x=>x.trim()).filter(Boolean),fashionGoals:goals.split(',').map(x=>x.trim()).filter(Boolean),avatarUrl:avatar.trim()||undefined});router.replace('/(tabs)')}}/></AuthScreen>}
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { AppText } from '@/components/ui/AppText';
+import { Button } from '@/components/ui/Button';
+import { useAuthStore } from '@/stores/authStore';
+import { useTheme } from '@/theme';
+
+const pages = [
+  ['shirt-outline', 'Quản lý tủ đồ', 'Lưu áo quần, giày túi và phụ kiện vào một nơi thật gọn, dễ tìm khi cần phối.'],
+  ['sparkles-outline', 'AI gợi ý outfit', 'Stylist AI hiểu màu sắc, thời tiết và vibe bạn thích để gợi ý outfit mỗi ngày.'],
+  ['camera-outline', 'Try-on & sự kiện', 'Chuẩn bị outfit cho hẹn hò, đi làm, tiệc cưới hoặc chuyến đi cuối tuần.'],
+  ['people-outline', 'Cộng đồng pass đồ', 'Bán, trao đổi hoặc pass lại món đồ đẹp để vòng đời thời trang nhẹ nhàng hơn.'],
+] as const;
+
+export default function Onboarding() {
+  const router = useRouter();
+  const { colors } = useTheme();
+  const complete = useAuthStore((s) => s.completeFirstLaunchOnboarding);
+  const [index, setIndex] = useState(0);
+  const page = pages[index];
+  const finish = async () => { await complete(); router.replace('/auth/welcome'); };
+  return (
+    <LinearGradient colors={['#FFF6F8', '#F2F7FF', '#F8F1FF']} style={styles.root}>
+      <Pressable style={styles.skip} onPress={() => { void finish(); }}><AppText muted>Bỏ qua</AppText></Pressable>
+      <View style={[styles.art, { backgroundColor: colors.surface }]}><Ionicons name={page[0]} size={92} color={colors.accentDark} /></View>
+      <View style={styles.copy}>
+        <AppText variant="display" style={{ textAlign: 'center' }}>{page[1]}</AppText>
+        <AppText muted style={{ textAlign: 'center', marginTop: 12 }}>{page[2]}</AppText>
+      </View>
+      <View style={styles.dots}>{pages.map((_, dot) => <View key={dot} style={[styles.dot, { backgroundColor: dot === index ? colors.primary : colors.border }]} />)}</View>
+      <Button label={index === pages.length - 1 ? 'Bắt đầu' : 'Tiếp tục'} onPress={() => { if (index === pages.length - 1) void finish(); else setIndex(index + 1); }} />
+    </LinearGradient>
+  );
+}
+
+const styles = StyleSheet.create({ root: { flex: 1, padding: 24, justifyContent: 'center' }, skip: { position: 'absolute', top: 58, right: 24 }, art: { width: 190, height: 190, borderRadius: 95, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: 34 }, copy: { minHeight: 170, justifyContent: 'center' }, dots: { flexDirection: 'row', alignSelf: 'center', gap: 8, marginBottom: 24 }, dot: { width: 9, height: 9, borderRadius: 9 } });

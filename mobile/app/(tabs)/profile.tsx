@@ -40,7 +40,7 @@ export default function ProfileScreen() {
   const styleXp = useAppStore((s) => s.clothing.length * 20 + s.outfits.length * 40 + s.savedOutfitIds.length * 30);
   const styleLevel = Math.max(1, Math.floor(styleXp / 200) + 1);
   const levelProgress = styleXp % 200;
-  const { appUser, isGuest, logout } = useAuthStore();
+  const { appUser, logout, biometricEnabled } = useAuthStore();
   const profile = appUser ?? user;
 
   return (
@@ -56,16 +56,15 @@ export default function ProfileScreen() {
         <View style={{ marginLeft: spacing.md, flex: 1 }}>
           <AppText variant="h1" color={colors.textInverse}>{profile.name ?? profile.username}</AppText>
           <AppText variant="bodySmall" color={colors.warmGray}>
-            {isGuest ? 'Experience Mode' : profile.email}
+            {profile.phoneNumber || profile.email || 'Chưa thêm email/số điện thoại'}
           </AppText>
           <AppText variant="bodySmall" color={colors.accent}>
             {profile.username ? `@${profile.username}` : 'Chọn username trong hồ sơ'}
           </AppText>
-          {!isGuest ? <AppText variant="bodySmall" color={colors.warmGray}>Provider: {profile.authProvider ?? 'password'}</AppText> : null}
+          <AppText variant="bodySmall" color={colors.warmGray}>Provider: {profile.provider ?? profile.authProvider ?? 'email'}</AppText>
         </View>
         </View>
       </View>
-      {isGuest ? <GlassCard style={{ marginBottom: spacing.lg, backgroundColor: colors.lavender }}><AppText variant="h3">Experience Mode</AppText><AppText variant="bodySmall" muted style={{ marginVertical: 8 }}>Bạn đang dùng chế độ trải nghiệm. Một số dữ liệu sẽ được lưu cục bộ.</AppText><Button label="Create account to save your closet" onPress={() => router.push('/auth/register')} /></GlassCard> : null}
 
       <View style={[styles.level, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>
         <View style={styles.levelTop}><AppText variant="caption" muted>CẤP {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h3">Nhà khám phá phong cách</AppText><AppText variant="label" color={colors.accentDark}>{levelProgress} / 200 XP</AppText></View>
@@ -111,11 +110,14 @@ export default function ProfileScreen() {
 
       <SectionHeader title="Cài đặt" />
       <GlassCard style={{ paddingVertical: 0 }}>
-        {!isGuest ? <><MenuRow icon="person-outline" label="Chỉnh sửa hồ sơ" onPress={() => router.push('/settings')} /><View style={[styles.divider, { backgroundColor: colors.border }]} /><MenuRow icon="settings-outline" label="Cài đặt tài khoản" onPress={() => router.push('/settings')} /><View style={[styles.divider, { backgroundColor: colors.border }]} /></> : null}
+        <MenuRow icon="person-outline" label="Chỉnh sửa hồ sơ" onPress={() => router.push('/profile/edit' as never)} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+        <MenuRow icon="finger-print-outline" label={biometricEnabled ? 'Face ID / Vân tay đang bật' : 'Thiết lập Face ID / Vân tay'} onPress={() => router.push('/settings')} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <MenuRow icon="notifications-outline" label="Thông báo" onPress={() => router.push('/settings')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <MenuRow icon="shield-outline" label="Quyền riêng tư" onPress={() => router.push('/settings')} />
-        {!isGuest ? <><View style={[styles.divider, { backgroundColor: colors.border }]} /><MenuRow icon="log-out-outline" label="Đăng xuất" onPress={() => { void logout(); }} /></> : null}
+        <View style={[styles.divider, { backgroundColor: colors.border }]} /><MenuRow icon="log-out-outline" label="Đăng xuất" onPress={() => { void logout(); }} />
       </GlassCard>
     </Screen>
   );

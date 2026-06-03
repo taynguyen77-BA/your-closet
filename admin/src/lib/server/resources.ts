@@ -32,6 +32,7 @@ const permissions: Record<string, { view: Permission; manage?: Permission }> = {
   marketplace_messages: { view: "community.view" },
   trade_offers: { view: "community.view" },
   listing_reports: { view: "moderation.view", manage: "moderation.action" },
+  adminUsers: { view: "settings.view", manage: "settings.manage" },
 };
 const publicCollections = new Set(["plan_limits", "missions", "trends", "affiliate_products", "listings"]);
 const ownerFields: Record<string, string> = {
@@ -55,6 +56,7 @@ const demoCollections: Record<string, DemoRow[]> = {
   affiliate_products: demoRows(affiliateProducts.map((product) => ({ ...product, status: product.isActive ? "active" : "inactive" }))), admin_logs: demoRows(auditLogs),
   security_logs: demoRows(securityLogs),
   events: [], user_missions: [], marketplace_messages: [], trade_offers: [], listing_reports: [],
+  adminUsers: [],
 };
 const isDemo = () => process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 export const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Authorization, Content-Type, x-demo-admin-role", "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS" };

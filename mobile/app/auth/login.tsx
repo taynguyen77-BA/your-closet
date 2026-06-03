@@ -1,3 +1,18 @@
-import { useState } from 'react'; import { useRouter } from 'expo-router';
-import { AuthScreen } from '@/components/auth/AuthScreen'; import { AuthInput } from '@/components/auth/AuthInput'; import { Button } from '@/components/ui/Button'; import { AppText } from '@/components/ui/AppText'; import { useAuthStore } from '@/stores/authStore';
-export default function Login() { const router = useRouter(); const login = useAuthStore((s) => s.login); const error = useAuthStore((s) => s.authError); const loading = useAuthStore((s) => s.isAuthLoading); const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); const valid=email.includes('@')&&password.length>=6; return <AuthScreen title="Chào bạn quay lại" subtitle="Đăng nhập để mở tủ đồ và tiếp tục phối những outfit rất bạn."><AuthInput placeholder="Email" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail}/><AuthInput placeholder="Mật khẩu" secureTextEntry value={password} onChangeText={setPassword}/>{error?<AppText variant="bodySmall" style={{marginBottom:10}}>{error}</AppText>:null}<Button label={loading?'Đang đăng nhập...':'Đăng nhập'} disabled={!valid||loading} onPress={async()=>{if(await login(email,password))router.replace('/(tabs)')}}/><Button label="Quên mật khẩu?" variant="ghost" onPress={()=>router.push('/auth/forgot-password')} style={{marginTop:8}}/><Button label="Chưa có tài khoản? Đăng ký" variant="ghost" onPress={()=>router.push('/auth/register')} /></AuthScreen>; }
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { AuthScreen } from '@/components/auth/AuthScreen';
+import { AuthInput } from '@/components/auth/AuthInput';
+import { Button } from '@/components/ui/Button';
+import { AppText } from '@/components/ui/AppText';
+import { useAuthStore } from '@/stores/authStore';
+
+export default function Login() {
+  const router = useRouter();
+  const login = useAuthStore((s) => s.loginWithEmail);
+  const error = useAuthStore((s) => s.authError);
+  const loading = useAuthStore((s) => s.isAuthLoading);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const valid = email.includes('@') && password.length >= 6;
+  return <AuthScreen title="Chào bạn quay lại" subtitle="Đăng nhập để mở tủ đồ, outfit đã lưu và các gợi ý rất bạn."><AuthInput placeholder="Email" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} /><AuthInput placeholder="Mật khẩu" secureTextEntry value={password} onChangeText={setPassword} />{error ? <AppText variant="bodySmall" style={{ marginBottom: 10 }}>{error}</AppText> : null}<Button label={loading ? 'Đang đăng nhập...' : 'Đăng nhập'} disabled={!valid || loading} onPress={async () => { if (await login(email, password)) router.replace('/(tabs)'); }} /><Button label="Quên mật khẩu?" variant="ghost" onPress={() => router.push('/auth/forgot-password')} style={{ marginTop: 8 }} /><Button label="Tiếp tục với số điện thoại" variant="ghost" onPress={() => router.push('/auth/phone' as never)} /><Button label="Chưa có tài khoản? Đăng ký" variant="ghost" onPress={() => router.push('/auth/register')} /></AuthScreen>;
+}

@@ -164,6 +164,12 @@ export const navigationGroups: NavGroup[] = [
         permission: "security.view",
       },
       {
+        title: "Admin users",
+        href: "/admin-users",
+        icon: Users,
+        permission: "settings.manage",
+      },
+      {
         title: "Cài đặt",
         href: "/settings",
         icon: Settings,

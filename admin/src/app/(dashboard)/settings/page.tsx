@@ -18,10 +18,9 @@ const FEATURE_FLAGS = [
 
 const ROLES: AdminRole[] = [
   "super_admin",
-  "admin",
+  "content_manager",
   "moderator",
   "support",
-  "marketing",
   "finance",
 ];
 

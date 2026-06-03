@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { adminAuth } from "./firebase-admin";
+import { adminAuth, adminDb } from "./firebase-admin";
 import { hasPermission, type AdminRole, type Permission } from "@/lib/rbac";
 
 export interface AdminIdentity { uid: string; role: AdminRole; demo?: boolean }
@@ -13,7 +13,12 @@ export async function authenticate(request: NextRequest): Promise<ApiIdentity | 
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
   const decoded = await adminAuth.verifyIdToken(token);
-  return { uid: decoded.uid, role: decoded.adminRole as AdminRole | undefined, isAdmin: decoded.admin === true };
+  const adminDoc = await adminDb.collection("adminUsers").doc(decoded.uid).get();
+  const adminUser = adminDoc.exists ? adminDoc.data() as { role?: AdminRole; status?: string } : null;
+  const role = (decoded.adminRole as AdminRole | undefined) ?? adminUser?.role;
+  const isAdmin = decoded.admin === true || Boolean(adminUser);
+  if (adminUser?.status === "disabled") return { uid: decoded.uid, role, isAdmin: false };
+  return { uid: decoded.uid, role, isAdmin };
 }
 
 export async function authorize(request: NextRequest, permission: Permission): Promise<AdminIdentity> {

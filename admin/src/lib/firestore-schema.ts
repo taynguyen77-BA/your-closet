@@ -29,6 +29,7 @@ export const FIRESTORE_COLLECTIONS = {
   notificationTemplates: "notification_templates",
   securityLogs: "security_logs",
   cmsContent: "cms_content",
+  adminUsers: "adminUsers",
 } as const;
 
 export type FirestoreCollection =
@@ -44,4 +45,5 @@ export const COLLECTION_CONTRACTS = {
   plan_limits: { publicStatus: "active", adminManaged: true }, missions: { publicStatus: "active", adminManaged: true },
   trends: { publicStatus: "published", adminManaged: true }, affiliate_products: { publicStatus: "active", adminManaged: true },
   notification_templates: { adminManaged: true }, subscriptions: { ownerField: "userId", adminManaged: true },
+  adminUsers: { adminManaged: true },
 } as const;
