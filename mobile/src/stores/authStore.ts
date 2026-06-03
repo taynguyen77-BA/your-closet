@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { User as FirebaseUser } from 'firebase/auth';
 import type { User } from '@/models';
+import { mockUser } from '@/data/mockData';
 import {
   assertFirebaseReady,
   disableBiometric as disableBiometricPreference,
@@ -26,6 +27,7 @@ import {
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 let unsubscribe: (() => void) | undefined;
+const useDemoMode = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
 
 interface OnboardingPayload {
   username?: string;
@@ -88,6 +90,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   biometricEnabled: false,
   biometricVerified: false,
   initializeAuth: async () => {
+    if (useDemoMode()) {
+      const onboardingCompleted = await getOnboardingCompleted();
+      set({
+        firebaseUser: null,
+        currentUser: { ...mockUser, hasCompletedStyleSurvey: mockUser.hasCompletedStyleSurvey ?? false, styleProfileCompletionPercent: mockUser.styleProfileCompletionPercent ?? 0 },
+        appUser: { ...mockUser, hasCompletedStyleSurvey: mockUser.hasCompletedStyleSurvey ?? false, styleProfileCompletionPercent: mockUser.styleProfileCompletionPercent ?? 0 },
+        authStatus: 'authenticated',
+        isAuthenticated: true,
+        isAuthLoading: false,
+        onboardingCompleted,
+        biometricEnabled: false,
+        biometricVerified: true,
+        firebaseSetupError: undefined,
+      });
+      return;
+    }
     try {
       assertFirebaseReady();
       const [onboardingCompleted, biometricEnabled] = await Promise.all([getOnboardingCompleted(), getBiometricEnabled()]);
@@ -163,12 +181,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     catch (error) { set({ authError: friendlyAuthError(error) }); return false; }
   },
   logout: async () => {
+    if (useDemoMode()) {
+      set({ currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
+      return;
+    }
     try { await logoutFirebase(); } finally {
       set({ firebaseUser: null, currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
     }
   },
   updateProfile: async (patch) => {
     const user = get().currentUser; if (!user) return false;
+    if (useDemoMode()) {
+      const updated = { ...user, ...patch };
+      set({ currentUser: updated, appUser: updated });
+      return true;
+    }
     try {
       await updateUserProfile(user.id, patch);
       const updated = { ...user, ...patch };
