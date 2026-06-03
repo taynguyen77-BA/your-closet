@@ -42,6 +42,8 @@ export default function ProfileScreen() {
   const levelProgress = styleXp % 200;
   const { appUser, logout, biometricEnabled } = useAuthStore();
   const profile = appUser ?? user;
+  const stylePreferences = profile.stylePreferences;
+  const completion = profile.styleProfileCompletionPercent ?? 0;
 
   return (
     <Screen bottomOffset={96}>
@@ -97,6 +99,29 @@ export default function ProfileScreen() {
         </View>
       </GlassCard>
 
+      <SectionHeader title="Hồ sơ phong cách" />
+      <GlassCard style={{ marginBottom: spacing.lg }}>
+        <View style={styles.levelTop}>
+          <View style={{ flex: 1 }}>
+            <AppText variant="h2">Gu thời trang của bạn</AppText>
+            <AppText variant="bodySmall" muted style={{ marginTop: 4 }}>AI sẽ dùng thông tin này để phối đồ hợp gu hơn.</AppText>
+          </View>
+          <AppText variant="h2" color={colors.accentDark}>{completion}%</AppText>
+        </View>
+        <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.accent, width: `${completion}%` }]} /></View>
+        <View style={styles.prefWrap}>
+          {(stylePreferences?.preferredStyles ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.lavender, borderRadius: radius.full }]}>{item}</AppText>)}
+          {(stylePreferences?.favoriteColors ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.beige, borderRadius: radius.full }]}>{item}</AppText>)}
+          {(stylePreferences?.lifestyleOccasions ?? []).slice(0, 4).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.surface, borderRadius: radius.full }]}>{item}</AppText>)}
+          {!stylePreferences?.preferredStyles?.length && !stylePreferences?.favoriteColors?.length ? <AppText variant="bodySmall" muted>Bạn có thể bỏ qua và cập nhật sau.</AppText> : null}
+        </View>
+        <AppText variant="bodySmall" muted style={{ marginTop: 10 }}>+5 lượt AI gợi ý khi hoàn thành hồ sơ nâng cao.</AppText>
+        <View style={styles.planActions}>
+          <Button label="Chỉnh sửa gu thời trang" onPress={() => router.push('/profile/style-preferences' as never)} style={{ flex: 1, marginRight: 8 }} />
+          <Button label="Nâng cao" variant="secondary" onPress={() => router.push('/profile/style-preferences/advanced' as never)} style={{ flex: 1 }} />
+        </View>
+      </GlassCard>
+
       <SectionHeader title="Cộng đồng" />
       <GlassCard style={{ marginBottom: spacing.lg, paddingVertical: 0 }}>
         <MenuRow icon="people-outline" label="Xem cộng đồng" onPress={() => router.push('/community')} />
@@ -136,4 +161,6 @@ const styles = StyleSheet.create({
   progressFill: { height: '100%' },
   achievements: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   achievement: { flex: 1, padding: 10, gap: 6, minHeight: 76, justifyContent: 'space-between' },
+  prefWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 14 },
+  prefChip: { paddingHorizontal: 10, paddingVertical: 6, overflow: 'hidden' },
 });

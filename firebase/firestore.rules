@@ -36,9 +36,12 @@ service cloud.firestore {
         request.resource.data.diff(resource.data).affectedKeys().hasOnly([
           'name', 'displayName', 'username', 'avatarUrl', 'phoneNumber', 'gender', 'dateOfBirth',
           'fashionStyle', 'preferences', 'favoriteColors', 'fashionGoals', 'biometricEnabled',
-          'hasCompletedOnboarding', 'lastLoginAt', 'updatedAt'
+          'hasCompletedOnboarding', 'hasCompletedStyleSurvey', 'styleSurveySkipped',
+          'styleSurveyCompletedAt', 'styleProfileCompletionPercent', 'stylePreferences',
+          'advancedStylePreferences', 'styleProfileRewardClaimed', 'lastLoginAt', 'updatedAt'
         ]);
-      allow read, write: if isActiveAdmin();
+      allow read: if hasAnyRole(['super_admin', 'support']);
+      allow write: if isActiveAdmin();
     }
     match /adminUsers/{adminUserId} {
       allow read: if isActiveAdmin();

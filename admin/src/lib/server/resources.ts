@@ -41,7 +41,13 @@ const ownerFields: Record<string, string> = {
   marketplace_messages: "senderId", trade_offers: "buyerId", listing_reports: "reporterId",
 };
 const readOnlyCollections = new Set(["transactions", "ai_logs", "admin_logs", "security_logs"]);
-const userProfileFields = new Set(["name", "username", "avatarUrl", "fashionStyle", "preferences", "favoriteColors", "fashionGoals", "hasCompletedOnboarding", "lastLoginAt"]);
+const userProfileFields = new Set([
+  "name", "displayName", "username", "avatarUrl", "phoneNumber", "gender", "dateOfBirth",
+  "fashionStyle", "preferences", "favoriteColors", "fashionGoals", "hasCompletedOnboarding",
+  "hasCompletedStyleSurvey", "styleSurveySkipped", "styleSurveyCompletedAt",
+  "styleProfileCompletionPercent", "stylePreferences", "advancedStylePreferences",
+  "styleProfileRewardClaimed", "lastLoginAt", "updatedAt",
+]);
 const allowed = new Set<string>(Object.values(FIRESTORE_COLLECTIONS));
 type DemoRow = Record<string, unknown> & { id: string };
 const demoRows = <T extends { id: string }>(rows: T[]) => rows as unknown as DemoRow[];
@@ -74,6 +80,12 @@ const isAdminAllowed = (identity: ApiIdentity | null, permission?: Permission) =
 const owns = (identity: ApiIdentity | null, collection: string, row: Record<string, unknown>) => Boolean(identity && ownerFields[collection] && row[ownerFields[collection]] === identity.uid);
 const isPublic = (collection: string, row: Record<string, unknown>) => publicCollections.has(collection) && (collection !== "listings" ? row.status == null || row.status === "active" || row.status === "published" : row.status === "approved");
 const canRead = (identity: ApiIdentity | null, collection: string, row: Record<string, unknown>) => isAdminAllowed(identity, permissions[collection]?.view) || owns(identity, collection, row) || isPublic(collection, row);
+const canViewAdvancedStyle = (identity: ApiIdentity | null) => identity?.role === "super_admin" || identity?.role === "support";
+const sanitizeRow = (identity: ApiIdentity | null, collection: string, row: DemoRow): DemoRow => {
+  if (collection !== "users" || canViewAdvancedStyle(identity) || owns(identity, collection, row)) return row;
+  const { advancedStylePreferences: _advancedStylePreferences, ...safe } = row;
+  return safe as DemoRow;
+};
 async function access(request: NextRequest, collection: string, write = false) {
   if (!allowed.has(collection) || !permissions[collection]) throw new Error("FORBIDDEN");
   const identity = await authenticate(request);
@@ -91,7 +103,7 @@ export async function list(request: NextRequest, collection: string) {
     if (cursor) query = query.startAfter(cursor);
     const snapshot = await query.get();
     const rows = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as DemoRow)).filter(filter);
-    const data = rows.slice(0, limit);
+    const data = rows.slice(0, limit).map((row) => sanitizeRow(identity, collection, row));
     return json(data, 200, { total: data.length, limit, cursor: rows.length > limit ? String(data.at(-1)?.createdAt ?? null) : null });
   } catch (error) { return fail(error); }
 }
@@ -102,13 +114,13 @@ export async function get(request: NextRequest, collection: string, id: string) 
       const row = (demoCollections[collection] ?? []).find((item) => item.id === id);
       if (!row) throw new Error("NOT_FOUND");
       if (!canRead(identity, collection, row)) throw new Error("FORBIDDEN");
-      return json(row);
+      return json(sanitizeRow(identity, collection, row));
     }
     const snapshot = await adminDb.collection(collection).doc(id).get();
     if (!snapshot.exists) throw new Error("NOT_FOUND");
     const row = { id: snapshot.id, ...snapshot.data() };
     if (!canRead(identity, collection, row)) throw new Error("FORBIDDEN");
-    return json(row);
+    return json(sanitizeRow(identity, collection, row as DemoRow));
   } catch (error) { return fail(error); }
 }
 export async function create(request: NextRequest, collection: string) {

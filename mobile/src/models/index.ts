@@ -23,6 +23,38 @@ export type EventType =
 export type ListingType = 'sale' | 'trade' | 'giveaway';
 export type ListingStatus = 'pending_review' | 'approved' | 'rejected';
 export type TransactionStatus = 'pending' | 'paid' | 'shipped' | 'handed_over' | 'completed' | 'cancelled';
+export type FashionConfidence =
+  | 'easy_basics'
+  | 'better_everyday'
+  | 'explore_new_styles'
+  | 'fashion_focused'
+  | string;
+
+export interface StylePreferences {
+  preferredStyles: string[];
+  favoriteColors: string[];
+  lifestyleOccasions: string[];
+  fashionConfidence: FashionConfidence;
+  gender?: string;
+  ageGroup?: string;
+  dislikedColors?: string[];
+  updatedAt?: string;
+}
+
+export interface AdvancedStylePreferences {
+  bodyShape?: string;
+  heightCm?: number;
+  weightKg?: number;
+  topSize?: string;
+  bottomSize?: string;
+  shoeSize?: string;
+  favoriteBrands?: string[];
+  budgetLevel?: string;
+  fitPreference?: string;
+  avoidStyles?: string[];
+  dislikedColors?: string[];
+  updatedAt?: string;
+}
 
 export type MissionType =
   | 'daily_checkin'
@@ -33,6 +65,7 @@ export type MissionType =
 
 export interface User {
   id: string;
+  uid?: string;
   name?: string;
   username: string;
   email: string;
@@ -49,6 +82,13 @@ export interface User {
   provider?: 'phone' | 'google' | 'facebook' | 'email' | string;
   biometricEnabled?: boolean;
   hasCompletedOnboarding?: boolean;
+  hasCompletedStyleSurvey?: boolean;
+  styleSurveySkipped?: boolean;
+  styleSurveyCompletedAt?: string;
+  styleProfileCompletionPercent?: number;
+  styleProfileRewardClaimed?: boolean;
+  stylePreferences?: StylePreferences;
+  advancedStylePreferences?: AdvancedStylePreferences;
   status?: 'active' | 'suspended' | 'banned';
   lastLoginAt?: string;
   plan: MembershipPlan;

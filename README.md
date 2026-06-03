@@ -117,6 +117,9 @@ approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUB
 - First launch: splash checks Firebase config, local onboarding flag, Firebase Auth session, and biometric preference.
 - New user: splash → onboarding → auth welcome → phone/email/Google/Facebook login.
 - Returning user: Firebase session creates/updates `users/{uid}` and updates `lastLoginAt`.
+- After the first successful login/register, users who have not completed or skipped the initial style survey are routed to `/onboarding/style-survey`.
+- Style survey data is stored on `users/{uid}` as `stylePreferences`, `hasCompletedStyleSurvey`, `styleSurveySkipped`, `styleSurveyCompletedAt`, and `styleProfileCompletionPercent`.
+- Users can update style preferences later from Profile → “Chỉnh sửa gu thời trang”; optional advanced data lives in `advancedStylePreferences`.
 - Phone OTP works with Firebase reCAPTCHA on Expo web. Expo Go/native requires Firebase native verification setup or a backend OTP bridge; the app shows a clear setup message instead of pretending native OTP is ready.
 - Google/Facebook use Expo AuthSession on native and Firebase popup on web, then sign into Firebase with provider credentials.
 - Profile fields users may edit directly: display name, username, avatar, fashion style, preferences, gender/date of birth, biometric flag.
@@ -132,6 +135,8 @@ và triển khai:
 - `POST /outfits/recommend` JSON
 - `POST /try-on/generate` multipart (`image`, `outfitItemIds`, `scene`)
 - `POST /style-profile/analyze` JSON
+
+Mobile prepares user style survey data for future AI calls via `mobile/src/services/ai/styleProfileMapper.ts`.
 
 Client không tự chuyển sang mock khi backend production không khả dụng. Production backend phải ghi `ai_logs` và trừ quota bằng transaction
 phía server sau khi provider trả kết quả thành công; client chỉ giảm bộ đếm hiển thị sau khi

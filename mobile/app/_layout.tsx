@@ -25,7 +25,7 @@ export default function RootLayout() {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
   const {
     isAuthLoading, isAuthenticated, onboardingCompleted, biometricEnabled,
-    biometricVerified, firebaseSetupError, verifyBiometric, logout,
+    biometricVerified, firebaseSetupError, verifyBiometric, logout, currentUser,
   } = useAuthStore();
   const routeKey = segments.join('/');
   useEffect(() => { initializeAuth(); }, [initializeAuth]);
@@ -34,10 +34,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (isAuthLoading) return;
     const inAuth = segments[0] === 'auth';
+    const inStyleSurvey = segments.join('/') === 'onboarding/style-survey';
+    const canEnterPrivate = isAuthenticated && (!biometricEnabled || biometricVerified);
     if (!onboardingCompleted && segments.join('/') !== 'auth/onboarding') router.replace('/auth/onboarding');
     else if (onboardingCompleted && !isAuthenticated && !inAuth) router.replace('/auth/welcome');
-    else if (onboardingCompleted && isAuthenticated && (!biometricEnabled || biometricVerified) && inAuth) router.replace('/(tabs)');
-  }, [biometricEnabled, biometricVerified, isAuthLoading, isAuthenticated, onboardingCompleted, router, segments]);
+    else if (onboardingCompleted && canEnterPrivate && currentUser && !currentUser.hasCompletedStyleSurvey && !inStyleSurvey) router.replace('/onboarding/style-survey' as never);
+    else if (onboardingCompleted && canEnterPrivate && currentUser?.hasCompletedStyleSurvey && (inAuth || inStyleSurvey)) router.replace('/(tabs)');
+  }, [biometricEnabled, biometricVerified, currentUser, isAuthLoading, isAuthenticated, onboardingCompleted, router, segments]);
 
   if (!fontsLoaded || isAuthLoading) return <View style={[styles.splash, { backgroundColor: colors.background }]}><View style={[styles.dot, { backgroundColor: colors.accent }]} /><AppText variant="display">Tủ đồ của bạn</AppText><AppText muted>Đang chuẩn bị phong cách riêng cho bạn...</AppText></View>;
   if (firebaseSetupError) return <View style={[styles.splash, { backgroundColor: colors.background, padding: 24 }]}><AppText variant="display">Cần cấu hình Firebase</AppText><AppText muted style={{ textAlign: 'center', marginTop: 10 }}>{firebaseSetupError}</AppText><AppText variant="bodySmall" muted style={{ textAlign: 'center', marginTop: 8 }}>Điền các biến EXPO_PUBLIC_FIREBASE_* trong mobile/.env để bật đăng nhập production.</AppText></View>;
@@ -85,6 +88,9 @@ export default function RootLayout() {
             name="profile/edit"
             options={{ headerShown: true, title: 'Chỉnh sửa hồ sơ', presentation: 'modal' }}
           />
+          <Stack.Screen name="onboarding/style-survey" />
+          <Stack.Screen name="profile/style-preferences" options={{ headerShown: false, presentation: 'modal' }} />
+          <Stack.Screen name="profile/style-preferences/advanced" options={{ headerShown: true, title: 'Hồ sơ nâng cao', presentation: 'modal' }} />
           <Stack.Screen name="outfits" options={{ headerShown: true, title: 'Outfit', presentation: 'card' }} />
           <Stack.Screen name="shopping" options={{ headerShown: true, title: 'Mua sắm gợi ý', presentation: 'card' }} />
           <Stack.Screen name="payment/prepare" options={{ headerShown: true, title: 'Chuẩn bị thanh toán', presentation: 'card' }} />
