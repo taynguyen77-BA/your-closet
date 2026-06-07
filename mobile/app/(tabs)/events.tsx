@@ -6,6 +6,7 @@ import { OutfitCard } from '@/components/outfit/OutfitCard';
 import { AiUsageBanner } from '@/components/ui/AiUsageBanner';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import type { Outfit } from '@/models';
@@ -14,6 +15,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { DataState } from '@/components/ui/DataState';
 import type { EventType } from '@/models';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function EventsScreen() {
   const router = useRouter();
@@ -26,6 +28,8 @@ export default function EventsScreen() {
   const createEvent = useAppStore((s) => s.createEvent);
   const loadState = useAppStore((s) => s.loadState);
   const error = useAppStore((s) => s.error);
+  const { isAuthenticated, isGuest } = useAuthStore();
+  const isPublicViewer = isGuest || !isAuthenticated;
 
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
@@ -34,6 +38,17 @@ export default function EventsScreen() {
   const [suggestions, setSuggestions] = useState<Partial<Outfit>[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  if (isPublicViewer) {
+    return (
+      <Screen bottomOffset={96}>
+        <AppText variant="display" style={{ marginBottom: spacing.md }}>Sự kiện</AppText>
+        <GuestAccessCard icon="calendar-outline" title="Đăng nhập để lưu lịch trình" description="Sự kiện, dress code và gợi ý outfit theo thời tiết là dữ liệu cá nhân nên cần tài khoản." />
+        <Button label="Xem mua sắm gợi ý" variant="secondary" icon="bag-handle-outline" onPress={() => router.push('/shopping')} />
+      </Screen>
+    );
+  }
+
   const saveEvent = async () => {
     if (!name || !date || !location) return Alert.alert('Thiếu thông tin', 'Nhập tên, ngày và địa điểm sự kiện.');
     setSaving(true);

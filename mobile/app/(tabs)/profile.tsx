@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Screen } from '@/components/layout/Screen';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
@@ -34,21 +36,55 @@ function MenuRow({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { colors, spacing, radius } = useTheme();
+  const { colors, gradients, spacing, radius } = useTheme();
   const user = useAppStore((s) => s.user);
   const planInfo = useAppStore((s) => s.planLimits[s.user.plan]);
   const styleXp = useAppStore((s) => s.clothing.length * 20 + s.outfits.length * 40 + s.savedOutfitIds.length * 30);
   const styleLevel = Math.max(1, Math.floor(styleXp / 200) + 1);
   const levelProgress = styleXp % 200;
-  const { appUser, logout, biometricEnabled } = useAuthStore();
+  const { appUser, isAuthenticated, isGuest, logout, biometricEnabled, requireAccount } = useAuthStore();
+  const isPublicViewer = isGuest || !isAuthenticated;
   const profile = appUser ?? user;
   const stylePreferences = profile.stylePreferences;
   const completion = profile.styleProfileCompletionPercent ?? 0;
+  const requireSignedIn = (next?: () => void) => {
+    if (!requireAccount()) return;
+    next?.();
+  };
+
+  if (isPublicViewer) {
+    return (
+      <Screen bottomOffset={96}>
+        <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+          <View style={styles.coverIcon}><Ionicons name="person-circle-outline" size={20} color={colors.accentDark} /></View>
+          <AppText variant="caption" color={colors.accentLight}>CHẾ ĐỘ TRẢI NGHIỆM</AppText>
+          <AppText variant="h1" color={colors.textInverse}>Khám phá trước, lưu sau</AppText>
+          <AppText variant="bodySmall" color={colors.warmLight} style={{ marginTop: 6, lineHeight: 20 }}>
+            Bạn đang xem app chưa đăng nhập. Các dữ liệu cá nhân, tủ đồ, AI stylist và hồ sơ phong cách sẽ mở sau khi tạo tài khoản.
+          </AppText>
+        </LinearGradient>
+
+        <GuestAccessCard
+          icon="person-circle-outline"
+          title="Đăng nhập để có trang cá nhân"
+          description="Lưu tủ đồ, outfit, nhiệm vụ, lịch trình và gu thời trang riêng của bạn."
+        />
+
+        <SectionHeader title="Có thể xem khi chưa đăng nhập" />
+        <GlassCard style={{ paddingVertical: 0 }}>
+          <MenuRow icon="people-outline" label="Xem cộng đồng" onPress={() => router.push('/community')} />
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+          <MenuRow icon="bag-handle-outline" label="Mua sắm gợi ý" onPress={() => router.push('/shopping')} />
+        </GlassCard>
+      </Screen>
+    );
+  }
 
   return (
     <Screen bottomOffset={96}>
-      <View style={[styles.cover, { borderRadius: radius.xl, backgroundColor: colors.primary }]}>
-        <AppText variant="caption" color={colors.accent}>HỒ SƠ PHONG CÁCH</AppText>
+      <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+        <View style={styles.coverIcon}><Ionicons name="sparkles-outline" size={20} color={colors.accentDark} /></View>
+        <AppText variant="caption" color={colors.accentLight}>HỒ SƠ PHONG CÁCH</AppText>
         <AppText variant="h1" color={colors.textInverse}>Nhật ký phong cách của bạn</AppText>
         <View style={styles.profileHeader}>
         <SafeImage
@@ -57,16 +93,9 @@ export default function ProfileScreen() {
         />
         <View style={{ marginLeft: spacing.md, flex: 1 }}>
           <AppText variant="h1" color={colors.textInverse}>{profile.name ?? profile.username}</AppText>
-          <AppText variant="bodySmall" color={colors.warmGray}>
-            {profile.phoneNumber || profile.email || 'Chưa thêm email/số điện thoại'}
-          </AppText>
-          <AppText variant="bodySmall" color={colors.accent}>
-            {profile.username ? `@${profile.username}` : 'Chọn username trong hồ sơ'}
-          </AppText>
-          <AppText variant="bodySmall" color={colors.warmGray}>Provider: {profile.provider ?? profile.authProvider ?? 'email'}</AppText>
         </View>
         </View>
-      </View>
+      </LinearGradient>
 
       <View style={[styles.level, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>
         <View style={styles.levelTop}><AppText variant="caption" muted>CẤP {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h3">Nhà khám phá phong cách</AppText><AppText variant="label" color={colors.accentDark}>{levelProgress} / 200 XP</AppText></View>
@@ -78,18 +107,18 @@ export default function ProfileScreen() {
         {[['ribbon-outline', 'BẮT NHỊP XU HƯỚNG'], ['heart-outline', 'YÊU TỦ ĐỒ'], ['sparkles-outline', 'NÀNG THƠ AI']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: radius.xl }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.accentDark} /><AppText variant="caption">{label}</AppText></View>)}
       </View>
 
-      <GlassCard style={{ marginBottom: spacing.lg, backgroundColor: colors.beige }}>
-        <AppText variant="caption" muted>
+      <LinearGradient colors={gradients.premium} style={[styles.membership, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+        <AppText variant="caption" color={colors.accentLight}>
           Gói hiện tại
         </AppText>
-        <AppText variant="h2">{planInfo.label}</AppText>
-        <AppText variant="bodySmall" muted style={{ marginTop: 4 }}>
-          AI: <AppText variant="bodySmall" color={colors.accentDark}>{user.plan === 'free' ? `${user.aiUsageRemaining}/${user.aiUsageMonthlyLimit}` : 'Không giới hạn'}</AppText>
+        <AppText variant="h2" color={colors.textInverse}>{planInfo.label}</AppText>
+        <AppText variant="bodySmall" color={colors.warmLight} style={{ marginTop: 4 }}>
+          AI: <AppText variant="bodySmall" color={colors.textInverse}>{user.plan === 'free' ? `${user.aiUsageRemaining}/${user.aiUsageMonthlyLimit}` : 'Không giới hạn'}</AppText>
           {' · '}
-          Tủ: <AppText variant="bodySmall" color={colors.accentDark}>{user.closetItemCount}{user.plan === 'free' ? `/${user.closetItemLimit}` : ''}</AppText>
+          Tủ: <AppText variant="bodySmall" color={colors.textInverse}>{user.closetItemCount}{user.plan === 'free' ? `/${user.closetItemLimit}` : ''}</AppText>
         </AppText>
         <View style={styles.planActions}>
-          <Button label="Nâng cấp" onPress={() => router.push('/membership')} style={{ flex: 1, marginRight: 8 }} />
+          <Button label={isGuest ? 'Đăng ký để lưu' : 'Nâng cấp'} onPress={() => isGuest ? requireAccount() : router.push('/membership')} style={{ flex: 1, marginRight: 8 }} />
           <Button
             label="Nhiệm vụ"
             variant="secondary"
@@ -97,7 +126,7 @@ export default function ProfileScreen() {
             style={{ flex: 1 }}
           />
         </View>
-      </GlassCard>
+      </LinearGradient>
 
       <SectionHeader title="Hồ sơ phong cách" />
       <GlassCard style={{ marginBottom: spacing.lg }}>
@@ -117,8 +146,8 @@ export default function ProfileScreen() {
         </View>
         <AppText variant="bodySmall" muted style={{ marginTop: 10 }}>+5 lượt AI gợi ý khi hoàn thành hồ sơ nâng cao.</AppText>
         <View style={styles.planActions}>
-          <Button label="Chỉnh sửa gu thời trang" onPress={() => router.push('/profile/style-preferences' as never)} style={{ flex: 1, marginRight: 8 }} />
-          <Button label="Nâng cao" variant="secondary" onPress={() => router.push('/profile/style-preferences/advanced' as never)} style={{ flex: 1 }} />
+          <Button label="Chỉnh sửa gu thời trang" onPress={() => requireSignedIn(() => router.push('/profile/style-preferences' as never))} style={{ flex: 1, marginRight: 8 }} />
+          <Button label="Nâng cao" variant="secondary" onPress={() => requireSignedIn(() => router.push('/profile/style-preferences/advanced' as never))} style={{ flex: 1 }} />
         </View>
       </GlassCard>
 
@@ -126,32 +155,34 @@ export default function ProfileScreen() {
       <GlassCard style={{ marginBottom: spacing.lg, paddingVertical: 0 }}>
         <MenuRow icon="people-outline" label="Xem cộng đồng" onPress={() => router.push('/community')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="add-circle-outline" label="Đăng tin mới" onPress={() => router.push('/community/create')} />
+        <MenuRow icon="add-circle-outline" label="Đăng tin mới" onPress={() => requireSignedIn(() => router.push('/community/create'))} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="list-outline" label="Tin đăng của tôi" onPress={() => router.push('/community?filter=mine')} />
+        <MenuRow icon="list-outline" label="Tin đăng của tôi" onPress={() => requireSignedIn(() => router.push('/community?filter=mine'))} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="bookmark-outline" label="Bộ đồ đã lưu" onPress={() => router.push('/outfits?filter=saved')} />
+        <MenuRow icon="bookmark-outline" label="Bộ đồ đã lưu" onPress={() => requireSignedIn(() => router.push('/outfits?filter=saved'))} />
       </GlassCard>
 
       <SectionHeader title="Cài đặt" />
       <GlassCard style={{ paddingVertical: 0 }}>
-        <MenuRow icon="person-outline" label="Chỉnh sửa hồ sơ" onPress={() => router.push('/profile/edit' as never)} />
+        <MenuRow icon="person-outline" label="Chỉnh sửa hồ sơ" onPress={() => requireSignedIn(() => router.push('/profile/edit' as never))} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
-        <MenuRow icon="finger-print-outline" label={biometricEnabled ? 'Face ID / Vân tay đang bật' : 'Thiết lập Face ID / Vân tay'} onPress={() => router.push('/settings')} />
+        <MenuRow icon="finger-print-outline" label={biometricEnabled ? 'Face ID / Vân tay đang bật' : 'Thiết lập Face ID / Vân tay'} onPress={() => requireSignedIn(() => router.push('/settings'))} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <MenuRow icon="notifications-outline" label="Thông báo" onPress={() => router.push('/settings')} />
         <View style={[styles.divider, { backgroundColor: colors.border }]} />
         <MenuRow icon="shield-outline" label="Quyền riêng tư" onPress={() => router.push('/settings')} />
-        <View style={[styles.divider, { backgroundColor: colors.border }]} /><MenuRow icon="log-out-outline" label="Đăng xuất" onPress={() => { void logout(); }} />
+        <View style={[styles.divider, { backgroundColor: colors.border }]} /><MenuRow icon={isGuest ? 'log-in-outline' : 'log-out-outline'} label={isGuest ? 'Đăng nhập hoặc đăng ký' : 'Đăng xuất'} onPress={() => { if (isGuest) requireAccount(); else void logout(); }} />
       </GlassCard>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  cover: { minHeight: 190, padding: 18, gap: 4, marginBottom: 32 },
+  cover: { minHeight: 228, padding: 22, gap: 5, marginBottom: 36, justifyContent: 'flex-start', shadowOpacity: 0.18, shadowRadius: 20, shadowOffset: { width: 0, height: 12 }, elevation: 5 },
+  coverIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,249,241,0.92)', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
   profileHeader: { position: 'absolute', left: 16, right: 16, bottom: -32, flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 76, height: 76, borderWidth: 3 },
+  membership: { padding: 18, marginBottom: 16, overflow: 'hidden', shadowOpacity: 0.16, shadowRadius: 18, shadowOffset: { width: 0, height: 10 }, elevation: 4 },
   planActions: { flexDirection: 'row', marginTop: 16 },
   menuRow: { flexDirection: 'row', alignItems: 'center' },
   divider: { height: 1 },

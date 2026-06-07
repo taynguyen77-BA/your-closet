@@ -61,6 +61,7 @@ export default function OutfitDetailScreen() {
         </GlassCard>
       )}
       <Button label="Thử ngay" onPress={() => router.push(`/(tabs)/try-on?outfitId=${outfit.id}`)} style={{ marginTop: spacing.xl }} />
+      <Button label="Hoàn thiện outfit này" variant="secondary" onPress={() => router.push(`/shopping?outfitId=${outfit.id}`)} style={{ marginTop: spacing.sm }} />
     </ScrollView>
   );
 }

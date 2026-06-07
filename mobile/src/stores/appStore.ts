@@ -1,23 +1,40 @@
 import { create } from 'zustand';
 import {
-  mockClothing, mockCommunityListings, mockEvents, mockMissions, mockOutfits,
+  mockAffiliateProducts, mockClothing, mockCommunityListings, mockEvents, mockMissions, mockOutfits,
   mockTrends, mockUser, mockWeather,
 } from '@/data/mockData';
 import type {
   AffiliateProduct, ClothingItem, CommunityListing, FashionTrend, ListingReport, MarketplaceMessage, MembershipPlan,
-  Mission, Outfit, PlanLimit, TradeOffer, Transaction, User, WardrobeEvent, WeatherInfo,
+  Mission, Outfit, PlanLimit, ShoppingEvent, TradeOffer, Transaction, User, WardrobeEvent, WeatherInfo,
 } from '@/models';
 import { useAuthStore } from '@/stores/authStore';
 import {
   affiliateProductsService, clothesService, eventsService, listingReportsService, listingsService,
-  marketplaceMessagesService, missionsService, outfitsService, planLimitsService, tradeOffersService,
+  marketplaceMessagesService, missionsService, outfitsService, planLimitsService, shoppingEventsService, tradeOffersService,
   transactionsService, trendsService, userMissionsService, usersService,
 } from '@/services/api/resources';
 import { clothingImagesService } from '@/services/firebase';
 import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
 
 const useMocks = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
+const isGuestSession = () => useAuthStore.getState().isGuest;
+const useRemoteWrites = () => !useMocks() && !isGuestSession();
 const emptyUser: User = { id: '', username: '', email: '', plan: 'free', aiUsageRemaining: 0, aiUsageMonthlyLimit: 0, aiQuotaPeriod: '', closetItemLimit: 0, closetItemCount: 0, createdAt: '' };
+const guestUser: User = {
+  id: 'guest-preview',
+  name: 'Khách trải nghiệm',
+  username: 'Khách trải nghiệm',
+  email: '',
+  plan: 'free',
+  aiUsageRemaining: 0,
+  aiUsageMonthlyLimit: 0,
+  aiQuotaPeriod: '',
+  closetItemLimit: 12,
+  closetItemCount: 0,
+  createdAt: '',
+  hasCompletedStyleSurvey: false,
+  styleProfileCompletionPercent: 0,
+};
 const emptyPlanLimits: Record<MembershipPlan, PlanLimit> = {
   free: { id: 'free', label: '—', aiMonthly: 0, closetItems: 0 },
   premium: { id: 'premium', label: '—', aiMonthly: 0, closetItems: 0 },
@@ -55,6 +72,7 @@ interface AppState {
   createTradeOffer: (offer: Omit<TradeOffer, 'id'>) => Promise<void>;
   createListingReport: (report: Omit<ListingReport, 'id' | 'status'>) => Promise<void>;
   createTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<Transaction>;
+  trackShoppingEvent: (event: Omit<ShoppingEvent, 'id' | 'createdAt'> & { createdAt?: string }) => Promise<void>;
 }
 
 const reportError = (set: (patch: Partial<AppState>) => void, error: unknown) => {
@@ -91,11 +109,14 @@ export const useAppStore = create<AppState>((set, get) => ({
   outfits: useMocks() ? mockOutfits : [], events: useMocks() ? mockEvents : [],
   trends: useMocks() ? mockTrends : [], missions: useMocks() ? mockMissions : [],
   communityListings: useMocks() ? mockCommunityListings : [],
-  affiliateProducts: [],
-  savedOutfitIds: ['o2'], closetViewMode: 'grid', loadState: 'idle',
+  affiliateProducts: useMocks() ? mockAffiliateProducts : [],
+  savedOutfitIds: useMocks() ? ['o2'] : [], closetViewMode: 'grid', loadState: 'idle',
   planLimits: useMocks() ? PLAN_LIMITS : emptyPlanLimits,
   initialize: async () => {
-    if (useMocks()) return set({ loadState: 'ready', user: applyPlanLimit(mockUser, PLAN_LIMITS), clothing: mockClothing, outfits: mockOutfits, events: mockEvents, communityListings: mockCommunityListings, missions: mergeMissionState(DEFAULT_MISSIONS, mockMissions) });
+    if (useMocks()) {
+      const previewUser = isGuestSession() ? guestUser : mockUser;
+      return set({ loadState: 'ready', user: applyPlanLimit(previewUser, PLAN_LIMITS), clothing: mockClothing, outfits: mockOutfits, events: mockEvents, communityListings: mockCommunityListings, affiliateProducts: mockAffiliateProducts, missions: mergeMissionState(DEFAULT_MISSIONS, mockMissions) });
+    }
     set({ loadState: 'loading', error: undefined });
     try {
       const authUser = useAuthStore.getState().appUser;
@@ -105,7 +126,22 @@ export const useAppStore = create<AppState>((set, get) => ({
         affiliateProductsService.list({ status: 'active' }),
       ]);
       const planLimits = remoteLimits.reduce((all, limit) => ({ ...all, [limit.id]: limit }), { ...emptyPlanLimits });
-      if (!authUser) return set({ loadState: 'ready', planLimits, trends, missions: missionDefinitions, communityListings: approvedListings, affiliateProducts, clothing: [], outfits: [], events: [], savedOutfitIds: [] });
+      if (!authUser) {
+        const isGuest = useAuthStore.getState().isGuest;
+        return set({
+          loadState: 'ready',
+          planLimits,
+          trends,
+          missions: isGuest ? mergeMissionState(missionDefinitions, []) : missionDefinitions,
+          communityListings: approvedListings,
+          affiliateProducts,
+          user: isGuest ? applyPlanLimit(guestUser, planLimits) : emptyUser,
+          clothing: [],
+          outfits: [],
+          events: [],
+          savedOutfitIds: [],
+        });
+      }
       const userId = authUser.id;
       const [user, clothing, outfits, events, userMissions, ownListings] = await Promise.all([
         usersService.get(userId), clothesService.list({ userId }), outfitsService.list({ userId }),
@@ -129,18 +165,18 @@ export const useAppStore = create<AppState>((set, get) => ({
     const item = get().clothing.find((value) => value.id === id); if (!item) return;
     const patch = { isFavorite: !item.isFavorite };
     set({ clothing: get().clothing.map((value) => value.id === id ? { ...value, ...patch } : value) });
-    if (!useMocks()) try { await clothesService.update(id, patch); } catch (error) { reportError(set, error); }
+    if (useRemoteWrites()) try { await clothesService.update(id, patch); } catch (error) { reportError(set, error); }
   },
   saveOutfit: async (id) => {
     set({ savedOutfitIds: [...new Set([...get().savedOutfitIds, id])], outfits: get().outfits.map((o) => o.id === id ? { ...o, isSaved: true } : o) });
-    if (!useMocks()) try { await outfitsService.update(id, { isSaved: true }); } catch (error) { reportError(set, error); }
+    if (useRemoteWrites()) try { await outfitsService.update(id, { isSaved: true }); } catch (error) { reportError(set, error); }
   },
   addClothingToOutfit: async (clothingId, outfitId) => {
     const clothing = get().clothing.find((item) => item.id === clothingId);
     const outfit = get().outfits.find((item) => item.id === outfitId);
     if (!clothing || !outfit || outfit.items.some((item) => item.clothingId === clothingId)) return;
     const items = [...outfit.items, { clothingId, name: clothing.name, type: clothing.type }];
-    if (!useMocks()) await outfitsService.update(outfitId, { items });
+    if (useRemoteWrites()) await outfitsService.update(outfitId, { items });
     set({ outfits: get().outfits.map((item) => item.id === outfitId ? { ...item, items } : item) });
   },
   canUseAiTry: () => {
@@ -149,17 +185,17 @@ export const useAppStore = create<AppState>((set, get) => ({
   consumeAiTry: async (persist = true) => {
     const { user } = get(); if (user.plan !== 'free' || user.aiUsageRemaining <= 0) return;
     const updated = { ...user, aiUsageRemaining: user.aiUsageRemaining - 1 }; set({ user: updated });
-    if (persist && !useMocks()) reportError(set, new Error('Quota production phải được cập nhật bởi AI backend.'));
+    if (persist && useRemoteWrites()) reportError(set, new Error('Quota production phải được cập nhật bởi AI backend.'));
   },
   completeMission: async (id) => {
-    if (!useMocks()) throw new Error('Nhiệm vụ production phải được cập nhật bởi backend.');
+    if (useRemoteWrites()) throw new Error('Nhiệm vụ production phải được cập nhật bởi backend.');
     const mission = get().missions.find((item) => item.id === id);
     if (!mission || mission.isCompleted || mission.isClaimed) return;
     const completed = { ...mission, progress: mission.target, isCompleted: true, completedAt: new Date().toISOString(), rewardPeriod: missionRewardPeriod(mission) };
     set({ missions: get().missions.map((item) => item.id === id ? completed : item) });
   },
   claimMission: async (id) => {
-    if (!useMocks()) throw new Error('Phần thưởng production phải được cấp bởi backend.');
+    if (useRemoteWrites()) throw new Error('Phần thưởng production phải được cấp bởi backend.');
     const mission = get().missions.find((m) => m.id === id); if (!mission || !mission.isCompleted || mission.isClaimed) return;
     const user = { ...get().user, aiUsageRemaining: get().user.aiUsageRemaining + mission.rewardAiTries };
     const claimed = { ...mission, isClaimed: true, claimedAt: new Date().toISOString() };
@@ -167,30 +203,40 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   createClothing: async (item, uri) => {
     try {
-      const imageUrl = useMocks() ? uri : await clothingImagesService.upload(item.userId, uri);
-      const created = useMocks() ? { ...item, id: `c-${Date.now()}`, imageUrl } : await clothesService.create({ ...item, imageUrl });
+      const imageUrl = useRemoteWrites() ? await clothingImagesService.upload(item.userId, uri) : uri;
+      const originalImageUrl = item.originalImageUrl
+        ? useRemoteWrites() && item.originalImageUrl !== uri ? await clothingImagesService.upload(item.userId, item.originalImageUrl) : item.originalImageUrl
+        : imageUrl;
+      const payload = { ...item, imageUrl, originalImageUrl };
+      const created = useRemoteWrites() ? await clothesService.create(payload) : { ...payload, id: `c-${Date.now()}` };
       const user = { ...get().user, closetItemCount: get().user.closetItemCount + 1 };
       set({ clothing: [created, ...get().clothing], user });
-      if (!useMocks()) await usersService.update(user.id, { closetItemCount: user.closetItemCount });
+      if (useRemoteWrites()) await usersService.update(user.id, { closetItemCount: user.closetItemCount });
     } catch (error) { reportError(set, error); throw error; }
   },
-  updateClothing: async (id, patch) => { if (!useMocks()) await clothesService.update(id, patch); set({ clothing: get().clothing.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
-  deleteClothing: async (id) => { if (!useMocks()) await clothesService.remove(id); set({ clothing: get().clothing.filter((item) => item.id !== id) }); },
-  createEvent: async (value) => { const item = useMocks() ? { ...value, id: `e-${Date.now()}` } : await eventsService.create(value); set({ events: [item, ...get().events] }); },
-  updateEvent: async (id, patch) => { if (!useMocks()) await eventsService.update(id, patch); set({ events: get().events.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
-  deleteEvent: async (id) => { if (!useMocks()) await eventsService.remove(id); set({ events: get().events.filter((item) => item.id !== id) }); },
-  createListing: async (value) => { const item = useMocks() ? { ...value, id: `l-${Date.now()}` } : await listingsService.create(value); set({ communityListings: [item, ...get().communityListings] }); },
-  updateListing: async (id, patch) => { if (!useMocks()) await listingsService.update(id, patch); set({ communityListings: get().communityListings.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
-  deleteListing: async (id) => { if (!useMocks()) await listingsService.remove(id); set({ communityListings: get().communityListings.filter((item) => item.id !== id) }); },
-  sendMarketplaceMessage: async (value) => { if (!useMocks()) await marketplaceMessagesService.create(value); },
-  createTradeOffer: async (value) => { if (!useMocks()) await tradeOffersService.create(value); },
+  updateClothing: async (id, patch) => { if (useRemoteWrites()) await clothesService.update(id, patch); set({ clothing: get().clothing.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteClothing: async (id) => { if (useRemoteWrites()) await clothesService.remove(id); set({ clothing: get().clothing.filter((item) => item.id !== id) }); },
+  createEvent: async (value) => { const item = useRemoteWrites() ? await eventsService.create(value) : { ...value, id: `e-${Date.now()}` }; set({ events: [item, ...get().events] }); },
+  updateEvent: async (id, patch) => { if (useRemoteWrites()) await eventsService.update(id, patch); set({ events: get().events.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteEvent: async (id) => { if (useRemoteWrites()) await eventsService.remove(id); set({ events: get().events.filter((item) => item.id !== id) }); },
+  createListing: async (value) => { const item = useRemoteWrites() ? await listingsService.create(value) : { ...value, id: `l-${Date.now()}` }; set({ communityListings: [item, ...get().communityListings] }); },
+  updateListing: async (id, patch) => { if (useRemoteWrites()) await listingsService.update(id, patch); set({ communityListings: get().communityListings.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteListing: async (id) => { if (useRemoteWrites()) await listingsService.remove(id); set({ communityListings: get().communityListings.filter((item) => item.id !== id) }); },
+  sendMarketplaceMessage: async (value) => { if (useRemoteWrites()) await marketplaceMessagesService.create(value); },
+  createTradeOffer: async (value) => { if (useRemoteWrites()) await tradeOffersService.create(value); },
   createListingReport: async (value) => {
     const report = { ...value, status: 'open' as const };
-    if (!useMocks()) await listingReportsService.create(report);
+    if (useRemoteWrites()) await listingReportsService.create(report);
     set({ communityListings: get().communityListings.map((item) => item.id === value.listingId ? { ...item, reportsCount: item.reportsCount + 1 } : item) });
   },
   createTransaction: async (value) => {
-    const transaction = useMocks() ? { ...value, id: `tx-${Date.now()}` } : await transactionsService.create(value);
+    const transaction = useRemoteWrites() ? await transactionsService.create(value) : { ...value, id: `tx-${Date.now()}` };
     return transaction;
+  },
+  trackShoppingEvent: async (value) => {
+    const event = { ...value, createdAt: value.createdAt ?? new Date().toISOString() };
+    if (useRemoteWrites()) {
+      try { await shoppingEventsService.create(event); } catch (error) { reportError(set, error); }
+    }
   },
 }));

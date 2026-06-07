@@ -8,6 +8,8 @@ AI-powered fashion mobile app — quản lý tủ đồ, gợi ý outfit, thử 
 Your Closet/
 ├── mobile/          # Expo (React Native) — iOS, Android, Web
 ├── admin/           # Next.js Admin CMS (RBAC dashboard)
+├── backend/         # Backend env template; runtime is admin/ Next.js API routes
+├── docs/            # Staging API contract
 ├── firebase/        # Firestore + Storage security rules
 ├── firebase.json
 └── README.md
@@ -21,7 +23,7 @@ Your Closet/
 | State | Zustand |
 | Backend API | Next.js API routes + Firebase Admin SDK |
 | Data source | Firestore single source of truth |
-| AI | Backend provider; mock chỉ khi `EXPO_PUBLIC_DEMO_MODE=true` |
+| AI | Backend provider; mock data khi `EXPO_PUBLIC_DEMO_MODE=true`; mock auth chỉ khi bật thêm `EXPO_PUBLIC_DEMO_AUTH_BYPASS=true` |
 | Payments | VNPay, MoMo, Apple/Google Pay — UI + constants |
 
 ## Chạy mobile app
@@ -35,6 +37,10 @@ npm start
 ```
 
 Mở Expo Go trên điện thoại hoặc `npm run ios` / `npm run android`.
+
+Khi test luồng đăng ký/đăng nhập thật, đặt `EXPO_PUBLIC_DEMO_AUTH_BYPASS=false`. Nếu bật
+`EXPO_PUBLIC_DEMO_MODE=true` để dùng mock data, app vẫn sẽ hiển thị auth UI trừ khi bạn bật riêng
+`EXPO_PUBLIC_DEMO_AUTH_BYPASS=true`.
 
 ## 5 tab chính
 
@@ -86,7 +92,7 @@ mobile/
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
 2. Bật Authentication providers: Email/Password, Phone, Google, Facebook
 3. Bật Firestore, Storage, Cloud Messaging
-4. Copy Firebase web config và `EXPO_PUBLIC_API_URL` vào `mobile/.env`
+4. Copy Firebase web config và `EXPO_PUBLIC_API_BASE_URL` vào `mobile/.env`
 5. Phone Auth: thêm domain web vào Authorized domains; với iOS/Android cấu hình APNs/SHA-1/SHA-256 theo Firebase Console hoặc dùng backend OTP bridge
 6. Google Sign-In: thêm OAuth client IDs web/iOS/Android; điền `EXPO_PUBLIC_GOOGLE_*` nếu native sign-in được bật
 7. Google/Facebook native OAuth redirect URI: dùng scheme `tudocuaban://auth/callback` cho development build/native app; web dùng domain trong Firebase Authorized domains.
@@ -96,7 +102,8 @@ mobile/
 
 ```bash
 EXPO_PUBLIC_ENABLE_REAL_AI=true
-EXPO_PUBLIC_AI_API_BASE_URL=https://your-cloud-function.example.com/ai
+EXPO_PUBLIC_API_BASE_URL=https://your-staging-api.example.com
+EXPO_PUBLIC_AI_API_BASE_URL=https://your-staging-api.example.com/api/ai
 ```
 
 Mobile chỉ gửi Firebase ID token và dữ liệu đầu vào đến backend. Không đặt Gemini, OpenAI,
@@ -104,13 +111,14 @@ hoặc khóa AI provider nào trong biến `EXPO_PUBLIC_*`.
 Mobile đọc business data qua Next.js API; Firebase client SDK dùng cho Auth, Firestore user profile,
 biometric preference sync, và Storage avatar/wardrobe upload.
 Nếu chưa đăng nhập, mobile chỉ đọc public config/data như plans, trends, affiliate products và
-approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUBLIC_DEMO_MODE=true`.
+approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUBLIC_DEMO_MODE=true`; mock user
+auto-login chỉ bật bằng `EXPO_PUBLIC_DEMO_AUTH_BYPASS=true`.
 
-### Firestore collections (đề xuất)
+### Firestore collections
 
 `users`, `clothes`, `outfits`, `events`, `trends`, `missions`, `plan_limits`, `user_missions`,
 `listings`, `transactions`, `subscriptions`, `notification_templates`, `notifications`,
-`affiliate_products`, `support_tickets`, `ai_logs`, `adminUsers`
+`affiliate_products`, `support_tickets`, `ai_logs`, `cms_content`, `admin_settings`, `adminUsers`
 
 ### Mobile authentication flow
 
@@ -122,14 +130,14 @@ approved listings. Mock data chỉ được bật chủ động bằng `EXPO_PUB
 - Users can update style preferences later from Profile → “Chỉnh sửa gu thời trang”; optional advanced data lives in `advancedStylePreferences`.
 - Phone OTP works with Firebase reCAPTCHA on Expo web. Expo Go/native requires Firebase native verification setup or a backend OTP bridge; the app shows a clear setup message instead of pretending native OTP is ready.
 - Google/Facebook use Expo AuthSession on native and Firebase popup on web, then sign into Firebase with provider credentials.
-- Profile fields users may edit directly: display name, username, avatar, fashion style, preferences, gender/date of birth, biometric flag.
+- Profile fields users may edit directly from “Chỉnh sửa hồ sơ”: display name and avatar. Style, preference, gender, age, sizing, budget, and other personalization fields live under Profile → “Gu thời trang của bạn”.
 - Plan, quota, payment, and moderation fields are protected by Firestore rules and must be changed by trusted backend/admin code.
 - Sign out clears Firebase session and secure biometric preference, but keeps `onboardingCompleted`.
 
 ### AI backend contract
 
-Backend xác thực `Authorization: Bearer <Firebase ID token>`, giữ khóa provider phía server,
-và triển khai:
+Backend xác thực `Authorization: Bearer <Firebase ID token>` và giữ khóa provider phía server.
+Mobile gọi cùng backend host tại `/api/ai`; backend proxy tới `AI_API_BASE_URL`. AI upstream triển khai:
 
 - `POST /clothing/detect` multipart (`image`)
 - `POST /outfits/recommend` JSON
@@ -203,8 +211,10 @@ Biến môi trường admin:
 
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=...
-NEXT_PUBLIC_API_URL=https://your-api.example.com
+NEXT_PUBLIC_API_BASE_URL=https://your-api.example.com
 FIREBASE_SERVICE_ACCOUNT_JSON={"project_id":"...","client_email":"...","private_key":"..."}
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+AI_API_BASE_URL=https://your-private-ai-service.example.com
 NEXT_PUBLIC_DEMO_MODE=false
 ```
 
@@ -219,6 +229,86 @@ npm run seed
 # tùy chọn local staging:
 npm run seed -- --with-demo-users
 ```
+
+## Staging-ready setup
+
+Shared contract: [docs/staging-api-contract.md](docs/staging-api-contract.md)
+
+### Run local end-to-end
+
+```bash
+cd admin
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+In another terminal:
+
+```bash
+cd mobile
+cp .env.example .env
+npm install
+EXPO_PUBLIC_API_BASE_URL=http://localhost:3000 npm run web
+```
+
+Local UI demos may set `EXPO_PUBLIC_DEMO_MODE=true` and `NEXT_PUBLIC_DEMO_MODE=true`. Staging and production must keep both false.
+
+### Deploy backend/admin
+
+Deploy `admin/` as the staging backend and admin portal. Required server variables:
+
+- `APP_ENV=staging`
+- `NEXT_PUBLIC_APP_ENV=staging`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `FIREBASE_SERVICE_ACCOUNT_JSON` or `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
+- `FIREBASE_STORAGE_BUCKET`
+- `AI_API_BASE_URL` and optional `AI_API_KEY`
+- `NEXT_PUBLIC_DEMO_MODE=false`
+
+After deploy, verify:
+
+```bash
+curl https://your-staging-api.example.com/health
+```
+
+### Build mobile preview app
+
+```bash
+cd mobile
+EXPO_PUBLIC_APP_ENV=staging \
+EXPO_PUBLIC_API_BASE_URL=https://your-staging-api.example.com \
+EXPO_PUBLIC_AI_API_BASE_URL=https://your-staging-api.example.com/api/ai \
+EXPO_PUBLIC_DEMO_MODE=false \
+EXPO_PUBLIC_DEMO_AUTH_BYPASS=false \
+npx expo export --platform web --output-dir dist-staging
+```
+
+For native preview, use the same environment in the EAS preview profile.
+
+### Seed staging database
+
+```bash
+cd admin
+npm run seed
+```
+
+Use `npm run seed -- --with-demo-users` only for isolated local testing, not shared staging.
+
+### Staging test checklist
+
+- [ ] `/health` reports `status: ok` for auth, database, storage, and AI.
+- [ ] Admin dashboard API status card is green and `demoMode=false`.
+- [ ] Mobile login/register creates or loads `users/{uid}` from staging Firestore.
+- [ ] Wardrobe image upload stores the image in Firebase Storage and saves metadata in `clothes`.
+- [ ] AI analysis failure shows a clear error; it does not create mock metadata in staging.
+- [ ] Confirmed AI clothing analysis is saved to `clothes.aiMetadata`, confidence, warnings, and image URLs.
+- [ ] Outfit suggestions call `/api/ai/outfits/recommend`; saved outfits appear in admin `outfits`.
+- [ ] Events/trips are stored in `events` and visible after app restart.
+- [ ] Missions/plans are read from `missions` and `plan_limits`, not local constants.
+- [ ] Community posts are created as `pending_review`; admin moderation changes them to `approved`.
+- [ ] CMS changes in `cms_content` can be fetched by mobile through the same API without code changes.
+- [ ] Turning off API/Storage/AI produces error or empty states, never fake staging data.
 
 ## Kiểm tra trước khi deploy
 

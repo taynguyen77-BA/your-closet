@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native';
 import Animated, {
@@ -22,13 +23,13 @@ export function AnimatedPressable({ children, onPress, style }: { children: Reac
 }
 
 export function GradientScreenHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
-  const { radius, colors } = useTheme();
-  return <Animated.View entering={FadeInDown.duration(420)}><View style={[styles.hero, { borderRadius: radius.xl, backgroundColor: colors.primary }]}>
-    <AppText variant="caption" color={colors.textInverse}>{eyebrow}</AppText>
+  const { radius, colors, gradients } = useTheme();
+  return <Animated.View entering={FadeInDown.duration(420)}><LinearGradient colors={gradients.closet} style={[styles.hero, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+    <View style={styles.heroIcon}><Ionicons name="sparkles" size={18} color={colors.primary} /></View>
+    <AppText variant="caption" color={colors.accentLight}>{eyebrow}</AppText>
     <AppText variant="display" color={colors.textInverse} style={styles.heroTitle}>{title}</AppText>
-    <AppText variant="body" color={colors.textInverse}>{subtitle}</AppText>
-    <View style={styles.heroOrb} />
-  </View></Animated.View>;
+    <AppText variant="body" color={colors.warmLight} style={styles.heroSubtitle}>{subtitle}</AppText>
+  </LinearGradient></Animated.View>;
 }
 
 export function FloatingActionButton({ onPress }: { onPress: () => void }) {
@@ -36,7 +37,7 @@ export function FloatingActionButton({ onPress }: { onPress: () => void }) {
   const lift = useSharedValue(0);
   useEffect(() => { lift.value = withRepeat(withSequence(withSpring(-4), withSpring(0)), -1, true); }, [lift]);
   const style = useAnimatedStyle(() => ({ transform: [{ translateY: lift.value }] }));
-  return <Animated.View style={[styles.fabWrap, style]}><Pressable onPress={onPress} style={[styles.fab, { backgroundColor: colors.primary }]}><Ionicons name="add" size={22} color={colors.accent} /><AppText variant="label" color={colors.textInverse}>Thêm mới</AppText></Pressable></Animated.View>;
+  return <Animated.View style={[styles.fabWrap, style]}><Pressable onPress={onPress} style={[styles.fab, { backgroundColor: colors.accent, shadowColor: colors.shadow }]}><Ionicons name="add" size={22} color={colors.textInverse} /><AppText variant="label" color={colors.textInverse}>Thêm mới</AppText></Pressable></Animated.View>;
 }
 
 export function SearchBar({ value, onChangeText }: { value: string; onChangeText: (value: string) => void }) {
@@ -57,7 +58,7 @@ export function FilterPill({ label, active, onPress }: { label: string; active: 
 
 export function StatBubble({ icon, value, label, tint, delay = 0 }: { icon: keyof typeof Ionicons.glyphMap; value: number; label: string; tint: string; delay?: number }) {
   const { radius, colors } = useTheme();
-  return <Animated.View entering={FadeInDown.delay(delay).duration(350)} style={[styles.stat, { backgroundColor: tint, borderRadius: radius.lg }]}>
+  return <Animated.View entering={FadeInDown.delay(delay).duration(350)} style={[styles.stat, { backgroundColor: tint, borderRadius: radius.lg, shadowColor: colors.shadow }]}>
     <Ionicons name={icon} size={18} color={colors.deepPurple} /><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText>
   </Animated.View>;
 }
@@ -98,9 +99,12 @@ export function EmptyClosetState({ onPress }: { onPress: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  hero: { padding: 20, overflow: 'hidden', minHeight: 174, justifyContent: 'flex-end' }, heroTitle: { maxWidth: 280, marginVertical: 5 }, heroOrb: { position: 'absolute', right: -24, top: -30, width: 128, height: 128, borderRadius: 64, backgroundColor: 'rgba(255,255,255,0.18)' },
-  fabWrap: { position: 'absolute', right: 18, bottom: 108, zIndex: 20 }, fab: { minHeight: 54, borderRadius: 27, paddingHorizontal: 17, flexDirection: 'row', gap: 7, alignItems: 'center', justifyContent: 'center' },
+  hero: { padding: 22, overflow: 'hidden', minHeight: 210, justifyContent: 'flex-end', shadowOpacity: 0.18, shadowRadius: 20, shadowOffset: { width: 0, height: 12 }, elevation: 5 },
+  heroIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,249,241,0.9)', alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
+  heroTitle: { maxWidth: 310, marginVertical: 7 },
+  heroSubtitle: { maxWidth: 330, lineHeight: 22 },
+  fabWrap: { position: 'absolute', right: 18, bottom: 108, zIndex: 20 }, fab: { minHeight: 54, borderRadius: 27, paddingHorizontal: 17, flexDirection: 'row', gap: 7, alignItems: 'center', justifyContent: 'center', shadowOpacity: 0.2, shadowRadius: 14, shadowOffset: { width: 0, height: 9 }, elevation: 4 },
   search: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, paddingHorizontal: 14, minHeight: 48 }, searchInput: { flex: 1, paddingHorizontal: 10, fontSize: 15 },
-  pill: { paddingHorizontal: 13, paddingVertical: 9, borderWidth: 1 }, stat: { flex: 1, minWidth: '46%', padding: 12, gap: 2 },
+  pill: { paddingHorizontal: 13, paddingVertical: 9, borderWidth: 1 }, stat: { flex: 1, minWidth: '46%', padding: 12, gap: 2, shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 7 }, elevation: 2 },
   badge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4 }, cardWrap: { width: '48%' }, card: { height: 230, overflow: 'hidden', marginBottom: 13 }, cardImage: { width: '100%', height: '100%' }, imageFallback: { backgroundColor: '#F5F0E8', alignItems: 'center', justifyContent: 'center', gap: 6 }, cardOverlay: { backgroundColor: '#1A1208', opacity: 0.58 }, cardTop: { position: 'absolute', top: 9, left: 9, right: 9, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, cardBottom: { position: 'absolute', left: 10, right: 10, bottom: 10, gap: 3 }, empty: { padding: 22, gap: 8, marginTop: 8 },
 });

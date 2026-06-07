@@ -35,7 +35,8 @@ async function run<T>(userId: string, feature: AiFeature, summary: string, actio
 
 export const aiService = {
   detectClothingFromImage: (userId: string, uri: string) => run(userId, 'clothing_detection', 'One clothing image', (p) => p.detectClothingFromImage(uri)),
-  suggestOutfits: (userId: string, input: OutfitSuggestionInput) => run(userId, 'outfit_recommendation', `${input.wardrobe.length} wardrobe items; ${input.weather.condition}`, (p) => p.suggestOutfits(input)),
+  analyzeAndEnhanceClothingImage: (userId: string, uri: string) => run(userId, 'clothing_detection', 'One clothing image with enhancement candidates', (p) => p.analyzeAndEnhanceClothingImage(uri)),
+  suggestOutfits: (userId: string, input: OutfitSuggestionInput) => run(userId, 'outfit_recommendation', `${input.wardrobe.length} wardrobe items; ${input.weather.condition}; ${input.location ?? input.weather.location}; ${input.eventContext?.name ?? input.mood ?? 'general'}`, (p) => p.suggestOutfits(input)),
   generateVirtualTryOn: (userId: string, input: VirtualTryOnInput) => run(userId, 'virtual_try_on', `${input.outfitItemIds.length} outfit items; scene=${input.scene}`, (p) => p.generateVirtualTryOn(input)),
   analyzeStyleProfile: (userId: string, input: StyleProfileInput) => run(userId, 'style_profile', `${input.wardrobe.length} wardrobe items`, (p) => p.analyzeStyleProfile(input)),
 };

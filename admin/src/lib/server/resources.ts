@@ -25,8 +25,11 @@ const permissions: Record<string, { view: Permission; manage?: Permission }> = {
   trends: { view: "trends.view", manage: "trends.manage" },
   outfits: { view: "outfits.view", manage: "outfits.manage" },
   affiliate_products: { view: "affiliate.view", manage: "affiliate.manage" },
+  shopping_events: { view: "affiliate.view" },
   admin_logs: { view: "audit.view" },
   security_logs: { view: "security.view" },
+  cms_content: { view: "content.view", manage: "content.manage" },
+  admin_settings: { view: "settings.view", manage: "settings.manage" },
   events: { view: "users.view" },
   user_missions: { view: "users.view" },
   marketplace_messages: { view: "community.view" },
@@ -34,11 +37,11 @@ const permissions: Record<string, { view: Permission; manage?: Permission }> = {
   listing_reports: { view: "moderation.view", manage: "moderation.action" },
   adminUsers: { view: "settings.view", manage: "settings.manage" },
 };
-const publicCollections = new Set(["plan_limits", "missions", "trends", "affiliate_products", "listings"]);
+const publicCollections = new Set(["plan_limits", "missions", "trends", "affiliate_products", "listings", "cms_content"]);
 const ownerFields: Record<string, string> = {
   users: "id", clothes: "userId", outfits: "userId", events: "userId", user_missions: "userId",
   subscriptions: "userId", transactions: "buyerId", notifications: "userId", ai_logs: "userId", support_tickets: "userId",
-  marketplace_messages: "senderId", trade_offers: "buyerId", listing_reports: "reporterId",
+  marketplace_messages: "senderId", trade_offers: "buyerId", listing_reports: "reporterId", shopping_events: "userId",
 };
 const readOnlyCollections = new Set(["transactions", "ai_logs", "admin_logs", "security_logs"]);
 const userProfileFields = new Set([
@@ -53,15 +56,16 @@ type DemoRow = Record<string, unknown> & { id: string };
 const demoRows = <T extends { id: string }>(rows: T[]) => rows as unknown as DemoRow[];
 const demoCollections: Record<string, DemoRow[]> = {
   users: demoRows(mockUsers), clothes: [], plan_limits: demoRows(membershipPlans.map((plan) => ({
-    id: plan.id, label: plan.name, aiMonthly: plan.aiLimit ?? -1, closetItems: plan.wardrobeLimit ?? -1,
+    id: plan.id, label: plan.name, aiMonthly: plan.aiLimit ?? -1, closetItems: plan.wardrobeLimit ?? -1, status: "active",
   }))),
   subscriptions: demoRows(subscriptions), transactions: demoRows(transactions),
-  listings: demoRows(listings), reports: demoRows(contentReports), missions: demoRows(missions),
+  listings: demoRows(listings), reports: demoRows(contentReports), missions: demoRows(missions.map((mission) => ({ ...mission, status: mission.isActive ? "active" : "inactive" }))),
   notification_templates: demoRows(notificationTemplates), notifications: [], ai_logs: demoRows(aiLogs),
   support_tickets: demoRows(supportTickets), trends: demoRows(trends), outfits: demoRows(outfits),
   affiliate_products: demoRows(affiliateProducts.map((product) => ({ ...product, status: product.isActive ? "active" : "inactive" }))), admin_logs: demoRows(auditLogs),
   security_logs: demoRows(securityLogs),
-  events: [], user_missions: [], marketplace_messages: [], trade_offers: [], listing_reports: [],
+  events: [], user_missions: [], marketplace_messages: [], trade_offers: [], listing_reports: [], shopping_events: [],
+  cms_content: [], admin_settings: [],
   adminUsers: [],
 };
 const isDemo = () => process.env.NEXT_PUBLIC_DEMO_MODE === "true";
@@ -76,14 +80,45 @@ const clean = (value: Record<string, unknown>) => {
   delete data.id;
   return data;
 };
+const normalizeWrite = (collection: string, value: Record<string, unknown>) => {
+  const data = { ...value };
+  if ((collection === "missions" || collection === "affiliate_products") && typeof data.status === "string") {
+    data.isActive = data.status === "active";
+  }
+  if ((collection === "missions" || collection === "affiliate_products") && data.status == null && typeof data.isActive === "boolean") {
+    data.status = data.isActive ? "active" : "inactive";
+  }
+  if (collection === "plan_limits" && data.status == null) data.status = "active";
+  return data;
+};
 const isAdminAllowed = (identity: ApiIdentity | null, permission?: Permission) => Boolean(identity?.isAdmin && identity.role && permission && hasPermission(identity.role, permission));
 const owns = (identity: ApiIdentity | null, collection: string, row: Record<string, unknown>) => Boolean(identity && ownerFields[collection] && row[ownerFields[collection]] === identity.uid);
-const isPublic = (collection: string, row: Record<string, unknown>) => publicCollections.has(collection) && (collection !== "listings" ? row.status == null || row.status === "active" || row.status === "published" : row.status === "approved");
+const publicStatus = (collection: string, row: Record<string, unknown>) => {
+  if (collection === "listings") return row.status;
+  if (collection === "trends") return row.status;
+  if (collection === "cms_content") return row.status;
+  if (collection === "missions" || collection === "affiliate_products") {
+    if (typeof row.status === "string") return row.status;
+    if (typeof row.isActive === "boolean") return row.isActive ? "active" : "inactive";
+  }
+  if (collection === "plan_limits") return typeof row.status === "string" ? row.status : "active";
+  return row.status;
+};
+const matchesStatus = (collection: string, row: Record<string, unknown>, status: string | null) => !status || publicStatus(collection, row) === status;
+const isPublic = (collection: string, row: Record<string, unknown>) => {
+  if (!publicCollections.has(collection)) return false;
+  const status = publicStatus(collection, row);
+  if (collection === "listings") return status === "approved";
+  if (collection === "trends") return status === "published";
+  if (collection === "cms_content") return status === "published";
+  return status === "active";
+};
 const canRead = (identity: ApiIdentity | null, collection: string, row: Record<string, unknown>) => isAdminAllowed(identity, permissions[collection]?.view) || owns(identity, collection, row) || isPublic(collection, row);
 const canViewAdvancedStyle = (identity: ApiIdentity | null) => identity?.role === "super_admin" || identity?.role === "support";
 const sanitizeRow = (identity: ApiIdentity | null, collection: string, row: DemoRow): DemoRow => {
   if (collection !== "users" || canViewAdvancedStyle(identity) || owns(identity, collection, row)) return row;
-  const { advancedStylePreferences: _advancedStylePreferences, ...safe } = row;
+  const safe = { ...row };
+  delete safe.advancedStylePreferences;
   return safe as DemoRow;
 };
 async function access(request: NextRequest, collection: string, write = false) {
@@ -97,7 +132,7 @@ export async function list(request: NextRequest, collection: string) {
   try {
     const identity = await access(request, collection);
     const params = request.nextUrl.searchParams; const limit = Math.min(Number(params.get("limit") ?? 50), 100); const cursor = params.get("cursor");
-    const filter = (row: DemoRow) => canRead(identity, collection, row) && (!params.get("status") || row.status === params.get("status")) && (!params.get("userId") || row.userId === params.get("userId")) && (!params.get("search") || JSON.stringify(row).toLowerCase().includes(params.get("search")!.toLowerCase()));
+    const filter = (row: DemoRow) => canRead(identity, collection, row) && matchesStatus(collection, row, params.get("status")) && (!params.get("userId") || row.userId === params.get("userId")) && (!params.get("search") || JSON.stringify(row).toLowerCase().includes(params.get("search")!.toLowerCase()));
     if (isDemo()) return json((demoCollections[collection] ?? []).filter(filter).slice(0, limit), 200, { limit });
     let query = adminDb.collection(collection).orderBy("createdAt", "desc").limit(limit + 1);
     if (cursor) query = query.startAfter(cursor);
@@ -127,7 +162,7 @@ export async function create(request: NextRequest, collection: string) {
   try {
     const identity = await access(request, collection, true);
     if (!identity) throw new Error("FORBIDDEN");
-    const raw = await request.json() as Record<string, unknown>; const body = clean(raw);
+    const raw = await request.json() as Record<string, unknown>; const body = normalizeWrite(collection, clean(raw));
     const ownerAllowed = ownerFields[collection] && (body[ownerFields[collection]] === identity.uid || collection === "users" && raw.id === identity.uid);
     if (!isAdminAllowed(identity, permissions[collection].manage) && !ownerAllowed) throw new Error("FORBIDDEN");
     if (!identity.isAdmin && collection === "listings" && body.status !== "pending_review") throw new Error("FORBIDDEN");
@@ -149,7 +184,7 @@ export async function update(request: NextRequest, collection: string, id: strin
   try {
     const identity = await access(request, collection, true);
     if (!identity || readOnlyCollections.has(collection)) throw new Error("FORBIDDEN");
-    const patch = clean(await request.json());
+    const patch = normalizeWrite(collection, clean(await request.json()));
     if (!identity.isAdmin && collection === "users" && Object.keys(patch).some((key) => !userProfileFields.has(key))) throw new Error("FORBIDDEN");
     if (!identity.isAdmin && collection === "listings" && "status" in patch) throw new Error("FORBIDDEN");
     if (isDemo()) {

@@ -24,26 +24,65 @@ export default function RootLayout() {
   const resetSession = useAppStore((state) => state.resetSession);
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
   const {
-    isAuthLoading, isAuthenticated, onboardingCompleted, biometricEnabled,
-    biometricVerified, firebaseSetupError, verifyBiometric, logout, currentUser,
+    isAuthLoading, isAuthenticated, isGuest, onboardingCompleted, biometricEnabled,
+    biometricVerified, verifyBiometric, logout, currentUser,
   } = useAuthStore();
   const routeKey = segments.join('/');
+  const publicGuestRoutes = [
+    '(tabs)',
+    '(tabs)/index',
+    '(tabs)/profile',
+    '(tabs)/community',
+    '(tabs)/closet',
+    '(tabs)/try-on',
+    '(tabs)/events',
+    'profile',
+    'community',
+    'closet',
+    'try-on',
+    'events',
+    'missions',
+    'outfits',
+    'shopping',
+  ];
+  const isPublicGuestRoute = publicGuestRoutes.includes(routeKey);
   useEffect(() => { initializeAuth(); }, [initializeAuth]);
-  useEffect(() => { if (!isAuthLoading && isAuthenticated && (!biometricEnabled || biometricVerified)) void initialize(); }, [initialize, isAuthLoading, isAuthenticated, biometricEnabled, biometricVerified, routeKey]);
-  useEffect(() => { if (!isAuthLoading && !isAuthenticated) resetSession(); }, [isAuthLoading, isAuthenticated, resetSession]);
+  useEffect(() => {
+    if (!isAuthLoading && (isGuest || !isAuthenticated || (isAuthenticated && (!biometricEnabled || biometricVerified)))) void initialize();
+  }, [initialize, isAuthLoading, isAuthenticated, isGuest, biometricEnabled, biometricVerified, routeKey]);
+  useEffect(() => { if (!isAuthLoading && !isAuthenticated && !isGuest && !isPublicGuestRoute) resetSession(); }, [isAuthLoading, isAuthenticated, isGuest, resetSession, isPublicGuestRoute]);
   useEffect(() => {
     if (isAuthLoading) return;
     const inAuth = segments[0] === 'auth';
+    const guestAllowedAuthRoute = [
+      'auth/welcome',
+      'auth/login',
+      'auth/register',
+      'auth/phone',
+      'auth/otp',
+      'auth/forgot-password',
+    ].includes(segments.join('/'));
     const inStyleSurvey = segments.join('/') === 'onboarding/style-survey';
     const canEnterPrivate = isAuthenticated && (!biometricEnabled || biometricVerified);
-    if (!onboardingCompleted && segments.join('/') !== 'auth/onboarding') router.replace('/auth/onboarding');
-    else if (onboardingCompleted && !isAuthenticated && !inAuth) router.replace('/auth/welcome');
+    const canEnterUngated = isGuest;
+    const guestBlockedRoute = [
+      'community/create',
+      'onboarding/style-survey',
+      'payment/prepare',
+      'profile/edit',
+      'profile/style-preferences',
+      'profile/style-preferences/advanced',
+      'settings',
+    ].includes(segments.join('/'));
+    if (!onboardingCompleted && !canEnterUngated && segments.join('/') !== 'auth/onboarding') router.replace('/auth/onboarding');
+    else if (onboardingCompleted && !isAuthenticated && !canEnterUngated && !inAuth && !isPublicGuestRoute) router.replace('/auth/welcome');
+    else if (onboardingCompleted && canEnterUngated && inAuth && !guestAllowedAuthRoute) router.replace('/(tabs)');
+    else if (onboardingCompleted && canEnterUngated && guestBlockedRoute) router.replace('/(tabs)');
     else if (onboardingCompleted && canEnterPrivate && currentUser && !currentUser.hasCompletedStyleSurvey && !inStyleSurvey) router.replace('/onboarding/style-survey' as never);
     else if (onboardingCompleted && canEnterPrivate && currentUser?.hasCompletedStyleSurvey && (inAuth || inStyleSurvey)) router.replace('/(tabs)');
-  }, [biometricEnabled, biometricVerified, currentUser, isAuthLoading, isAuthenticated, onboardingCompleted, router, segments]);
+  }, [biometricEnabled, biometricVerified, currentUser, isAuthLoading, isAuthenticated, isGuest, isPublicGuestRoute, onboardingCompleted, router, routeKey, segments]);
 
   if (!fontsLoaded || isAuthLoading) return <View style={[styles.splash, { backgroundColor: colors.background }]}><View style={[styles.dot, { backgroundColor: colors.accent }]} /><AppText variant="display">Tủ đồ của bạn</AppText><AppText muted>Đang chuẩn bị phong cách riêng cho bạn...</AppText></View>;
-  if (firebaseSetupError) return <View style={[styles.splash, { backgroundColor: colors.background, padding: 24 }]}><AppText variant="display">Cần cấu hình Firebase</AppText><AppText muted style={{ textAlign: 'center', marginTop: 10 }}>{firebaseSetupError}</AppText><AppText variant="bodySmall" muted style={{ textAlign: 'center', marginTop: 8 }}>Điền các biến EXPO_PUBLIC_FIREBASE_* trong mobile/.env để bật đăng nhập production.</AppText></View>;
   if (isAuthenticated && biometricEnabled && !biometricVerified) return <View style={[styles.splash, { backgroundColor: colors.background, padding: 24 }]}><View style={[styles.dot, { backgroundColor: colors.accent }]} /><AppText variant="display">Mở khóa tủ đồ</AppText><AppText muted style={{ textAlign: 'center', marginBottom: 16 }}>Xác minh Face ID, Touch ID hoặc vân tay để vào ứng dụng.</AppText><Pressable style={[styles.unlock, { backgroundColor: colors.primary }]} onPress={() => { void verifyBiometric(); }}><AppText color={colors.textInverse}>Đăng nhập bằng Face ID / Vân tay</AppText></Pressable><Pressable onPress={() => { void logout(); }} style={{ marginTop: 14 }}><AppText muted>Đăng nhập lại</AppText></Pressable></View>;
 
   return (

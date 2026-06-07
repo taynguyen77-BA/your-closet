@@ -2,7 +2,9 @@ import { Alert, FlatList, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
+import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useTheme } from '@/theme';
 import { DataState } from '@/components/ui/DataState';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,10 +16,33 @@ export default function MissionsScreen() {
   const completeMission = useAppStore((s) => s.completeMission);
   const loadState = useAppStore((s) => s.loadState);
   const error = useAppStore((s) => s.error);
+  const { isAuthenticated, isGuest } = useAuthStore();
+  const isPublicViewer = isGuest || !isAuthenticated;
   const runMissionAction = async (action: () => Promise<void>) => {
     try { await action(); }
     catch { Alert.alert('Chế độ trải nghiệm', 'Nhiệm vụ này sẽ được đồng bộ khi dịch vụ trực tuyến sẵn sàng.'); }
   };
+
+  if (isPublicViewer) {
+    return (
+      <FlatList
+        data={[]}
+        contentContainerStyle={{ padding: spacing.lg }}
+        style={{ backgroundColor: colors.background }}
+        ListHeaderComponent={
+          <>
+            <LinearGradient colors={gradients.premium} style={[styles.hero, { borderRadius: radius.xxl }]}>
+              <AppText variant="caption" color="#fff">GLOW-UP CLUB</AppText>
+              <AppText variant="display" color="#fff">Nhiệm vụ cần tài khoản.</AppText>
+              <AppText color="#fff">Đăng nhập để theo dõi tiến độ, nhận thưởng và đồng bộ lượt AI.</AppText>
+            </LinearGradient>
+            <GuestAccessCard icon="ribbon-outline" title="Đăng nhập để làm nhiệm vụ" description="Tiến độ, phần thưởng và lượt AI là dữ liệu cá nhân nên không hiển thị trong chế độ guest." />
+          </>
+        }
+        renderItem={() => null}
+      />
+    );
+  }
 
   return (
     <FlatList

@@ -29,7 +29,12 @@ export function GlassCard({ children, style }: GlassCardProps) {
 
 const styles = StyleSheet.create({
   fallback: {
-    borderWidth: 0,
+    borderWidth: 1,
     padding: 16,
+    shadowColor: '#151310',
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 3,
   },
 });

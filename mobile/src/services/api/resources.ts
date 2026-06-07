@@ -1,6 +1,6 @@
 import type {
-  AffiliateProduct, AppNotification, ClothingItem, CommunityListing, ListingReport, MarketplaceMessage, Mission,
-  FashionTrend, Outfit, PlanLimit, TradeOffer, Transaction, User, WardrobeEvent,
+  AdminSetting, AffiliateProduct, AppNotification, ClothingItem, CmsContent, CommunityListing, ListingReport, MarketplaceMessage, Mission,
+  FashionTrend, Outfit, PlanLimit, ShoppingEvent, TradeOffer, Transaction, User, WardrobeEvent,
 } from '@/models';
 import type { AiUsageLog } from '@/services/ai/types';
 import { apiFetch } from './client';
@@ -31,3 +31,6 @@ export const listingReportsService = resource<ListingReport>('listing_reports');
 export const notificationsService = resource<AppNotification>('notifications');
 export const aiUsageLogsService = resource<AiUsageLog & { id: string }>('ai_logs');
 export const affiliateProductsService = resource<AffiliateProduct>('affiliate_products');
+export const shoppingEventsService = resource<ShoppingEvent>('shopping_events');
+export const cmsContentService = resource<CmsContent>('cms_content');
+export const adminSettingsService = resource<AdminSetting>('admin_settings');

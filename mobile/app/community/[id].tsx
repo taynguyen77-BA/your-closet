@@ -12,7 +12,7 @@ import { useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function CommunityDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, source, recommendationId } = useLocalSearchParams<{ id: string; source?: string; recommendationId?: string }>();
   const { colors, gradients, spacing, radius } = useTheme();
   const listing = useAppStore((s) => s.communityListings.find((l) => l.id === id));
   const user = useAppStore((s) => s.user);
@@ -42,7 +42,7 @@ export default function CommunityDetailScreen() {
       if (flow === 'message') await sendMarketplaceMessage({ listingId: listing.id, senderId: user.id, sellerId: listing.userId, body: text.trim(), createdAt });
       if (flow === 'trade') await createTradeOffer({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, message: text.trim(), status: 'pending', createdAt });
       if (flow === 'report') await createListingReport({ listingId: listing.id, reporterId: user.id, reason: text.trim(), createdAt });
-      if (flow === 'buy') await createTransaction({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, amount: listing.price ?? 0, platformFeePercentage: PLATFORM_FEE_RATE * 100, platformFee: fee, status: 'pending', createdAt });
+      if (flow === 'buy') await createTransaction({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, amount: listing.price ?? 0, platformFeePercentage: PLATFORM_FEE_RATE * 100, platformFee: fee, status: 'pending', source: source === 'ai_stylist' ? 'ai_stylist' : 'community', recommendationId, createdAt });
       Alert.alert('Đã ghi nhận', flow === 'report' ? 'Báo cáo đã được gửi để kiểm duyệt.' : flow === 'buy' ? 'Đơn hàng đã tạo. Trạng thái hiện tại: chờ thanh toán.' : 'Yêu cầu đã được gửi tới người bán.');
       setText(''); setFlow(null);
     } catch { Alert.alert('Chưa thể gửi', 'Kiểm tra kết nối rồi thử lại.'); }

@@ -107,6 +107,7 @@ export interface ClothingItem {
   userId: string;
   name: string;
   imageUrl: string;
+  originalImageUrl?: string;
   enhancedImageUrl?: string;
   type: ClothingType;
   material?: string;
@@ -114,6 +115,9 @@ export interface ClothingItem {
   style?: string;
   season?: string[];
   tags: string[];
+  aiMetadata?: Record<string, unknown>;
+  aiConfidenceScore?: number;
+  aiQualityWarnings?: string[];
   isFavorite: boolean;
   timesWorn: number;
   createdAt: string;
@@ -206,6 +210,31 @@ export interface PlanLimit {
   badge?: string;
 }
 
+export interface CmsContent {
+  id: string;
+  key: string;
+  type: 'home_banner' | 'onboarding_slide' | 'faq' | 'legal' | 'seasonal_collection' | string;
+  title: string;
+  body?: string;
+  imageUrl?: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+  locale?: string;
+  status: 'draft' | 'published' | 'archived';
+  sortOrder?: number;
+  metadata?: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AdminSetting {
+  id: string;
+  value: unknown;
+  scope?: 'mobile' | 'admin' | 'backend' | string;
+  status?: 'active' | 'inactive';
+  updatedAt?: string;
+}
+
 export interface CommunityListing {
   id: string;
   userId: string;
@@ -216,10 +245,16 @@ export interface CommunityListing {
   description: string;
   imageUrls: string[];
   condition: 'new' | 'like_new' | 'good' | 'fair';
+  conditionScore?: number;
   listingType: ListingType;
+  type?: ClothingType;
+  category?: ClothingType | string;
+  color?: string;
+  styleTags?: string[];
   price?: number;
   size?: string;
   gender?: string;
+  material?: string;
   location: string;
   tags: string[];
   status: ListingStatus;
@@ -238,6 +273,8 @@ export interface Transaction {
   platformFeePercentage: number;
   platformFee: number;
   status: TransactionStatus;
+  source?: 'ai_stylist' | 'community' | 'direct' | string;
+  recommendationId?: string;
   createdAt: string;
   updatedAt?: string;
 }
@@ -290,11 +327,40 @@ export interface AffiliateProduct {
   name: string;
   store: string;
   link: string;
+  category?: ClothingType | string;
+  type?: ClothingType | string;
+  colors?: string[];
+  styleTags?: string[];
+  sizes?: string[];
+  gender?: string;
+  price?: number;
+  commissionRate?: number;
+  partnerName?: string;
+  deeplink?: string;
+  trackingCode?: string;
   imageUrl?: string;
   priceLabel?: string;
   status?: 'active' | 'inactive';
+  clicks?: number;
+  conversions?: number;
+  revenueVnd?: number;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export type ShoppingEventType = 'affiliate_click' | 'product_impression' | 'community_item_click';
+
+export interface ShoppingEvent {
+  id: string;
+  userId: string;
+  eventType: ShoppingEventType;
+  targetType: 'affiliate_product' | 'community_listing';
+  targetId: string;
+  source: 'ai_stylist' | 'shopping' | 'community' | string;
+  recommendationId?: string;
+  reason?: string;
+  outfitId?: string;
+  createdAt: string;
 }
 
 export interface WeatherInfo {

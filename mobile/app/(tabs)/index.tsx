@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -6,7 +7,9 @@ import { Screen } from '@/components/layout/Screen';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { SafeImage } from '@/components/ui/SafeImage';
+import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
+import { useAuthStore } from '@/stores/authStore';
 import { useTheme } from '@/theme';
 
 const quickActions = [
@@ -18,11 +21,14 @@ const quickActions = [
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { colors, spacing } = useTheme();
+  const { colors, gradients, spacing } = useTheme();
   const { weather, outfits, events, missions, trends, user, clothing } = useAppStore();
+  const { isAuthenticated, isGuest } = useAuthStore();
+  const isPublicViewer = isGuest || !isAuthenticated;
   const hero = outfits[0];
   const unused = clothing.filter((item) => item.timesWorn < 3).length;
   const activeMissions = missions.filter((item) => !item.isClaimed).slice(0, 2);
+  const visibleQuickActions = isPublicViewer ? quickActions.filter((item) => ['Cộng đồng', 'Mua sắm'].includes(item.label)) : quickActions;
 
   return (
     <Screen padded={false} bottomOffset={96}>
@@ -30,7 +36,7 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View>
             <AppText variant="caption" muted>Chào buổi sáng</AppText>
-            <AppText variant="display" style={styles.name}>{user.username}</AppText>
+            <AppText variant="display" style={styles.name}>{isPublicViewer ? 'Bạn mới' : user.username}</AppText>
           </View>
           <Pressable onPress={() => router.push('/(tabs)/profile')} style={styles.avatar}>
             <AppText variant="label" color={colors.textInverse}>MA</AppText>
@@ -38,17 +44,19 @@ export default function HomeScreen() {
         </View>
 
         <Animated.View entering={FadeInDown.duration(420)}>
-          <View style={[styles.card, styles.hero]}>
-            <AppText variant="caption" color={colors.accent}>✦ TRỢ LÝ PHỐI ĐỒ AI</AppText>
-            <AppText variant="display" color={colors.textInverse} style={styles.heroTitle}>Trang phục nhẹ nhàng,{'\n'}<AppText variant="display" color={colors.accent} style={styles.heroAccent}>tâm trạng thật xinh.</AppText></AppText>
-            <AppText variant="bodySmall" color={colors.accent} style={styles.heroCopy}>Một bộ đồ nhẹ nhàng, đúng tâm trạng và sẵn sàng cho ngày mới của bạn.</AppText>
-            <Pressable onPress={() => router.push('/(tabs)/try-on')} style={styles.primaryButton}>
-              <AppText variant="label" color={colors.textInverse}>✦  Phối đồ cùng AI</AppText>
+          <LinearGradient colors={gradients.hero} style={[styles.card, styles.hero, { shadowColor: colors.shadow }]}>
+            <View style={styles.heroIcon}><Ionicons name="sparkles" size={18} color={colors.accentDark} /></View>
+            <AppText variant="caption" color={colors.accentLight}>{isPublicViewer ? 'KHÁM PHÁ YOUR CLOSET' : 'TRỢ LÝ PHỐI ĐỒ AI'}</AppText>
+            <AppText variant="display" color={colors.textInverse} style={styles.heroTitle}>{isPublicViewer ? 'Xem vibe cộng đồng,\nđăng nhập để lưu gu.' : 'Trang phục nhẹ nhàng,\n'}{!isPublicViewer ? <AppText variant="display" color={colors.accent} style={styles.heroAccent}>tâm trạng thật xinh.</AppText> : null}</AppText>
+            <AppText variant="bodySmall" color={colors.warmLight} style={styles.heroCopy}>{isPublicViewer ? 'Bạn có thể xem cộng đồng và mua sắm gợi ý trước. Tủ đồ cá nhân và AI stylist cần tài khoản.' : 'Một bộ đồ nhẹ nhàng, đúng tâm trạng và sẵn sàng cho ngày mới của bạn.'}</AppText>
+            <Pressable onPress={() => router.push(isPublicViewer ? '/(tabs)/community' : '/(tabs)/try-on')} style={[styles.primaryButton, { backgroundColor: colors.accent }]}>
+              <Ionicons name={isPublicViewer ? 'people-outline' : 'sparkles'} size={17} color={colors.textInverse} />
+              <AppText variant="label" color={colors.textInverse}>{isPublicViewer ? 'Khám phá cộng đồng' : 'Phối đồ cùng AI'}</AppText>
             </Pressable>
-          </View>
+          </LinearGradient>
         </Animated.View>
 
-        <View style={styles.miniRow}>
+        {!isPublicViewer ? <View style={styles.miniRow}>
           <View style={[styles.card, styles.miniCard]}>
             <Ionicons name="heart-outline" size={18} color={colors.accent} />
             <AppText variant="caption" color={colors.accent}>PHONG CÁCH HÔM NAY</AppText>
@@ -59,9 +67,9 @@ export default function HomeScreen() {
             <AppText variant="caption" color={colors.accent}>TÂM TRẠNG</AppText>
             <AppText variant="h3">Rạng rỡ{'\n'}tự nhiên</AppText>
           </View>
-        </View>
+        </View> : null}
 
-        <View style={[styles.card, styles.weather]}>
+        <View style={[styles.card, styles.weather, { shadowColor: colors.shadow }]}>
           <View>
             <AppText variant="caption" muted>{weather.location}</AppText>
             <AppText variant="display" style={styles.temperature}>{weather.temperature}° · {weather.condition}</AppText>
@@ -70,14 +78,15 @@ export default function HomeScreen() {
           <AppText style={styles.sun}>☀️</AppText>
         </View>
 
-        <View style={[styles.card, styles.streak]}>
+        {!isPublicViewer ? <View style={[styles.card, styles.streak]}>
           <View>
             <AppText variant="caption" color={colors.text}>CHUỖI PHONG CÁCH</AppText>
             <AppText variant="body" color={colors.text} style={styles.streakText}>7 ngày liên tiếp chăm chút phong cách</AppText>
           </View>
           <View style={styles.xp}><AppText variant="caption" color={colors.accent}>+240 XP</AppText></View>
-        </View>
+        </View> : null}
 
+        {!isPublicViewer ? <>
         <View style={styles.sectionHeader}>
           <AppText variant="h3" style={styles.sectionTitle}>Lịch trình hôm nay</AppText>
           <Pressable onPress={() => router.push('/(tabs)/events')}>
@@ -94,9 +103,10 @@ export default function HomeScreen() {
             </Pressable>
           ))}
         </ScrollView>
+        </> : null}
 
-        <SectionTitle title="Outfit AI của hôm nay" action="Xem thêm" onPress={() => router.push('/outfits')} />
-        {hero ? (
+        {!isPublicViewer ? <SectionTitle title="Outfit AI của hôm nay" action="Xem thêm" onPress={() => router.push('/outfits')} /> : null}
+        {!isPublicViewer && hero ? (
           <Pressable onPress={() => router.push(`/outfit/${hero.id}`)} style={[styles.card, styles.outfitCard]}>
             {hero.previewImageUrl ? <SafeImage source={{ uri: hero.previewImageUrl }} style={styles.outfitImage} contentFit="cover" fallbackLabel="ẢNH OUTFIT" /> : null}
             <View style={styles.outfitBody}>
@@ -115,27 +125,29 @@ export default function HomeScreen() {
           </Pressable>
         ) : null}
 
+        {isPublicViewer ? <GuestAccessCard title="Đăng nhập để bật AI stylist" description="AI cần tủ đồ, ảnh, lịch trình và gu cá nhân để gợi ý outfit đúng với bạn." icon="sparkles-outline" /> : null}
+
         <SectionTitle title="Bắt đầu nhanh" />
         <View style={styles.quickGrid}>
-          {quickActions.map((item) => (
-            <Pressable key={item.label} onPress={() => router.push(item.route as never)} style={[styles.card, styles.quick]}>
+          {visibleQuickActions.map((item) => (
+          <Pressable key={item.label} onPress={() => router.push(item.route as never)} style={[styles.card, styles.quick, { shadowColor: colors.shadow }]}>
               <View style={styles.quickIcon}><Ionicons name={item.icon} size={21} color={colors.primary} /></View>
               <AppText variant="label">{item.label}</AppText>
             </Pressable>
           ))}
         </View>
 
-        <Pressable onPress={() => router.push('/(tabs)/closet')} style={[styles.card, styles.insight]}>
+        {!isPublicViewer ? <Pressable onPress={() => router.push('/(tabs)/closet')} style={[styles.card, styles.insight]}>
           <View style={{ flex: 1 }}>
             <AppText variant="caption" color={colors.accent}>PHÂN TÍCH TỦ ĐỒ</AppText>
             <AppText variant="h3" style={styles.insightTitle}>{unused} món đồ đang chờ được mặc lại</AppText>
             <AppText variant="bodySmall" muted>Bạn có thể tạo {Math.max(12, clothing.length * 5 + 3)} bộ đồ mới từ tủ đồ hiện tại.</AppText>
           </View>
           <Ionicons name="arrow-forward-circle" size={32} color={colors.primary} />
-        </Pressable>
+        </Pressable> : null}
 
-        <SectionTitle title="Nhiệm vụ hôm nay" action="Tất cả" onPress={() => router.push('/missions')} />
-        {activeMissions.map((mission) => (
+        {!isPublicViewer ? <SectionTitle title="Nhiệm vụ hôm nay" action="Tất cả" onPress={() => router.push('/missions')} /> : null}
+        {!isPublicViewer && activeMissions.map((mission) => (
           <Pressable key={mission.id} onPress={() => router.push('/missions')} style={[styles.card, styles.mission]}>
             <View style={styles.missionIcon}><Ionicons name="ribbon-outline" size={20} color={colors.primary} /></View>
             <View style={{ flex: 1 }}>
@@ -177,12 +189,13 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
   name: { marginTop: 2 },
   avatar: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1E1712' },
-  card: { overflow: 'hidden', backgroundColor: '#FFFFFF' },
-  hero: { minHeight: 216, borderRadius: 20, padding: 20, justifyContent: 'flex-end', backgroundColor: '#1E1712' },
+  card: { overflow: 'hidden', backgroundColor: '#FFFFFF', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 9 }, elevation: 3 },
+  hero: { minHeight: 258, borderRadius: 22, padding: 22, justifyContent: 'flex-end', backgroundColor: '#1E1712', shadowOpacity: 0.2, shadowRadius: 22, shadowOffset: { width: 0, height: 13 }, elevation: 5 },
+  heroIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,249,241,0.92)', alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
   heroTitle: { fontSize: 25, lineHeight: 29, marginTop: 14 },
   heroAccent: { fontStyle: 'italic' },
-  heroCopy: { maxWidth: 255, marginTop: 8, lineHeight: 18 },
-  primaryButton: { alignSelf: 'flex-start', borderRadius: 100, borderWidth: 1, borderColor: '#D4B896', paddingHorizontal: 20, paddingVertical: 10, marginTop: 16 },
+  heroCopy: { maxWidth: 315, marginTop: 8, lineHeight: 20 },
+  primaryButton: { alignSelf: 'flex-start', borderRadius: 100, paddingHorizontal: 18, paddingVertical: 11, marginTop: 18, flexDirection: 'row', alignItems: 'center', gap: 7 },
   miniRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
   miniCard: { flex: 1, minHeight: 126, borderRadius: 16, padding: 14, justifyContent: 'space-between' },
   weather: { minHeight: 88, borderRadius: 16, padding: 14, marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

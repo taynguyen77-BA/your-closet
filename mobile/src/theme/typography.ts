@@ -10,30 +10,30 @@ export const fontFamily = {
 export const typography: Record<string, TextStyle> = {
   display: {
     fontFamily: 'DM Serif Display',
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '300',
-    letterSpacing: 0.96,
-    lineHeight: 30,
+    letterSpacing: 0,
+    lineHeight: 34,
   },
   h1: {
     fontFamily: 'DM Serif Display',
     fontSize: 24,
     fontWeight: '800',
-    letterSpacing: -0.3,
+    letterSpacing: 0,
     lineHeight: 30,
   },
   h2: {
     fontFamily: 'DM Serif Display',
     fontSize: 20,
     fontWeight: '300',
-    letterSpacing: 0.8,
+    letterSpacing: 0,
     lineHeight: 26,
   },
   h3: {
     fontFamily: 'DM Serif Display',
     fontSize: 17,
     fontWeight: '300',
-    letterSpacing: 0.68,
+    letterSpacing: 0,
     lineHeight: 22,
   },
   body: {

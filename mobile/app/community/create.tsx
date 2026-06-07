@@ -36,7 +36,7 @@ export default function CreateListingScreen() {
     if (!item || !validDetails) return;
     setSaving(true);
     try {
-      await createListing({ userId: user.id, sellerName: user.username, sellerAvatarUrl: user.avatarUrl, clothingItemId: item.id, title: title.trim(), description: description.trim(), imageUrls: [item.imageUrl], condition, listingType, price: listingType === 'sale' ? Number(price) : undefined, size: size.trim(), gender: gender.trim(), location: location.trim(), tags: item.tags, status: 'pending_review', reportsCount: 0, createdAt: new Date().toISOString() });
+      await createListing({ userId: user.id, sellerName: user.username, sellerAvatarUrl: user.avatarUrl, clothingItemId: item.id, title: title.trim(), description: description.trim(), imageUrls: [item.imageUrl], condition, conditionScore: condition === 'new' ? 1 : condition === 'like_new' ? 0.92 : condition === 'good' ? 0.76 : 0.54, listingType, type: item.type, category: item.type, color: item.color, styleTags: [item.style, ...item.tags].filter(Boolean) as string[], material: item.material, price: listingType === 'sale' ? Number(price) : undefined, size: size.trim(), gender: gender.trim(), location: location.trim(), tags: item.tags, status: 'pending_review', reportsCount: 0, createdAt: new Date().toISOString() });
       setStep(5);
     } catch { Alert.alert('Không thể lưu', 'Kiểm tra kết nối rồi thử lại.'); }
     finally { setSaving(false); }

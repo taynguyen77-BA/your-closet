@@ -1,6 +1,6 @@
 import { getFirebaseAuth, isFirebaseConfigured } from '@/services/firebase/config';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? '';
+const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? process.env.EXPO_PUBLIC_API_URL ?? '';
 export interface ApiMeta { total: number; limit: number; cursor: string | null }
 export interface ApiEnvelope<T> { data: T; meta: ApiMeta }
 export class ApiError extends Error { constructor(message: string, public status: number) { super(message); } }

@@ -26,8 +26,16 @@ import {
 } from '@/services/auth/authService';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
+export type AuthFlowRoute =
+  | '/auth/welcome'
+  | '/auth/login'
+  | '/auth/register'
+  | '/auth/phone'
+  | '/auth/otp'
+  | '/auth/forgot-password';
 let unsubscribe: (() => void) | undefined;
 const useDemoMode = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
+const useDemoAuthBypass = () => process.env.EXPO_PUBLIC_DEMO_AUTH_BYPASS === 'true';
 
 interface OnboardingPayload {
   username?: string;
@@ -45,6 +53,7 @@ interface AuthState {
   authStatus: AuthStatus;
   isAuthLoading: boolean;
   isAuthenticated: boolean;
+  isGuest: boolean;
   authError?: string;
   firebaseSetupError?: string;
   showGuestPrompt: boolean;
@@ -52,6 +61,7 @@ interface AuthState {
   biometricEnabled: boolean;
   biometricVerified: boolean;
   initializeAuth: () => Promise<void>;
+  startGuestSession: () => void;
   completeFirstLaunchOnboarding: () => Promise<void>;
   loginWithPhone: (phoneNumber: string) => Promise<boolean>;
   verifyOtp: (code: string) => Promise<boolean>;
@@ -71,12 +81,31 @@ interface AuthState {
   register: (value: { name: string; email: string; password: string }) => Promise<boolean>;
   updateOnboarding: (payload: OnboardingPayload) => Promise<void>;
   requireAccount: () => boolean;
+  enterAuthFlow: (targetRoute: AuthFlowRoute) => AuthFlowRoute;
   closeGuestPrompt: () => void;
 }
 
 const setFailure = (set: (patch: Partial<AuthState>) => void, error: unknown) => {
-  set({ isAuthLoading: false, authError: friendlyAuthError(error) });
+  set({ isAuthLoading: false, authStatus: 'unauthenticated', isAuthenticated: false, authError: friendlyAuthError(error) });
 };
+
+const setAuthenticated = (set: (patch: Partial<AuthState>) => void, currentUser: User) => {
+  set({
+    currentUser,
+    appUser: currentUser,
+    authStatus: 'authenticated',
+    isAuthenticated: true,
+    isAuthLoading: false,
+    biometricVerified: true,
+    authError: undefined,
+  });
+};
+
+const demoUser = (): User => ({
+  ...mockUser,
+  hasCompletedStyleSurvey: true,
+  styleProfileCompletionPercent: mockUser.styleProfileCompletionPercent ?? 100,
+});
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   firebaseUser: null,
@@ -85,12 +114,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   authStatus: 'loading',
   isAuthLoading: true,
   isAuthenticated: false,
+  isGuest: false,
   showGuestPrompt: false,
   onboardingCompleted: false,
   biometricEnabled: false,
   biometricVerified: false,
   initializeAuth: async () => {
-    if (useDemoMode()) {
+    if (useDemoMode() && useDemoAuthBypass()) {
       const onboardingCompleted = await getOnboardingCompleted();
       set({
         firebaseUser: null,
@@ -98,6 +128,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         appUser: { ...mockUser, hasCompletedStyleSurvey: mockUser.hasCompletedStyleSurvey ?? false, styleProfileCompletionPercent: mockUser.styleProfileCompletionPercent ?? 0 },
         authStatus: 'authenticated',
         isAuthenticated: true,
+        isGuest: false,
         isAuthLoading: false,
         onboardingCompleted,
         biometricEnabled: false,
@@ -107,13 +138,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
     try {
-      assertFirebaseReady();
       const [onboardingCompleted, biometricEnabled] = await Promise.all([getOnboardingCompleted(), getBiometricEnabled()]);
       set({ onboardingCompleted, biometricEnabled, isAuthLoading: true, authStatus: 'loading', firebaseSetupError: undefined });
-      if (unsubscribe) return;
+      assertFirebaseReady();
+      if (unsubscribe) {
+        set({ isAuthLoading: false });
+        return;
+      }
       unsubscribe = subscribeToFirebaseAuth(async (firebaseUser) => {
         if (!firebaseUser) {
-          set({ firebaseUser: null, currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, isAuthLoading: false, biometricVerified: false });
+          set({ firebaseUser: null, currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, isGuest: false, isAuthLoading: false, biometricVerified: false });
           return;
         }
         try {
@@ -126,6 +160,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             appUser: currentUser,
             authStatus: 'authenticated',
             isAuthenticated: true,
+            isGuest: false,
             isAuthLoading: false,
             biometricEnabled: needsBiometric,
             biometricVerified: !needsBiometric,
@@ -135,9 +170,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       });
     } catch (error) {
-      set({ firebaseSetupError: friendlyAuthError(error), authStatus: 'unauthenticated', isAuthLoading: false, isAuthenticated: false });
+      if (useDemoMode()) {
+        const currentUser = demoUser();
+        set({
+          firebaseUser: null,
+          currentUser,
+          appUser: currentUser,
+          authStatus: 'authenticated',
+          isAuthenticated: true,
+          isGuest: false,
+          isAuthLoading: false,
+          onboardingCompleted: true,
+          biometricEnabled: false,
+          biometricVerified: true,
+          firebaseSetupError: undefined,
+          authError: undefined,
+        });
+        return;
+      }
+      set({ firebaseSetupError: friendlyAuthError(error), authStatus: 'unauthenticated', isAuthLoading: false, isAuthenticated: false, isGuest: false });
     }
   },
+  startGuestSession: () => set({
+    firebaseUser: null,
+    currentUser: null,
+    appUser: null,
+    authStatus: 'unauthenticated',
+    isAuthenticated: false,
+    isGuest: true,
+    isAuthLoading: false,
+    biometricEnabled: false,
+    biometricVerified: true,
+    authError: undefined,
+  }),
   completeFirstLaunchOnboarding: async () => {
     await setOnboardingCompleted();
     set({ onboardingCompleted: true });
@@ -151,28 +216,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isAuthLoading: true, authError: undefined });
     try {
       const currentUser = await otpVerify(code);
-      set({ currentUser, appUser: currentUser, authStatus: 'authenticated', isAuthenticated: true, isAuthLoading: false });
+      setAuthenticated(set, currentUser);
       return true;
     } catch (error) { setFailure(set, error); return false; }
   },
   loginWithGoogle: async () => {
     set({ isAuthLoading: true, authError: undefined });
-    try { const currentUser = await googleLogin(); set({ currentUser, appUser: currentUser, isAuthLoading: false }); return true; }
+    try { const currentUser = await googleLogin(); setAuthenticated(set, currentUser); return true; }
     catch (error) { setFailure(set, error); return false; }
   },
   loginWithFacebook: async () => {
     set({ isAuthLoading: true, authError: undefined });
-    try { const currentUser = await facebookLogin(); set({ currentUser, appUser: currentUser, isAuthLoading: false }); return true; }
+    try { const currentUser = await facebookLogin(); setAuthenticated(set, currentUser); return true; }
     catch (error) { setFailure(set, error); return false; }
   },
   registerWithEmail: async ({ name, email, password }) => {
     set({ isAuthLoading: true, authError: undefined });
-    try { const currentUser = await emailRegister(name, email, password); set({ currentUser, appUser: currentUser, isAuthLoading: false }); return true; }
+    try { const currentUser = await emailRegister(name, email, password); setAuthenticated(set, currentUser); return true; }
     catch (error) { setFailure(set, error); return false; }
   },
   loginWithEmail: async (email, password) => {
     set({ isAuthLoading: true, authError: undefined });
-    try { const currentUser = await emailLogin(email, password); set({ currentUser, appUser: currentUser, isAuthLoading: false }); return true; }
+    try { const currentUser = await emailLogin(email, password); setAuthenticated(set, currentUser); return true; }
     catch (error) { setFailure(set, error); return false; }
   },
   sendPasswordReset: async (email) => {
@@ -181,17 +246,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     catch (error) { set({ authError: friendlyAuthError(error) }); return false; }
   },
   logout: async () => {
-    if (useDemoMode()) {
-      set({ currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
+    if (useDemoMode() && useDemoAuthBypass()) {
+      set({ currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, isGuest: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
       return;
     }
     try { await logoutFirebase(); } finally {
-      set({ firebaseUser: null, currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
+      set({ firebaseUser: null, currentUser: null, appUser: null, authStatus: 'unauthenticated', isAuthenticated: false, isGuest: false, biometricEnabled: false, biometricVerified: false, isAuthLoading: false });
     }
   },
   updateProfile: async (patch) => {
     const user = get().currentUser; if (!user) return false;
-    if (useDemoMode()) {
+    if (useDemoMode() && useDemoAuthBypass()) {
       const updated = { ...user, ...patch };
       set({ currentUser: updated, appUser: updated });
       return true;
@@ -236,8 +301,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateOnboarding: async (payload) => {
     await get().updateProfile({ ...payload, hasCompletedOnboarding: true });
   },
-  requireAccount: () => get().isAuthenticated,
-  closeGuestPrompt: () => undefined,
+  requireAccount: () => {
+    const isAuthenticated = get().isAuthenticated;
+    if (!isAuthenticated) set({ showGuestPrompt: true });
+    return isAuthenticated;
+  },
+  enterAuthFlow: (targetRoute) => {
+    set({
+      firebaseUser: null,
+      currentUser: null,
+      appUser: null,
+      authStatus: 'unauthenticated',
+      isAuthenticated: false,
+      isGuest: false,
+      isAuthLoading: false,
+      biometricEnabled: false,
+      biometricVerified: false,
+      authError: undefined,
+      showGuestPrompt: false,
+    });
+    return targetRoute;
+  },
+  closeGuestPrompt: () => set({ showGuestPrompt: false }),
 }));
 
 export const EXPERIENCE_USER_ID = '';

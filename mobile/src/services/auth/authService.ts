@@ -37,6 +37,12 @@ const db = () => getFirebaseFirestore();
 const redirectUri = () => makeRedirectUri({ scheme: 'tudocuaban', path: 'auth/callback', preferLocalhost: true });
 const env = (key: string) => process.env[key]?.trim() ?? '';
 
+export function getMissingGoogleClientConfig() {
+  if (Platform.OS === 'web') return [] as string[];
+  const key = Platform.OS === 'ios' ? 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID' : 'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID';
+  return env(key) ? [] : [key];
+}
+
 export function friendlyAuthError(error: unknown): string {
   const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
   if (code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) return 'Email hoặc mật khẩu chưa đúng. Bạn thử lại nhé.';
@@ -123,16 +129,12 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithGoogle() {
-  const clientId = Platform.select({
-    ios: env('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID'),
-    android: env('EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID'),
-    default: env('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'),
-  });
-  if (!clientId) throw new Error('Thiếu Google Client ID. Điền EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID/IOS/ANDROID trong mobile/.env và bật Google provider trong Firebase.');
   if (Platform.OS === 'web') {
     const credential = await signInWithPopup(auth(), new GoogleAuthProvider());
     return ensureUserProfile(credential.user, 'google');
   }
+  const clientId = Platform.OS === 'ios' ? env('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID') : env('EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID');
+  if (!clientId) throw new Error(`Thiếu Google Client ID. Điền ${getMissingGoogleClientConfig().join(', ')} trong mobile/.env và bật Google provider trong Firebase.`);
   const request = new AuthRequest({
     clientId,
     redirectUri: redirectUri(),

@@ -37,15 +37,24 @@ export function Button({
       : variant === 'accent'
         ? colors.accent
         : variant === 'ai' || variant === 'community'
-          ? colors.primary
+          ? variant === 'ai' ? colors.ai : colors.community
           : variant === 'secondary'
-          ? 'transparent'
+          ? colors.surface
           : 'transparent';
 
   const textColor =
     variant === 'primary' || variant === 'accent' || variant === 'ai' || variant === 'community'
       ? colors.textInverse
-      : colors.text;
+      : variant === 'secondary'
+        ? colors.accentDark
+        : colors.text;
+
+  const borderColor =
+    variant === 'secondary'
+      ? colors.accentDark
+      : variant === 'ghost'
+        ? colors.border
+        : 'transparent';
 
   const content = <>
     {icon ? <Ionicons name={icon} size={small ? 16 : 18} color={textColor} style={styles.icon} /> : null}
@@ -66,8 +75,13 @@ export function Button({
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
           paddingVertical: small ? 8 : 12,
           paddingHorizontal: small ? 12 : 16,
-          borderWidth: variant === 'secondary' || variant === 'ghost' ? 1 : 0,
-          borderColor: variant === 'secondary' ? colors.primary : colors.border,
+          borderWidth: variant === 'secondary' || variant === 'ghost' ? 1.2 : 0,
+          borderColor,
+          shadowColor: colors.shadow,
+          shadowOpacity: variant === 'ghost' ? 0 : 0.14,
+          shadowRadius: 9,
+          shadowOffset: { width: 0, height: 5 },
+          elevation: variant === 'ghost' ? 0 : 2,
         },
       ]}
     >
@@ -82,6 +96,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 42,
   },
   icon: { marginRight: 6 },
 });

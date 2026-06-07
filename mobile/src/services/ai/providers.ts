@@ -1,9 +1,20 @@
-import type { AiProvider, DetectedClothingMeta, OutfitSuggestionInput, StyleProfileInput, VirtualTryOnInput } from './types';
+import type { AiProvider, ClothingImageAnalysis, DetectedClothingMeta, MissingOutfitItem, OutfitRecommendation, OutfitSuggestionInput, StyleProfileInput, VirtualTryOnInput } from './types';
+import type { ClothingItem } from '@/models';
 import { getFirebaseAuth } from '@/services/firebase/config';
 
 const MOCK_DETECTION: DetectedClothingMeta = {
   type: 'top', material: 'Cotton blend', color: 'Soft Pink', style: 'Casual',
   season: ['spring', 'summer'], tags: ['casual', 'everyday'], suggestedName: 'Áo thun pastel',
+};
+
+const MOCK_ANALYSIS: ClothingImageAnalysis = {
+  ...MOCK_DETECTION,
+  confidenceScore: 0.91,
+  qualityWarnings: [],
+  enhancedImageCandidates: [
+    { id: 'clean-front', imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=900', label: 'Ảnh sạch nền sáng', confidence: 0.9 },
+    { id: 'catalog-flatlay', imageUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=900', label: 'Ảnh kiểu catalog', confidence: 0.84 },
+  ],
 };
 
 const sceneImages: Record<string, string> = {
@@ -23,18 +34,57 @@ export class AiServiceError extends Error {
 
 export class MockAiProvider implements AiProvider {
   async detectClothingFromImage(): Promise<DetectedClothingMeta> { await delay(350); return MOCK_DETECTION; }
-  async suggestOutfits(input: OutfitSuggestionInput) {
+  async analyzeAndEnhanceClothingImage(): Promise<ClothingImageAnalysis> { await delay(550); return MOCK_ANALYSIS; }
+  async suggestOutfits(input: OutfitSuggestionInput): Promise<OutfitRecommendation[]> {
     await delay(500);
-    const tops = input.wardrobe.filter((c) => c.type === 'top');
-    const bottoms = input.wardrobe.filter((c) => c.type === 'bottom');
-    const shoes = input.wardrobe.filter((c) => c.type === 'shoes');
-    if (!tops.length || !bottoms.length) return [];
+    const dislikedColors = new Set((input.dislikedColors ?? []).map((item) => item.toLowerCase()));
+    const dislikedStyles = new Set((input.dislikedStyles ?? []).map((item) => item.toLowerCase()));
+    const allowed = input.wardrobe.filter((item) => !dislikedColors.has(item.color.toLowerCase()) && !dislikedStyles.has((item.style ?? '').toLowerCase()));
+    const byPriority = [...allowed].sort((a, b) => Number(b.isFavorite) - Number(a.isFavorite) || a.timesWorn - b.timesWorn);
+    const pick = (types: string[]) => byPriority.find((item) => types.includes(item.type));
+    const top = pick(['top']);
+    const bottom = pick(['bottom']);
+    const dress = pick(['dress']);
+    const shoes = pick(['shoes']);
+    const bag = pick(['bag', 'accessory']);
+    const selected = [dress ?? top, dress ? undefined : bottom, shoes, bag].filter(isClothingItem);
+    if (!selected.length) return [];
+    const missing: MissingOutfitItem[] = ([
+      !shoes ? { type: 'shoes', name: 'Một đôi giày hợp dịp', reason: `Tủ đồ chưa có giày rõ vai trò cho ${input.eventContext?.name ?? input.location ?? input.weather.location}.`, priority: 'high' as const } : undefined,
+      !bag ? { type: 'bag', name: 'Túi hoặc phụ kiện hoàn thiện outfit', reason: 'Một phụ kiện nhỏ sẽ làm bộ đồ có chủ đích hơn mà không cần mua cả set mới.', priority: 'medium' as const } : undefined,
+    ] as Array<MissingOutfitItem | undefined>).filter(isMissingItem);
+    const communityListingSuggestions = missing.length ? (input.communityListings ?? []).slice(0, 2).map((listing) => ({
+      listingId: listing.id,
+      title: listing.title,
+      reason: `Khớp phần còn thiếu: ${missing[0]?.name.toLowerCase()}. Ưu tiên cộng đồng trước khi mua mới.`,
+      imageUrl: listing.imageUrls[0],
+      priceLabel: listing.price ? `${listing.price.toLocaleString('vi-VN')}đ` : listing.listingType,
+    })) : [];
+    const affiliateShoppingSuggestions = missing.length && communityListingSuggestions.length === 0 ? (input.affiliateProducts ?? []).slice(0, 2).map((product) => ({
+      productId: product.id,
+      name: product.name,
+      store: product.store,
+      reason: `Chỉ gợi ý mua vì tủ đồ thiếu ${missing[0]?.name.toLowerCase()}.`,
+      imageUrl: product.imageUrl,
+      priceLabel: product.priceLabel,
+      link: product.link,
+    })) : [];
+    const styleNames = input.userStylePreferences?.preferredStyles?.join(', ') || input.advancedStylePreferences?.fitPreference || 'phong cách thường ngày của bạn';
     return [{
-      name: `Gợi ý cho ${input.weather.condition}`,
-      items: [tops[0], bottoms[0], ...shoes.slice(0, 1)].map((c) => ({ clothingId: c.id, name: c.name, type: c.type })),
-      aiExplanation: `Phù hợp ${input.weather.temperature}°C tại ${input.weather.location}. Hãy ưu tiên tông màu hài hòa với tủ đồ hiện tại.`,
-      weatherCompatibility: `${input.weather.condition}, ${input.weather.temperature}°C`,
-      colorMatching: 'Neutral & pastel harmony', styleMatching: 'Personal style match 90%', matchingScore: 90,
+      name: `${input.mood ? `${input.mood} ` : ''}${input.eventContext?.name ?? input.location ?? input.weather.condition}`,
+      items: selected.map((c) => ({ clothingId: c.id, name: c.name, type: c.type, imageUrl: c.enhancedImageUrl ?? c.imageUrl, reason: c.isFavorite ? 'Món bạn yêu thích nên giữ làm điểm neo.' : c.timesWorn < 3 ? 'Món ít mặc, đáng được tái sử dụng.' : 'Có màu và chất liệu dễ phối.' })),
+      aiExplanation: `Bộ này bắt đầu từ đồ có sẵn trong tủ, hợp ${styleNames}, rồi cân bằng với thời tiết ${input.weather.temperature}°C tại ${input.location ?? input.weather.location}.`,
+      tasteMatchExplanation: `Ưu tiên ${styleNames}; tránh ${[...dislikedColors, ...dislikedStyles].join(', ') || 'các lựa chọn lệch gu đã khai báo'}.`,
+      weatherCompatibility: `${input.weather.condition}, ${input.weather.temperature}°C${input.weather.humidity ? `, độ ẩm ${input.weather.humidity}%` : ''}. Chất liệu và độ thoáng được ưu tiên.`,
+      locationEventCompatibility: `${input.location ?? input.weather.location}${input.dressCode ? ` · dress code: ${input.dressCode}` : ''}. Outfit giữ mức lịch sự theo bối cảnh.`,
+      colorMatching: `Các màu ${selected.map((item) => item.color).join(', ')} đi theo nhóm trung tính, dễ nhìn ngoài trời lẫn trong nhà.`,
+      styleMatching: 'Personal stylist match',
+      styleScore: missing.length ? 84 : 92,
+      matchingScore: missing.length ? 84 : 92,
+      missingItems: missing,
+      communityListingSuggestions,
+      affiliateShoppingSuggestions,
+      confidenceScore: missing.length ? 0.82 : 0.91,
     }];
   }
   async generateVirtualTryOn(input: VirtualTryOnInput) { await delay(650); return sceneImages[input.scene] ?? sceneImages.casual; }
@@ -53,6 +103,11 @@ export class BackendAiProvider implements AiProvider {
     const form = new FormData();
     form.append('image', { uri, name: 'clothing.jpg', type: 'image/jpeg' } as unknown as Blob);
     return this.post<DetectedClothingMeta>('/clothing/detect', form);
+  }
+  analyzeAndEnhanceClothingImage(uri: string) {
+    const form = new FormData();
+    form.append('image', { uri, name: 'clothing.jpg', type: 'image/jpeg' } as unknown as Blob);
+    return this.post<ClothingImageAnalysis>('/clothing/analyze-and-enhance', form);
   }
   suggestOutfits(input: OutfitSuggestionInput) { return this.post<ReturnType<MockAiProvider['suggestOutfits']> extends Promise<infer T> ? T : never>('/outfits/recommend', input); }
   generateVirtualTryOn(input: VirtualTryOnInput) {
@@ -92,3 +147,5 @@ export class BackendAiProvider implements AiProvider {
 }
 
 function delay(ms: number) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+function isClothingItem(item: ClothingItem | undefined): item is ClothingItem { return Boolean(item); }
+function isMissingItem(item: MissingOutfitItem | undefined): item is MissingOutfitItem { return Boolean(item); }

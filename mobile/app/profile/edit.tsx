@@ -15,9 +15,6 @@ export default function EditProfileScreen() {
   const { colors, spacing, radius } = useTheme();
   const { currentUser, updateProfile, uploadAvatar, authError } = useAuthStore();
   const [name, setName] = useState(currentUser?.name ?? currentUser?.displayName ?? '');
-  const [username, setUsername] = useState(currentUser?.username ?? '');
-  const [fashionStyle, setFashionStyle] = useState(currentUser?.fashionStyle ?? '');
-  const [preferences, setPreferences] = useState((currentUser?.preferences ?? []).join(', '));
   const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatarUrl ?? '');
   const [saving, setSaving] = useState(false);
 
@@ -36,9 +33,6 @@ export default function EditProfileScreen() {
     const ok = await updateProfile({
       name: name.trim(),
       displayName: name.trim(),
-      username: username.trim(),
-      fashionStyle: fashionStyle.trim(),
-      preferences: preferences.split(',').map((item) => item.trim()).filter(Boolean),
       avatarUrl: avatarUrl || undefined,
     });
     setSaving(false);
@@ -53,9 +47,6 @@ export default function EditProfileScreen() {
           <Button label={saving ? 'Đang tải ảnh...' : 'Đổi avatar'} variant="secondary" onPress={() => { void pickAvatar(); }} style={{ marginTop: spacing.md }} />
         </View>
         <AuthInput placeholder="Tên hiển thị" value={name} onChangeText={setName} />
-        <AuthInput placeholder="Username" autoCapitalize="none" value={username} onChangeText={setUsername} />
-        <AuthInput placeholder="Phong cách · minimal, Y2K, sporty..." value={fashionStyle} onChangeText={setFashionStyle} />
-        <AuthInput placeholder="Sở thích · váy, blazer, pastel..." value={preferences} onChangeText={setPreferences} />
         {authError ? <AppText variant="bodySmall" muted>{authError}</AppText> : null}
         <Button label={saving ? 'Đang lưu...' : 'Lưu hồ sơ'} disabled={saving || !name.trim()} onPress={() => { void save(); }} style={{ marginTop: spacing.md }} />
       </GlassCard>

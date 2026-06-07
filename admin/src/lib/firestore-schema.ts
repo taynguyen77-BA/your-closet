@@ -26,9 +26,11 @@ export const FIRESTORE_COLLECTIONS = {
   subscriptions: "subscriptions",
   affiliateProducts: "affiliate_products",
   affiliateCampaigns: "affiliate_campaigns",
+  shoppingEvents: "shopping_events",
   notificationTemplates: "notification_templates",
   securityLogs: "security_logs",
   cmsContent: "cms_content",
+  adminSettings: "admin_settings",
   adminUsers: "adminUsers",
 } as const;
 
@@ -44,6 +46,9 @@ export const COLLECTION_CONTRACTS = {
   ai_logs: { ownerField: "userId", readOnly: true }, support_tickets: { ownerField: "userId", adminManaged: true },
   plan_limits: { publicStatus: "active", adminManaged: true }, missions: { publicStatus: "active", adminManaged: true },
   trends: { publicStatus: "published", adminManaged: true }, affiliate_products: { publicStatus: "active", adminManaged: true },
+  cms_content: { publicStatus: "published", adminManaged: true },
+  admin_settings: { adminManaged: true },
+  shopping_events: { ownerField: "userId", adminManaged: true, readOnly: true },
   notification_templates: { adminManaged: true }, subscriptions: { ownerField: "userId", adminManaged: true },
   adminUsers: { adminManaged: true },
 } as const;
