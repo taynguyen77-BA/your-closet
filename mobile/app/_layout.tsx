@@ -46,6 +46,7 @@ export default function RootLayout() {
     'shopping',
   ];
   const isPublicGuestRoute = publicGuestRoutes.includes(routeKey);
+  const needsStyleSurvey = Boolean(currentUser && !currentUser.hasCompletedStyleSurvey && !currentUser.styleSurveySkipped);
   useEffect(() => { initializeAuth(); }, [initializeAuth]);
   useEffect(() => {
     if (!isAuthLoading && (isGuest || !isAuthenticated || (isAuthenticated && (!biometricEnabled || biometricVerified)))) void initialize();
@@ -56,11 +57,8 @@ export default function RootLayout() {
     const inAuth = segments[0] === 'auth';
     const guestAllowedAuthRoute = [
       'auth/welcome',
-      'auth/login',
-      'auth/register',
       'auth/phone',
       'auth/otp',
-      'auth/forgot-password',
     ].includes(segments.join('/'));
     const inStyleSurvey = segments.join('/') === 'onboarding/style-survey';
     const canEnterPrivate = isAuthenticated && (!biometricEnabled || biometricVerified);
@@ -72,15 +70,16 @@ export default function RootLayout() {
       'profile/edit',
       'profile/style-preferences',
       'profile/style-preferences/advanced',
+      'profile/delete-account',
       'settings',
     ].includes(segments.join('/'));
     if (!onboardingCompleted && !canEnterUngated && segments.join('/') !== 'auth/onboarding') router.replace('/auth/onboarding');
     else if (onboardingCompleted && !isAuthenticated && !canEnterUngated && !inAuth && !isPublicGuestRoute) router.replace('/auth/welcome');
     else if (onboardingCompleted && canEnterUngated && inAuth && !guestAllowedAuthRoute) router.replace('/(tabs)');
     else if (onboardingCompleted && canEnterUngated && guestBlockedRoute) router.replace('/(tabs)');
-    else if (onboardingCompleted && canEnterPrivate && currentUser && !currentUser.hasCompletedStyleSurvey && !inStyleSurvey) router.replace('/onboarding/style-survey' as never);
-    else if (onboardingCompleted && canEnterPrivate && currentUser?.hasCompletedStyleSurvey && (inAuth || inStyleSurvey)) router.replace('/(tabs)');
-  }, [biometricEnabled, biometricVerified, currentUser, isAuthLoading, isAuthenticated, isGuest, isPublicGuestRoute, onboardingCompleted, router, routeKey, segments]);
+    else if (onboardingCompleted && canEnterPrivate && needsStyleSurvey && !inStyleSurvey) router.replace('/onboarding/style-survey' as never);
+    else if (onboardingCompleted && canEnterPrivate && !needsStyleSurvey && (inAuth || inStyleSurvey)) router.replace('/(tabs)');
+  }, [biometricEnabled, biometricVerified, currentUser, isAuthLoading, isAuthenticated, isGuest, isPublicGuestRoute, needsStyleSurvey, onboardingCompleted, router, routeKey, segments]);
 
   if (!fontsLoaded || isAuthLoading) return <View style={[styles.splash, { backgroundColor: colors.background }]}><View style={[styles.dot, { backgroundColor: colors.accent }]} /><AppText variant="display">Tủ đồ của bạn</AppText><AppText muted>Đang chuẩn bị phong cách riêng cho bạn...</AppText></View>;
   if (isAuthenticated && biometricEnabled && !biometricVerified) return <View style={[styles.splash, { backgroundColor: colors.background, padding: 24 }]}><View style={[styles.dot, { backgroundColor: colors.accent }]} /><AppText variant="display">Mở khóa tủ đồ</AppText><AppText muted style={{ textAlign: 'center', marginBottom: 16 }}>Xác minh Face ID, Touch ID hoặc vân tay để vào ứng dụng.</AppText><Pressable style={[styles.unlock, { backgroundColor: colors.primary }]} onPress={() => { void verifyBiometric(); }}><AppText color={colors.textInverse}>Đăng nhập bằng Face ID / Vân tay</AppText></Pressable><Pressable onPress={() => { void logout(); }} style={{ marginTop: 14 }}><AppText muted>Đăng nhập lại</AppText></Pressable></View>;
@@ -126,6 +125,10 @@ export default function RootLayout() {
           <Stack.Screen
             name="profile/edit"
             options={{ headerShown: true, title: 'Chỉnh sửa hồ sơ', presentation: 'modal' }}
+          />
+          <Stack.Screen
+            name="profile/delete-account"
+            options={{ headerShown: true, title: 'Xoá tài khoản', presentation: 'modal' }}
           />
           <Stack.Screen name="onboarding/style-survey" />
           <Stack.Screen name="profile/style-preferences" options={{ headerShown: false, presentation: 'modal' }} />

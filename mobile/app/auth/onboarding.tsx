@@ -25,7 +25,7 @@ export default function Onboarding() {
   const finish = async () => { await complete(); router.replace('/auth/welcome'); };
   const continueAsGuest = async () => {
     await complete();
-    startGuestSession();
+    await startGuestSession();
     router.replace('/(tabs)');
   };
   return (

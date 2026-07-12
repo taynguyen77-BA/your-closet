@@ -84,13 +84,13 @@ mobile/
 | Gói | AI/tháng | Tủ đồ |
 |-----|----------|-------|
 | Free | 10 | 50 món |
-| Premium | ∞ | ∞ |
-| Elite | ∞ + stylist AI | ∞ |
+| Pro | ∞ | ∞ |
+| Premium | ∞ + stylist AI | ∞ |
 
 ## Firebase auth setup
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
-2. Bật Authentication providers: Email/Password, Phone, Google, Facebook
+2. Bật Authentication providers cho consumer mobile: Phone, Google, Facebook. Tắt Email/Password trong consumer app project.
 3. Bật Firestore, Storage, Cloud Messaging
 4. Copy Firebase web config và `EXPO_PUBLIC_API_BASE_URL` vào `mobile/.env`
 5. Phone Auth: thêm domain web vào Authorized domains; với iOS/Android cấu hình APNs/SHA-1/SHA-256 theo Firebase Console hoặc dùng backend OTP bridge
@@ -123,13 +123,14 @@ auto-login chỉ bật bằng `EXPO_PUBLIC_DEMO_AUTH_BYPASS=true`.
 ### Mobile authentication flow
 
 - First launch: splash checks Firebase config, local onboarding flag, Firebase Auth session, and biometric preference.
-- New user: splash → onboarding → auth welcome → phone/email/Google/Facebook login.
+- New user: splash → onboarding → auth welcome → phone OTP, Google, or Facebook login.
 - Returning user: Firebase session creates/updates `users/{uid}` and updates `lastLoginAt`.
 - After the first successful login/register, users who have not completed or skipped the initial style survey are routed to `/onboarding/style-survey`.
 - Style survey data is stored on `users/{uid}` as `stylePreferences`, `hasCompletedStyleSurvey`, `styleSurveySkipped`, `styleSurveyCompletedAt`, and `styleProfileCompletionPercent`.
 - Users can update style preferences later from Profile → “Chỉnh sửa gu thời trang”; optional advanced data lives in `advancedStylePreferences`.
 - Phone OTP works with Firebase reCAPTCHA on Expo web. Expo Go/native requires Firebase native verification setup or a backend OTP bridge; the app shows a clear setup message instead of pretending native OTP is ready.
 - Google/Facebook use Expo AuthSession on native and Firebase popup on web, then sign into Firebase with provider credentials.
+- Consumer mobile auth only supports Phone OTP, Google, and Facebook. Keep Email/Password disabled for the consumer app project; Email/Password is reserved for the admin Firebase Auth setup below.
 - Profile fields users may edit directly from “Chỉnh sửa hồ sơ”: display name and avatar. Style, preference, gender, age, sizing, budget, and other personalization fields live under Profile → “Gu thời trang của bạn”.
 - Plan, quota, payment, and moderation fields are protected by Firestore rules and must be changed by trusted backend/admin code.
 - Sign out clears Firebase session and secure biometric preference, but keeps `onboardingCompleted`.

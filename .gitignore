@@ -4,3 +4,5 @@
 mobile/.claude/
 mobile/AGENTS.md
 mobile/CLAUDE.md
+firestore-debug.log
+firestore-debug.log.*

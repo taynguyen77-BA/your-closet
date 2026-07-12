@@ -1,6 +1,6 @@
 /** Shared domain models — aligned with mobile app + admin extensions */
 
-export type MembershipPlan = "free" | "premium" | "elite";
+export type MembershipPlan = "free" | "pro" | "premium";
 export type UserStatus = "active" | "suspended" | "banned";
 export type ListingStatus = "pending_review" | "approved" | "rejected" | "removed";
 export type TransactionStatus = "pending" | "paid" | "shipped" | "handed_over" | "completed" | "cancelled";

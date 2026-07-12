@@ -1,5 +1,6 @@
 import { Switch, View } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useTheme } from '@/theme';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { colors, spacing } = useTheme();
   const { biometricEnabled, enableBiometric, disableBiometric, authError, logout } = useAuthStore();
   const [pushEnabled, setPushEnabled] = useState(true);
@@ -47,6 +49,7 @@ export default function SettingsScreen() {
         Quyền riêng tư: dữ liệu của bạn được bảo vệ khi đồng bộ cloud. Báo cáo vi phạm qua mục Cộng đồng.
       </AppText>
       <Button label="Đăng xuất" variant="secondary" onPress={() => { void logout(); }} style={{ marginTop: spacing.lg }} />
+      <Button label="Xoá tài khoản" variant="ghost" onPress={() => router.push('/profile/delete-account' as never)} style={{ marginTop: spacing.md }} />
     </View>
   );
 }

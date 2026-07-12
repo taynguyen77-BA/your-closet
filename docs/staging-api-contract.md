@@ -82,6 +82,16 @@ Owner-scoped mobile records:
 - `notifications.userId === auth.uid`
 - `ai_logs.userId === auth.uid`
 
+## Auth
+
+`POST /api/auth/session/verify`
+
+Body: `{ "idToken": "<Firebase ID token>" }`. Verifies the token server-side, creates/links the `users/{uid}` profile on first sign-in, and returns `{ user, customToken? }`. `customToken` is only returned when the identity was merged into a different canonical `uid` (cross-provider linking).
+
+`DELETE /api/auth/account`
+
+Requires `Authorization: Bearer <Firebase ID token>` issued by a real sign-in (Google/Facebook re-consent or phone OTP re-verify) within the last 5 minutes — a still-valid but older session token is rejected with `{ "error": "REAUTH_REQUIRED" }` (401). On success, permanently deletes the caller's own records from `clothes`, `outfits`, `events`, `user_missions`, `notifications`, `listings`, `marketplace_messages` (messages authored by the user, i.e. `senderId`), and `subscriptions`, then deletes the `users/{uid}` profile document and the Firebase Auth account. Anonymized/aggregated statistics are not touched. Returns `{ "data": { "deleted": true } }`.
+
 ## AI
 
 Mobile calls the same backend host via:

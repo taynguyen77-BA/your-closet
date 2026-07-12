@@ -2,8 +2,8 @@ import type { MembershipPlan, Mission, PlanLimit } from '@/models';
 
 export const PLAN_LIMITS: Record<MembershipPlan, PlanLimit> = {
   free: { id: 'free', label: 'Miễn phí', aiMonthly: 10, closetItems: 50 },
+  pro: { id: 'pro', label: 'Pro', aiMonthly: -1, closetItems: -1 },
   premium: { id: 'premium', label: 'Premium', aiMonthly: -1, closetItems: -1 },
-  elite: { id: 'elite', label: 'Elite', aiMonthly: -1, closetItems: -1 },
 };
 
 export const DEFAULT_MISSIONS: Mission[] = [
@@ -35,8 +35,8 @@ export const MEMBERSHIP_PLANS: PlanFeature[] = [
     features: ['Gợi ý outfit cơ bản', 'Cộng đồng Pass đồ'],
   },
   {
-    id: 'premium',
-    name: 'Premium',
+    id: 'pro',
+    name: 'Pro',
     priceVnd: 99000,
     priceLabel: '99.000đ/tháng',
     aiGenerations: 'Không giới hạn AI',
@@ -50,8 +50,8 @@ export const MEMBERSHIP_PLANS: PlanFeature[] = [
     badge: 'Phổ biến',
   },
   {
-    id: 'elite',
-    name: 'Elite',
+    id: 'premium',
+    name: 'Premium',
     priceVnd: 199000,
     priceLabel: '199.000đ/tháng',
     aiGenerations: 'Không giới hạn AI',
@@ -60,7 +60,7 @@ export const MEMBERSHIP_PLANS: PlanFeature[] = [
       'Stylist AI cao cấp',
       'Xu hướng độc quyền',
       'Hỗ trợ ưu tiên',
-      'Tất cả tính năng Premium',
+      'Tất cả tính năng Pro',
     ],
     badge: 'Cao cấp',
   },

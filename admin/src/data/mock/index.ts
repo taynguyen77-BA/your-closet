@@ -118,8 +118,8 @@ export const engagementChart: ChartPoint[] = [
 
 export const conversionChart: ChartPoint[] = [
   { label: "Free", value: 21730 },
-  { label: "Premium", value: 2480 },
-  { label: "Elite", value: 640 },
+  { label: "Pro", value: 2480 },
+  { label: "Premium", value: 640 },
 ];
 
 export const trendPopularityChart: ChartPoint[] = [
@@ -154,7 +154,7 @@ export const mockUsers: AdminUser[] = [
     username: "lan_huong",
     email: "lan.huong@email.com",
     avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=lan",
-    plan: "premium",
+    plan: "pro",
     status: "active",
     aiUsageRemaining: 999,
     aiUsageMonthlyLimit: 9999,
@@ -171,7 +171,7 @@ export const mockUsers: AdminUser[] = [
     id: "u3",
     username: "thu_nguyen",
     email: "thu.nguyen@email.com",
-    plan: "elite",
+    plan: "premium",
     status: "active",
     aiUsageRemaining: 999,
     aiUsageMonthlyLimit: 9999,
@@ -215,8 +215,8 @@ export const membershipPlans: MembershipPlanConfig[] = [
     activeSubscribers: 21730,
   },
   {
-    id: "premium",
-    name: "Premium",
+    id: "pro",
+    name: "Pro",
     priceVnd: 99000,
     billingCycle: "monthly",
     aiLimit: null,
@@ -225,8 +225,8 @@ export const membershipPlans: MembershipPlanConfig[] = [
     activeSubscribers: 2480,
   },
   {
-    id: "elite",
-    name: "Elite",
+    id: "premium",
+    name: "Premium",
     priceVnd: 199000,
     billingCycle: "monthly",
     aiLimit: null,
@@ -241,7 +241,7 @@ export const subscriptions: Subscription[] = [
     id: "sub1",
     userId: "u2",
     username: "lan_huong",
-    plan: "premium",
+    plan: "pro",
     status: "active",
     startedAt: "2025-01-15T00:00:00Z",
     expiresAt: "2025-06-15T00:00:00Z",
@@ -252,7 +252,7 @@ export const subscriptions: Subscription[] = [
     id: "sub2",
     userId: "u3",
     username: "thu_nguyen",
-    plan: "elite",
+    plan: "premium",
     status: "active",
     startedAt: "2024-12-01T00:00:00Z",
     expiresAt: "2025-12-01T00:00:00Z",

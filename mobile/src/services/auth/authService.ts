@@ -7,12 +7,10 @@ import {
   FacebookAuthProvider,
   GoogleAuthProvider,
   RecaptchaVerifier,
-  createUserWithEmailAndPassword,
   onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
   signInWithPhoneNumber,
   signInWithCredential,
+  signInWithCustomToken,
   signInWithPopup,
   signOut,
   updateProfile as updateFirebaseProfile,
@@ -20,22 +18,27 @@ import {
 import { AuthRequest } from 'expo-auth-session/build/AuthRequest';
 import { makeRedirectUri } from 'expo-auth-session/build/AuthSession';
 import { Prompt, ResponseType } from 'expo-auth-session/build/AuthRequest.types';
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { PLAN_LIMITS } from '@/constants/membership';
 import type { User } from '@/models';
 import { getFirebaseAuth, getFirebaseFirestore, getFirebaseStorage, getFirebaseStatus } from '@/services/firebase/config';
 
-export type AuthProviderName = 'phone' | 'google' | 'facebook' | 'email';
+export type AuthProviderName = 'phone' | 'google' | 'facebook';
 export const ONBOARDING_COMPLETED_KEY = 'your_closet_onboarding_completed';
+export const GUEST_SESSION_KEY = 'your_closet_guest_session';
 const BIOMETRIC_ENABLED_KEY = 'your_closet_biometric_enabled';
 let phoneConfirmation: ConfirmationResult | null = null;
 
-const now = () => new Date().toISOString();
 const auth = () => getFirebaseAuth();
 const db = () => getFirebaseFirestore();
 const redirectUri = () => makeRedirectUri({ scheme: 'tudocuaban', path: 'auth/callback', preferLocalhost: true });
 const env = (key: string) => process.env[key]?.trim() ?? '';
+const apiBaseUrl = () => process.env.EXPO_PUBLIC_API_BASE_URL ?? process.env.EXPO_PUBLIC_API_URL ?? '';
+
+interface AuthSessionVerifyResponse {
+  user: User;
+  customToken?: string;
+}
 
 export function getMissingGoogleClientConfig() {
   if (Platform.OS === 'web') return [] as string[];
@@ -45,10 +48,7 @@ export function getMissingGoogleClientConfig() {
 
 export function friendlyAuthError(error: unknown): string {
   const code = typeof error === 'object' && error && 'code' in error ? String(error.code) : '';
-  if (code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) return 'Email hoặc mật khẩu chưa đúng. Bạn thử lại nhé.';
-  if (code.includes('email-already-in-use')) return 'Email này đã có tài khoản. Bạn thử đăng nhập nhé.';
-  if (code.includes('weak-password')) return 'Mật khẩu cần ít nhất 6 ký tự.';
-  if (code.includes('invalid-email')) return 'Email chưa đúng định dạng.';
+  if (code.includes('invalid-credential') || code.includes('user-not-found')) return 'Thông tin đăng nhập chưa đúng. Bạn thử lại nhé.';
   if (code.includes('missing-phone-number') || code.includes('invalid-phone-number')) return 'Số điện thoại chưa đúng định dạng. Hãy nhập kèm mã quốc gia, ví dụ +84.';
   if (code.includes('invalid-verification-code')) return 'Mã OTP chưa đúng. Bạn kiểm tra lại tin nhắn nhé.';
   if (code.includes('too-many-requests')) return 'Bạn thử lại sau ít phút nhé.';
@@ -63,69 +63,56 @@ export async function setOnboardingCompleted() {
   await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
 }
 
+export async function getGuestSessionEnabled() {
+  return (await AsyncStorage.getItem(GUEST_SESSION_KEY)) === 'true';
+}
+
+export async function setGuestSessionEnabled(enabled: boolean) {
+  if (enabled) await AsyncStorage.setItem(GUEST_SESSION_KEY, 'true');
+  else await AsyncStorage.removeItem(GUEST_SESSION_KEY);
+}
+
 export function subscribeToFirebaseAuth(callback: (user: FirebaseUser | null) => void) {
   return onAuthStateChanged(auth(), callback);
 }
 
-export function profileFromFirebaseUser(firebaseUser: FirebaseUser, provider: AuthProviderName = 'email'): User {
-  const displayName = firebaseUser.displayName ?? '';
-  return {
-    id: firebaseUser.uid,
-    uid: firebaseUser.uid,
-    name: displayName,
-    displayName,
-    username: '',
-    email: firebaseUser.email ?? '',
-    avatarUrl: firebaseUser.photoURL ?? undefined,
-    authProvider: provider,
-    phoneNumber: firebaseUser.phoneNumber ?? undefined,
-    provider,
-    biometricEnabled: false,
-    hasCompletedStyleSurvey: false,
-    styleSurveySkipped: false,
-    styleProfileCompletionPercent: 0,
-    stylePreferences: {
-      preferredStyles: [],
-      favoriteColors: [],
-      lifestyleOccasions: [],
-      fashionConfidence: '',
-      updatedAt: now(),
-    },
-    plan: 'free',
-    aiUsageRemaining: PLAN_LIMITS.free.aiMonthly,
-    aiUsageMonthlyLimit: PLAN_LIMITS.free.aiMonthly,
-    aiQuotaPeriod: now().slice(0, 7),
-    closetItemLimit: PLAN_LIMITS.free.closetItems,
-    closetItemCount: 0,
-    status: 'active',
-    createdAt: now(),
-    updatedAt: now(),
-    lastLoginAt: now(),
-  } as User;
+export function resolveSupportedAuthProvider(firebaseUser: FirebaseUser): AuthProviderName {
+  const providerIds = firebaseUser.providerData.map((provider) => provider.providerId);
+  if (providerIds.includes('google.com')) return 'google';
+  if (providerIds.includes('facebook.com')) return 'facebook';
+  if (providerIds.includes('phone') || firebaseUser.phoneNumber) return 'phone';
+  throw new Error('Ứng dụng chỉ hỗ trợ đăng nhập bằng số điện thoại OTP, Google hoặc Facebook.');
 }
 
 export async function ensureUserProfile(firebaseUser: FirebaseUser, provider: AuthProviderName): Promise<User> {
-  const userRef = doc(db(), 'users', firebaseUser.uid);
-  const snapshot = await getDoc(userRef);
-  if (!snapshot.exists()) {
-    const profile = profileFromFirebaseUser(firebaseUser, provider);
-    await setDoc(userRef, { ...profile, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), lastLoginAt: serverTimestamp() });
-    return profile;
+  const resolvedProvider = resolveSupportedAuthProvider(firebaseUser);
+  if (provider !== resolvedProvider) throw new Error('Phiên đăng nhập không khớp nhà cung cấp được hỗ trợ.');
+  const verified = await verifyAuthSession(firebaseUser);
+  if (verified.customToken) {
+    await signInWithCustomToken(auth(), verified.customToken);
   }
-  await updateDoc(userRef, { lastLoginAt: serverTimestamp(), updatedAt: serverTimestamp() });
-  const data = snapshot.data() as User;
-  return { ...profileFromFirebaseUser(firebaseUser, provider), ...data, id: firebaseUser.uid };
+  return verified.user;
 }
 
-export async function registerWithEmail(displayName: string, email: string, password: string) {
-  const credential = await createUserWithEmailAndPassword(auth(), email.trim(), password);
-  await updateFirebaseProfile(credential.user, { displayName: displayName.trim() });
-  return ensureUserProfile(credential.user, 'email');
-}
-
-export async function loginWithEmail(email: string, password: string) {
-  const credential = await signInWithEmailAndPassword(auth(), email.trim(), password);
-  return ensureUserProfile(credential.user, 'email');
+async function verifyAuthSession(firebaseUser: FirebaseUser): Promise<AuthSessionVerifyResponse> {
+  const baseUrl = apiBaseUrl();
+  if (!baseUrl) throw new Error('API chưa được cấu hình để xác minh phiên đăng nhập.');
+  const idToken = await firebaseUser.getIdToken(true).catch(async () => {
+    await signOut(auth()).catch(() => undefined);
+    throw new Error('Phiên đăng nhập đã hết hạn. Bạn đăng nhập lại nhé.');
+  });
+  const response = await fetch(new URL('/api/auth/session/verify', baseUrl).toString(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+    body: JSON.stringify({ idToken }),
+  });
+  if (!response.ok) {
+    await signOut(auth()).catch(() => undefined);
+    throw new Error(response.status === 401 ? 'Phiên đăng nhập đã hết hạn. Bạn đăng nhập lại nhé.' : 'Không thể xác minh phiên đăng nhập.');
+  }
+  const body = await response.json() as { data?: AuthSessionVerifyResponse };
+  if (!body.data?.user) throw new Error('Không thể xác minh hồ sơ đăng nhập.');
+  return body.data;
 }
 
 export async function loginWithGoogle() {
@@ -187,6 +174,26 @@ export async function logoutFirebase() {
   await signOut(auth());
 }
 
+export async function getFreshIdToken() {
+  const firebaseUser = auth().currentUser;
+  if (!firebaseUser) throw new Error('Phiên đăng nhập đã hết hạn. Bạn đăng nhập lại nhé.');
+  return firebaseUser.getIdToken(true);
+}
+
+export async function requestAccountDeletion(idToken: string) {
+  const baseUrl = apiBaseUrl();
+  if (!baseUrl) throw new Error('API chưa được cấu hình để xoá tài khoản.');
+  const response = await fetch(new URL('/api/auth/account', baseUrl).toString(), {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({} as { error?: string }));
+    if (body.error === 'REAUTH_REQUIRED' || response.status === 401) throw new Error('Bạn cần xác minh lại danh tính trước khi xoá tài khoản.');
+    throw new Error('Không thể xoá tài khoản. Bạn thử lại sau nhé.');
+  }
+}
+
 export async function updateUserProfile(uid: string, patch: Partial<User>) {
   await updateDoc(doc(db(), 'users', uid), { ...patch, updatedAt: serverTimestamp() });
   const firebaseUser = auth().currentUser;
@@ -244,8 +251,4 @@ export const verifyBiometric = verifyDeviceBiometric;
 export function assertFirebaseReady() {
   const status = getFirebaseStatus();
   if (!status.isConfigured) throw new Error(`Thiếu cấu hình Firebase: ${status.missing.join(', ')}`);
-}
-
-export async function sendResetEmail(email: string) {
-  await sendPasswordResetEmail(auth(), email.trim());
 }

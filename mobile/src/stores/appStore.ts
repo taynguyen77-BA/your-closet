@@ -37,8 +37,8 @@ const guestUser: User = {
 };
 const emptyPlanLimits: Record<MembershipPlan, PlanLimit> = {
   free: { id: 'free', label: '—', aiMonthly: 0, closetItems: 0 },
+  pro: { id: 'pro', label: '—', aiMonthly: 0, closetItems: 0 },
   premium: { id: 'premium', label: '—', aiMonthly: 0, closetItems: 0 },
-  elite: { id: 'elite', label: '—', aiMonthly: 0, closetItems: 0 },
 };
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 

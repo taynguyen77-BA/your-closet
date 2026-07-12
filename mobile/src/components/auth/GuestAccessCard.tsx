@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -18,10 +17,8 @@ export function GuestAccessCard({
   description = 'Tạo tài khoản để lưu tủ đồ, outfit, lịch trình và hồ sơ phong cách cá nhân.',
   icon = 'lock-closed-outline',
 }: GuestAccessCardProps) {
-  const router = useRouter();
-  const enterAuthFlow = useAuthStore((s) => s.enterAuthFlow);
+  const requireAccount = useAuthStore((s) => s.requireAccount);
   const { colors, radius, spacing } = useTheme();
-  const goToAuth = () => router.push(enterAuthFlow('/auth/welcome') as never);
   return (
     <GlassCard style={{ marginBottom: spacing.lg, borderColor: colors.pink }}>
       <View style={[styles.icon, { backgroundColor: colors.pink, borderRadius: radius.full }]}>
@@ -30,7 +27,7 @@ export function GuestAccessCard({
       <AppText variant="h2" style={styles.title}>{title}</AppText>
       <AppText variant="bodySmall" muted style={styles.description}>{description}</AppText>
       <View style={styles.actions}>
-        <Button label="Đăng nhập hoặc tạo tài khoản" icon="log-in-outline" onPress={goToAuth} style={styles.action} />
+        <Button label="Đăng nhập hoặc tạo tài khoản" icon="log-in-outline" onPress={requireAccount} style={styles.action} />
       </View>
     </GlassCard>
   );

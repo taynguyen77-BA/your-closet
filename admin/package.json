@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "seed": "tsx scripts/seed-firestore.ts"
+    "seed": "tsx scripts/seed-firestore.ts",
+    "seed:emulator": "tsx scripts/seed-emulator.ts",
+    "migrate:tier-enum": "tsx scripts/migrate-tier-enum.ts",
+    "emulators:start": "cd .. && firebase emulators:start --project demo-your-closet --only firestore"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

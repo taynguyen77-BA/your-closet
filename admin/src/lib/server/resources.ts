@@ -207,6 +207,10 @@ export async function remove(request: NextRequest, collection: string, id: strin
   try {
     const identity = await access(request, collection, true);
     if (!identity || readOnlyCollections.has(collection)) throw new Error("FORBIDDEN");
+    // Self-deleting a users doc must go through DELETE /api/auth/account, which
+    // re-authenticates and cascades the owned collections (BRD 3.1.7). This
+    // generic single-doc delete stays admin-only for moderation use.
+    if (collection === "users" && !identity.isAdmin) throw new Error("FORBIDDEN");
     if (isDemo()) {
       const rows = demoCollections[collection] ?? [];
       const index = rows.findIndex((item) => item.id === id);

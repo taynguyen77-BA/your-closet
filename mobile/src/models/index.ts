@@ -1,4 +1,4 @@
-export type MembershipPlan = 'free' | 'premium' | 'elite';
+export type MembershipPlan = 'free' | 'pro' | 'premium';
 
 export type ClothingType =
   | 'top'
@@ -79,7 +79,7 @@ export interface User {
   favoriteColors?: string[];
   fashionGoals?: string[];
   authProvider?: string;
-  provider?: 'phone' | 'google' | 'facebook' | 'email' | string;
+  provider?: 'phone' | 'google' | 'facebook' | string;
   biometricEnabled?: boolean;
   hasCompletedOnboarding?: boolean;
   hasCompletedStyleSurvey?: boolean;
