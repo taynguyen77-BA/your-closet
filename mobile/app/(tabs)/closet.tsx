@@ -37,6 +37,8 @@ export default function ClosetScreen() {
   const [saving, setSaving] = useState(false);
   const [reviewDraft, setReviewDraft] = useState<ClothingReviewDraft | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [bulkDrafts, setBulkDrafts] = useState<ClothingReviewDraft[]>([]);
+  const [bulkIndex, setBulkIndex] = useState(0);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const normalizedSearch = search.trim().toLowerCase();
@@ -63,7 +65,6 @@ export default function ClosetScreen() {
   const pickImage = async () => {
     if (!useAuthStore.getState().requireAccount()) return;
     if (saving) return;
-    if (useAppStore.getState().user.closetItemCount >= useAppStore.getState().user.closetItemLimit) return Alert.alert('Tủ đồ đã đầy', 'Nâng cấp gói thành viên để thêm nhiều món đồ hơn.');
     let result;
     try { result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8 }); }
     catch { return Alert.alert('Chưa mở được thư viện ảnh', 'Kiểm tra quyền truy cập ảnh rồi thử lại nhé.'); }
@@ -86,11 +87,87 @@ export default function ClosetScreen() {
     finally { setSaving(false); }
   };
 
+  const BULK_MAX = 5;
+  const BULK_LIMIT_MSG = 'Bạn chỉ có thể chọn tối đa 5 ảnh cho mỗi lần upload.';
+
+  const pickBulkImages = async () => {
+    if (!useAuthStore.getState().requireAccount()) return;
+    if (saving) return;
+    let result;
+    try {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        quality: 0.8,
+        allowsMultipleSelection: true,
+        selectionLimit: BULK_MAX,
+      });
+    } catch { return Alert.alert('Chưa mở được thư viện ảnh', 'Kiểm tra quyền truy cập ảnh rồi thử lại nhé.'); }
+    if (result.canceled || !result.assets.length) return;
+    if (result.assets.length > BULK_MAX) {
+      Alert.alert('Quá số lượng', BULK_LIMIT_MSG);
+      return;
+    }
+    const drafts = result.assets.map((asset) => createManualDraft(asset.uri));
+    setBulkDrafts(drafts);
+    setBulkIndex(0);
+  };
+
+  const currentBulkDraft = bulkDrafts[bulkIndex] ?? null;
+  const updateBulkDraft = (patch: Partial<ClothingReviewDraft>) =>
+    setBulkDrafts((prev) => prev.map((d, i) => i === bulkIndex ? { ...d, ...patch } : d));
+  const cancelBulkDraft = () => {
+    const remaining = bulkDrafts.filter((_, i) => i !== bulkIndex);
+    if (!remaining.length) { setBulkDrafts([]); setBulkIndex(0); return; }
+    setBulkDrafts(remaining);
+    setBulkIndex(Math.min(bulkIndex, remaining.length - 1));
+  };
+  const saveBulkDraft = async () => {
+    if (!currentBulkDraft) return;
+    if (!currentBulkDraft.name.trim() || !currentBulkDraft.color.trim())
+      return Alert.alert('Thiếu thông tin', 'Nhập tên và màu sắc trước khi lưu nhé.');
+    const { closetItemCount, closetItemLimit } = useAppStore.getState().user;
+    if (closetItemLimit > 0 && closetItemCount >= closetItemLimit) {
+      Alert.alert('Tủ đồ đã đầy', 'Xóa một món đồ cũ hoặc nâng cấp gói để tiếp tục. Bản nháp ảnh này vẫn còn trong danh sách chờ.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const newItem: Omit<ClothingItem, 'id' | 'imageUrl'> = {
+        userId: useAppStore.getState().user.id,
+        name: currentBulkDraft.name.trim(),
+        originalImageUrl: currentBulkDraft.originalImageUrl,
+        enhancedImageUrl: currentBulkDraft.selectedImageUrl,
+        type: currentBulkDraft.type,
+        material: currentBulkDraft.material?.trim() || undefined,
+        color: currentBulkDraft.color.trim(),
+        style: currentBulkDraft.style?.trim() || undefined,
+        season: currentBulkDraft.season,
+        tags: currentBulkDraft.tags,
+        isFavorite: false,
+        timesWorn: 0,
+        createdAt: new Date().toISOString(),
+      };
+      await createClothing(newItem, currentBulkDraft.selectedImageUrl);
+      const remaining = bulkDrafts.filter((_, i) => i !== bulkIndex);
+      if (!remaining.length) { setBulkDrafts([]); setBulkIndex(0); Alert.alert('Đã thêm tất cả', 'Tất cả món đồ đã được lưu vào tủ.'); }
+      else { setBulkDrafts(remaining); setBulkIndex(Math.min(bulkIndex, remaining.length - 1)); }
+    } catch { Alert.alert('Chưa lưu được', 'Thử lại sau một chút nhé.'); }
+    finally { setSaving(false); }
+  };
+
   const updateDraft = (patch: Partial<ClothingReviewDraft>) => setReviewDraft((draft) => draft ? { ...draft, ...patch } : draft);
   const splitList = (value: string) => value.split(',').map((item) => item.trim()).filter(Boolean);
+  const [atLimit, setAtLimit] = useState(false);
+
   const saveDraft = async () => {
     if (!reviewDraft) return;
     if (!reviewDraft.name.trim() || !reviewDraft.color.trim()) return Alert.alert('Thiếu thông tin', 'Nhập tên và màu sắc trước khi lưu nhé.');
+    const { closetItemCount, closetItemLimit } = useAppStore.getState().user;
+    if (closetItemLimit > 0 && closetItemCount >= closetItemLimit) {
+      setAtLimit(true);
+      return;
+    }
+    setAtLimit(false);
     setSaving(true);
     try {
       const newItem: Omit<ClothingItem, 'id' | 'imageUrl'> = {
@@ -130,14 +207,45 @@ export default function ClosetScreen() {
     <View style={[styles.statsCard, { borderRadius: radius.xl, borderColor: colors.border, backgroundColor: colors.surface }]}>
       {[['shirt-outline', clothing.length, 'TỔNG SỐ MÓN'], ['heart', favorites, 'YÊU THÍCH'], ['time-outline', rarelyWorn, 'ÍT MẶC'], ['sparkles', outfitPotential, 'KHẢ NĂNG PHỐI']].map(([icon, value, label], index) => <View key={label as string} style={[styles.statCell, index % 2 === 0 && styles.statRightBorder, index < 2 && styles.statBottomBorder, { borderColor: colors.border }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={18} color={colors.accentDark} /><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText></View>)}
     </View>
-    <View style={styles.toolbar}><Button label={saving ? 'Đang thêm...' : 'Thêm món'} icon="camera-outline" onPress={pickImage} disabled={saving} style={{ flex: 1 }} /><Button label="AI phối đồ" variant="secondary" icon="sparkles-outline" onPress={() => router.push('/(tabs)/try-on')} style={{ marginLeft: 8 }} /></View>
+    <View style={styles.toolbar}><Button label={saving ? 'Đang thêm...' : 'Thêm món'} icon="camera-outline" onPress={pickImage} disabled={saving} style={{ flex: 1 }} /><Button label="Thêm nhiều" variant="secondary" icon="images-outline" onPress={() => void pickBulkImages()} disabled={saving} style={{ marginLeft: 8 }} /></View>
     <SearchBar value={search} onChangeText={setSearch} />
     <ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.filters}>{FILTERS.map((item) => <FilterPill key={item.key} label={item.label} active={filter === item.key} onPress={() => setFilter(item.key)} />)}</View></ScrollView>
     <View style={styles.section}><View><AppText variant="h2">Các món đồ của bạn</AppText><AppText variant="bodySmall" muted>{filtered.length} món sẵn sàng để phối</AppText></View><View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}><Pressable onPress={() => setClosetViewMode(closetViewMode === 'grid' ? 'list' : 'grid')}><Ionicons name={closetViewMode === 'grid' ? 'list-outline' : 'grid-outline'} size={22} color={colors.accentDark} /></Pressable><Pressable onPress={() => setFilter('all')}><Ionicons name="options-outline" size={22} color={colors.accentDark} /></Pressable></View></View>
   </View>;
 
   const numColumns = closetViewMode === 'grid' ? 2 : 1;
-  return <View style={{ flex: 1, backgroundColor: colors.background }}><FlatList key={closetViewMode} data={filtered} numColumns={numColumns} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={closetViewMode === 'grid' ? styles.row : undefined} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 190 }} ListHeaderComponent={header} ListEmptyComponent={<EmptyClosetState onPress={() => void pickImage()} />} showsVerticalScrollIndicator={false} /><FloatingActionButton onPress={() => void pickImage()} /><Modal visible={Boolean(reviewDraft)} animationType="slide" transparent><View style={styles.overlay}><View style={[styles.reviewModal, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>{reviewDraft ? <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}><View style={styles.modalHead}><View><AppText variant="caption" muted>KIỂM TRA TRƯỚC KHI LƯU</AppText><AppText variant="h1">AI đã chuẩn bị bản nháp</AppText></View><Pressable onPress={() => setReviewDraft(null)}><Ionicons name="close" size={24} color={colors.text} /></Pressable></View>{analysisError ? <View style={[styles.warning, { backgroundColor: colors.beige }]}><Ionicons name="alert-circle-outline" size={18} color={colors.accentDark} /><AppText variant="bodySmall" style={{ flex: 1 }}>{analysisError}</AppText></View> : null}<View style={styles.imageGrid}><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH GỐC</AppText><SafeImage source={{ uri: reviewDraft.originalImageUrl }} style={[styles.reviewImage, { borderRadius: radius.md }]} contentFit="cover" /></View><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH SẼ LƯU</AppText><SafeImage source={{ uri: reviewDraft.selectedImageUrl }} style={[styles.reviewImage, { borderRadius: radius.md }]} contentFit="cover" /></View></View><AppText variant="label">Chọn ảnh sạch</AppText><ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.candidates}><Candidate uri={reviewDraft.originalImageUrl} label="Ảnh gốc" selected={reviewDraft.selectedImageUrl === reviewDraft.originalImageUrl} onPress={() => updateDraft({ selectedImageUrl: reviewDraft.originalImageUrl })} />{reviewDraft.enhancedImageCandidates.map((candidate) => <Candidate key={candidate.id} uri={candidate.imageUrl} label={candidate.label ?? 'Ảnh AI'} selected={reviewDraft.selectedImageUrl === candidate.imageUrl} onPress={() => updateDraft({ selectedImageUrl: candidate.imageUrl })} />)}</View></ScrollView>{typeof reviewDraft.confidenceScore === 'number' ? <AppText variant="bodySmall" muted>Độ tin cậy AI: {Math.round(reviewDraft.confidenceScore * 100)}%</AppText> : null}{reviewDraft.qualityWarnings.length ? <View style={[styles.warning, { backgroundColor: colors.beige }]}><Ionicons name="warning-outline" size={18} color={colors.accentDark} /><AppText variant="bodySmall" style={{ flex: 1 }}>{reviewDraft.qualityWarnings.join(' · ')}</AppText></View> : null}<DraftInput label="Tên món đồ" value={reviewDraft.name} onChangeText={(name) => updateDraft({ name })} /><DraftInput label="Loại" value={reviewDraft.type} onChangeText={(type) => updateDraft({ type: normalizeType(type) })} /><DraftInput label="Màu sắc" value={reviewDraft.color} onChangeText={(color) => updateDraft({ color })} /><DraftInput label="Chất liệu" value={reviewDraft.material ?? ''} onChangeText={(material) => updateDraft({ material })} /><DraftInput label="Phong cách" value={reviewDraft.style ?? ''} onChangeText={(style) => updateDraft({ style })} /><DraftInput label="Mùa, cách nhau bằng dấu phẩy" value={reviewDraft.season.join(', ')} onChangeText={(value) => updateDraft({ season: splitList(value) })} /><DraftInput label="Tags, cách nhau bằng dấu phẩy" value={reviewDraft.tags.join(', ')} onChangeText={(value) => updateDraft({ tags: splitList(value) })} /><Button label={saving ? 'Đang lưu...' : 'Save to Closet'} icon="checkmark-circle-outline" onPress={() => void saveDraft()} disabled={saving} /><View style={styles.modalActions}><Button label="Retake/Upload again" variant="secondary" icon="camera-outline" onPress={() => { setReviewDraft(null); void pickImage(); }} style={{ flex: 1 }} /><Button label="Cancel" variant="ghost" onPress={() => setReviewDraft(null)} style={{ flex: 1 }} /></View></ScrollView> : null}</View></View></Modal></View>;
+  return <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <FlatList key={closetViewMode} data={filtered} numColumns={numColumns} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={closetViewMode === 'grid' ? styles.row : undefined} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 190 }} ListHeaderComponent={header} ListEmptyComponent={<EmptyClosetState onPress={() => void pickImage()} />} showsVerticalScrollIndicator={false} />
+    <FloatingActionButton onPress={() => void pickImage()} />
+
+    {/* Single-item review modal */}
+    <Modal visible={Boolean(reviewDraft)} animationType="slide" transparent><View style={styles.overlay}><View style={[styles.reviewModal, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>{reviewDraft ? <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}><View style={styles.modalHead}><View><AppText variant="caption" muted>KIỂM TRA TRƯỚC KHI LƯU</AppText><AppText variant="h1">AI đã chuẩn bị bản nháp</AppText></View><Pressable onPress={() => setReviewDraft(null)}><Ionicons name="close" size={24} color={colors.text} /></Pressable></View>{analysisError ? <View style={[styles.warning, { backgroundColor: colors.beige }]}><Ionicons name="alert-circle-outline" size={18} color={colors.accentDark} /><AppText variant="bodySmall" style={{ flex: 1 }}>{analysisError}</AppText></View> : null}<View style={styles.imageGrid}><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH GỐC</AppText><SafeImage source={{ uri: reviewDraft.originalImageUrl }} style={[styles.reviewImage, { borderRadius: radius.md }]} contentFit="cover" /></View><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH SẼ LƯU</AppText><SafeImage source={{ uri: reviewDraft.selectedImageUrl }} style={[styles.reviewImage, { borderRadius: radius.md }]} contentFit="cover" /></View></View><AppText variant="label">Chọn ảnh sạch</AppText><ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.candidates}><Candidate uri={reviewDraft.originalImageUrl} label="Ảnh gốc" selected={reviewDraft.selectedImageUrl === reviewDraft.originalImageUrl} onPress={() => updateDraft({ selectedImageUrl: reviewDraft.originalImageUrl })} />{reviewDraft.enhancedImageCandidates.map((candidate) => <Candidate key={candidate.id} uri={candidate.imageUrl} label={candidate.label ?? 'Ảnh AI'} selected={reviewDraft.selectedImageUrl === candidate.imageUrl} onPress={() => updateDraft({ selectedImageUrl: candidate.imageUrl })} />)}</View></ScrollView>{typeof reviewDraft.confidenceScore === 'number' ? <AppText variant="bodySmall" muted>Độ tin cậy AI: {Math.round(reviewDraft.confidenceScore * 100)}%</AppText> : null}{reviewDraft.qualityWarnings.length ? <View style={[styles.warning, { backgroundColor: colors.beige }]}><Ionicons name="warning-outline" size={18} color={colors.accentDark} /><AppText variant="bodySmall" style={{ flex: 1 }}>{reviewDraft.qualityWarnings.join(' · ')}</AppText></View> : null}<DraftInput label="Tên món đồ" value={reviewDraft.name} onChangeText={(name) => updateDraft({ name })} /><DraftInput label="Loại" value={reviewDraft.type} onChangeText={(type) => updateDraft({ type: normalizeType(type) })} /><DraftInput label="Màu sắc" value={reviewDraft.color} onChangeText={(color) => updateDraft({ color })} /><DraftInput label="Chất liệu" value={reviewDraft.material ?? ''} onChangeText={(material) => updateDraft({ material })} /><DraftInput label="Phong cách" value={reviewDraft.style ?? ''} onChangeText={(style) => updateDraft({ style })} /><DraftInput label="Mùa, cách nhau bằng dấu phẩy" value={reviewDraft.season.join(', ')} onChangeText={(value) => updateDraft({ season: splitList(value) })} /><DraftInput label="Tags, cách nhau bằng dấu phẩy" value={reviewDraft.tags.join(', ')} onChangeText={(value) => updateDraft({ tags: splitList(value) })} />{atLimit ? <View style={[styles.warning, { backgroundColor: colors.beige }]}><Ionicons name="lock-closed-outline" size={18} color={colors.accentDark} /><View style={{ flex: 1 }}><AppText variant="bodySmall">Tủ đồ đã đạt giới hạn của gói hiện tại.</AppText><AppText variant="bodySmall" muted>Xóa một món đồ cũ hoặc nâng cấp gói để tiếp tục lưu món này.</AppText><Button label="Nâng cấp gói" variant="secondary" onPress={() => router.push('/membership')} style={{ marginTop: 8 }} /></View></View> : null}<Button label={saving ? 'Đang lưu...' : 'Save to Closet'} icon="checkmark-circle-outline" onPress={() => void saveDraft()} disabled={saving || atLimit} /><View style={styles.modalActions}><Button label="Retake/Upload again" variant="secondary" icon="camera-outline" onPress={() => { setReviewDraft(null); void pickImage(); }} style={{ flex: 1 }} /><Button label="Cancel" variant="ghost" onPress={() => setReviewDraft(null)} style={{ flex: 1 }} /></View></ScrollView> : null}</View></View></Modal>
+
+    {/* Bulk draft review modal */}
+    <Modal visible={bulkDrafts.length > 0} animationType="slide" transparent>
+      <View style={styles.overlay}>
+        <View style={[styles.reviewModal, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>
+          {currentBulkDraft ? (
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
+              <View style={styles.modalHead}>
+                <View><AppText variant="caption" muted>UPLOAD NHIỀU ẢNH · {bulkIndex + 1}/{bulkDrafts.length}</AppText><AppText variant="h1">Nhập thông tin món đồ</AppText></View>
+                <Pressable onPress={cancelBulkDraft}><Ionicons name="close" size={24} color={colors.text} /></Pressable>
+              </View>
+              <SafeImage source={{ uri: currentBulkDraft.originalImageUrl }} style={[styles.reviewImage, { borderRadius: radius.md, width: '100%' }]} contentFit="cover" />
+              <DraftInput label="Tên món đồ" value={currentBulkDraft.name} onChangeText={(name) => updateBulkDraft({ name })} />
+              <DraftInput label="Màu sắc" value={currentBulkDraft.color} onChangeText={(color) => updateBulkDraft({ color })} />
+              <DraftInput label="Loại (top/bottom/dress/…)" value={currentBulkDraft.type} onChangeText={(type) => updateBulkDraft({ type: normalizeType(type) })} />
+              <DraftInput label="Chất liệu" value={currentBulkDraft.material ?? ''} onChangeText={(material) => updateBulkDraft({ material })} />
+              <DraftInput label="Phong cách" value={currentBulkDraft.style ?? ''} onChangeText={(style) => updateBulkDraft({ style })} />
+              <DraftInput label="Tags, cách nhau bằng dấu phẩy" value={currentBulkDraft.tags.join(', ')} onChangeText={(v) => updateBulkDraft({ tags: splitList(v) })} />
+              <Button label={saving ? 'Đang lưu...' : 'Lưu món này'} icon="checkmark-circle-outline" onPress={() => void saveBulkDraft()} disabled={saving} />
+              <Button label="Bỏ qua món này" variant="ghost" icon="trash-outline" onPress={cancelBulkDraft} style={{ marginTop: 4 }} />
+            </ScrollView>
+          ) : null}
+        </View>
+      </View>
+    </Modal>
+  </View>;
 }
 
 function createManualDraft(uri: string): ClothingReviewDraft {
