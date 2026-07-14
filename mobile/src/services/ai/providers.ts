@@ -122,7 +122,7 @@ export class BackendAiProvider implements AiProvider {
   private async post<T>(path: string, body: unknown): Promise<T> {
     if (!apiBaseUrl) throw new AiServiceError('AI backend chưa được cấu hình.', 'config');
     let lastError: unknown;
-    for (let attempt = 0; attempt < 2; attempt += 1) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -138,7 +138,7 @@ export class BackendAiProvider implements AiProvider {
       } catch (error) {
         lastError = error;
         if (error instanceof AiServiceError && error.code === 'server') throw error;
-        if (attempt === 0) await delay(300);
+        if (attempt < 2) await delay(300 * (attempt + 1));
       } finally { clearTimeout(timer); }
     }
     if (lastError instanceof Error && lastError.name === 'AbortError') throw new AiServiceError('AI phản hồi quá lâu.', 'timeout');
