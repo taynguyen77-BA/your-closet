@@ -1,0 +1,8 @@
+{
+  "package": "PKG-02",
+  "startedAt": "2026-07-14",
+  "dependencyOrder": ["P-08", "P-09", "P-07", "P-10", "P-13", "P-11", "P-12", "P-14"],
+  "completed": [],
+  "inProgress": null,
+  "blocked": null
+}

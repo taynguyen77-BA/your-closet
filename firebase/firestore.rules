@@ -140,6 +140,9 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.uid == resource.data.userId;
       allow read: if isActiveAdmin();
     }
+    match /admin_settings/{settingId} {
+      allow read, write: if hasAnyRole(['super_admin']);
+    }
     match /subscriptions/{id} {
       allow read, write: if hasAnyRole(['super_admin', 'finance']);
     }
