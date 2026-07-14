@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit",
     "seed": "tsx scripts/seed-firestore.ts",
     "seed:emulator": "tsx scripts/seed-emulator.ts",
-    "migrate:tier-enum": "tsx scripts/migrate-tier-enum.ts",
-    "emulators:start": "cd .. && firebase emulators:start --project demo-your-closet --only firestore"
+    "emulators:start": "cd .. && firebase emulators:start --project demo-your-closet --only firestore",
+    "test": "jest"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
@@ -38,14 +38,41 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
+    "jest": "^30.4.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.4.11",
     "tsx": "^4.22.4",
     "typescript": "^5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "paths": {
+              "@/*": [
+                "./src/*"
+              ]
+            }
+          }
+        }
+      ]
+    }
   }
 }
