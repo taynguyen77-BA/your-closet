@@ -333,3 +333,38 @@ describe('P08 — admin_settings: non-admin write is denied', () => {
     await assertFails(getDoc(doc(ctx.firestore(), 'admin_settings', ROUTING_DOC)));
   });
 });
+
+// ── P09: clothes — ownership isolation ───────────────────────────────────────
+
+describe('P09 — clothes: user cannot read/write another user\'s items', () => {
+  const clothingDoc = (userId: string) => ({ userId, name: 'Test item', type: 'top', color: 'white', tags: [], isFavorite: false, timesWorn: 0, createdAt: new Date().toISOString() });
+
+  test('User A can read their own clothing item', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'clothes', 'item-a'), clothingDoc(USER_A));
+    });
+    const ctx = asUser(USER_A);
+    await assertSucceeds(getDoc(doc(ctx.firestore(), 'clothes', 'item-a')));
+  });
+
+  test('User A cannot read User B clothing item', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'clothes', 'item-b'), clothingDoc(USER_B));
+    });
+    const ctx = asUser(USER_A);
+    await assertFails(getDoc(doc(ctx.firestore(), 'clothes', 'item-b')));
+  });
+
+  test('User A cannot write to User B clothing item', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'clothes', 'item-b2'), clothingDoc(USER_B));
+    });
+    const ctx = asUser(USER_A);
+    await assertFails(updateDoc(doc(ctx.firestore(), 'clothes', 'item-b2'), { name: 'Hijacked' }));
+  });
+
+  test('User A can create their own clothing item', async () => {
+    const ctx = asUser(USER_A);
+    await assertSucceeds(setDoc(doc(ctx.firestore(), 'clothes', 'new-item-a'), clothingDoc(USER_A)));
+  });
+});
