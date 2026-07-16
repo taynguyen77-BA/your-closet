@@ -91,7 +91,12 @@ export async function POST(request: NextRequest) {
         };
       }
     );
-    return NextResponse.json(result.result, { headers: corsHeaders });
+    // AC 45.4 / BRD 3.4.6.3 / §9 fallback rule — the client must be able to see that a
+    // fallback served this result, so it can warn the user and skip the quota charge.
+    return NextResponse.json(
+      { ...result.result, modelUsed: result.modelUsed, fallbackUsed: result.fallbackUsed },
+      { headers: corsHeaders }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Detection failed";
     return NextResponse.json({ error: message }, { status: 503, headers: corsHeaders });

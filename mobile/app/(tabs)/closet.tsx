@@ -10,7 +10,7 @@ import { ClosetItemCard, EmptyClosetState, FilterPill, FloatingActionButton, Gra
 import { SafeImage } from '@/components/ui/SafeImage';
 import type { ClothingItem } from '@/models';
 import type { ClothingReviewDraft } from '@/services/ai/types';
-import { aiService } from '@/services/ai/aiService';
+import { aiService, FALLBACK_QUALITY_NOTICE } from '@/services/ai/aiService';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
@@ -78,7 +78,9 @@ export default function ClosetScreen() {
       const aiResult = await aiService.detectClothingFromImage(useAppStore.getState().user.id, result.assets[0].uri);
       const meta = aiResult.data;
       if (!meta.suggestedName || !meta.type || !meta.color) throw new Error('AI result is missing required clothing metadata.');
-      setReviewDraft({ originalImageUrl: result.assets[0].uri, selectedImageUrl: result.assets[0].uri, name: meta.suggestedName, type: meta.type, material: meta.material, color: meta.color, style: meta.style, season: meta.season ?? [], tags: meta.tags, qualityWarnings: [], enhancedImageCandidates: [] });
+      // AC 45.4 — a fallback-served result carries a visible lower-quality notice in the
+      // review draft, and must not have charged the user's quota (quotaChargeEligible=false).
+      setReviewDraft({ originalImageUrl: result.assets[0].uri, selectedImageUrl: result.assets[0].uri, name: meta.suggestedName, type: meta.type, material: meta.material, color: meta.color, style: meta.style, season: meta.season ?? [], tags: meta.tags, qualityWarnings: aiResult.fallbackUsed ? [FALLBACK_QUALITY_NOTICE] : [], enhancedImageCandidates: [] });
       if (aiResult.quotaChargeEligible) await consumeAiTry(!aiResult.quotaManagedByBackend);
       if (aiResult.fallbackMessage) Alert.alert('Đã chuẩn bị bản nháp', aiResult.fallbackMessage);
     } catch {
@@ -204,7 +206,9 @@ export default function ClosetScreen() {
     try {
       const aiResult = await aiService.analyzeAndEnhanceClothingImage(useAppStore.getState().user.id, reviewDraft.originalImageUrl);
       const meta = aiResult.data;
-      updateDraft({ enhancedImageCandidates: meta.enhancedImageCandidates ?? [], qualityWarnings: meta.qualityWarnings ?? [], selectedImageUrl: meta.enhancedImageCandidates?.[0]?.imageUrl ?? reviewDraft.selectedImageUrl });
+      // AC 45.4 — surface the lower-quality notice alongside any model quality warnings.
+      const warnings = [...(meta.qualityWarnings ?? []), ...(aiResult.fallbackUsed ? [FALLBACK_QUALITY_NOTICE] : [])];
+      updateDraft({ enhancedImageCandidates: meta.enhancedImageCandidates ?? [], qualityWarnings: warnings, selectedImageUrl: meta.enhancedImageCandidates?.[0]?.imageUrl ?? reviewDraft.selectedImageUrl });
     } catch {
       Alert.alert('Không thể cải thiện ảnh', 'Thử lại sau một chút hoặc lưu với ảnh gốc.');
     } finally { setEnhancing(false); }

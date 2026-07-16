@@ -134,11 +134,23 @@ export interface StyleProfile {
   recommendations: string[];
 }
 
+/**
+ * Fields the AI backend attaches to every routed response so the client can honour
+ * the fallback rule (AC 45.4 / BRD 3.4.6.3 / BRD Section 9).
+ */
+export interface AiFallbackMeta {
+  modelUsed?: string;
+  fallbackUsed?: boolean;
+}
+
 export interface AiResult<T> {
   data: T;
   source: 'real' | 'mock';
+  /** false when a fallback model served the result — a fallback must not charge quota. */
   quotaChargeEligible: boolean;
   quotaManagedByBackend: boolean;
+  /** true when a lower-cost fallback model served this result. */
+  fallbackUsed: boolean;
   fallbackMessage?: string;
 }
 
