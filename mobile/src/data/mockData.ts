@@ -25,6 +25,8 @@ export const mockUser: User = {
   closetItemLimit: 50,
   closetItemCount: 24,
   createdAt: new Date().toISOString(),
+  hasCompletedStyleSurvey: true,
+  styleSurveySkipped: false,
 };
 
 export const mockWeather: WeatherInfo = {

@@ -46,7 +46,9 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/react": "~19.2.2",
+    "serve": "^14.2.6",
     "typescript": "~6.0.3"
   },
   "private": true
