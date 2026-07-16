@@ -1,64 +1,82 @@
-import type { PropsWithChildren } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
-import { rounded, useTheme } from '@/theme';
+import { layout, useTheme } from '@/theme';
 
-export function AuthScreen({ title, subtitle, children }: PropsWithChildren<{ title: string; subtitle: string }>) {
-  const { colors, gradients, rounded } = useTheme();
-  const { width } = useWindowDimensions();
-  const wide = width >= 820;
+interface AuthScreenProps {
+  title: string;
+  subtitle?: string;
+  /** Pinned to the bottom of the viewport, as in the Stitch auth screens. */
+  footer?: ReactNode;
+  showBack?: boolean;
+}
+
+/**
+ * Auth shell per the Stitch export (nh_p_s_i_n_tho_i_wardro, x_c_nh_n_otp_wardro):
+ * a Linen canvas with a back nav, a serif headline, the form, and the primary
+ * action pinned in a footer.
+ */
+export function AuthScreen({
+  title,
+  subtitle,
+  footer,
+  showBack = true,
+  children,
+}: PropsWithChildren<AuthScreenProps>) {
+  const { colors, typeScale } = useTheme();
+  const router = useRouter();
 
   return (
-    <LinearGradient colors={gradients.marketplace} style={styles.fill}>
-      <ScrollView contentContainerStyle={[styles.scroll, wide && styles.scrollWide]} keyboardShouldPersistTaps="handled">
-        <View style={[styles.stage, wide && styles.stageWide]}>
-          <View style={[styles.copyPane, wide && styles.copyPaneWide]}>
-            <View style={styles.brandRow}>
-              <View style={[styles.brandMark, { backgroundColor: colors.accent }]} />
-              <AppText variant="caption" color={colors.textInverse}>YOUR CLOSET</AppText>
+    <View style={[styles.fill, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <View style={styles.stage}>
+          {showBack && router.canGoBack() ? (
+            <View style={styles.nav}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Quay lại"
+                onPress={() => router.back()}
+                hitSlop={8}
+                style={({ pressed }) => [styles.back, { opacity: pressed ? 0.6 : 1 }]}
+              >
+                <Ionicons name="arrow-back" size={24} color={colors.primary} />
+              </Pressable>
             </View>
-            <AppText variant="display" color={colors.textInverse} style={styles.title}>{title}</AppText>
-            <AppText color="#D8CEC2" style={styles.subtitle}>{subtitle}</AppText>
-            <View style={[styles.preview, { borderColor: '#FFFFFF24', backgroundColor: '#FFFFFF10', borderRadius: rounded.lg }]}>
-              <View style={[styles.rail, { backgroundColor: '#FFFFFF99' }]} />
-              {['#F6DCE5', '#DCEBE3', '#E7E1F5'].map((color, index) => (
-                <View key={color} style={[styles.hanger, { left: 34 + index * 58 }]}>
-                  <View style={[styles.hook, { borderColor: '#FFF9F1' }]} />
-                  <View style={[styles.garment, { backgroundColor: color, borderColor: '#FFFFFF66' }]} />
-                </View>
-              ))}
-              <View style={[styles.note, { backgroundColor: colors.surface }]}>
-                <AppText variant="caption" color={colors.accentDark}>AI stylist</AppText>
-                <AppText variant="bodySmall" color={colors.textSecondary}>Gợi ý outfit theo tủ đồ, thời tiết và gu riêng.</AppText>
-              </View>
-            </View>
-          </View>
-          <View style={[styles.card, { backgroundColor: colors.surface, borderColor: '#FFFFFF33', borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
-            {children}
+          ) : (
+            <View style={styles.navSpacer} />
+          )}
+          <View style={styles.main}>
+            <AppText style={[typeScale.headlineMd, { color: colors.primary }]}>{title}</AppText>
+            {subtitle ? (
+              <AppText variant="bodySmall" color={colors.textSecondary} style={styles.subtitle}>
+                {subtitle}
+              </AppText>
+            ) : null}
+            <View style={styles.body}>{children}</View>
           </View>
         </View>
       </ScrollView>
-    </LinearGradient>
+      {footer ? (
+        <View style={[styles.footer, { backgroundColor: colors.background }]}>
+          <View style={styles.footerInner}>{footer}</View>
+        </View>
+      ) : null}
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: 20 },
-  scrollWide: { padding: 36 },
-  stage: { gap: 22, width: '100%', maxWidth: 1120, alignSelf: 'center' },
-  stageWide: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  copyPane: { minHeight: 300, justifyContent: 'center' },
-  copyPaneWide: { flex: 1, paddingRight: 32 },
-  brandRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 18 },
-  brandMark: { width: 32, height: 32, borderRadius: rounded.DEFAULT },
-  title: { maxWidth: 560, fontSize: 38, lineHeight: 44 },
-  subtitle: { maxWidth: 560, marginTop: 12, fontSize: 16, lineHeight: 25 },
-  preview: { height: 230, marginTop: 26, maxWidth: 520, overflow: 'hidden', borderWidth: 1 },
-  rail: { height: 2, left: 28, right: 28, top: 38, position: 'absolute' },
-  hanger: { position: 'absolute', top: 30, width: 52, alignItems: 'center' },
-  hook: { width: 18, height: 18, borderTopWidth: 2, borderRightWidth: 2, borderRadius: 12, transform: [{ rotate: '-35deg' }] },
-  garment: { width: 50, height: 86, marginTop: 2, borderWidth: 1, borderRadius: rounded.DEFAULT },
-  note: { position: 'absolute', right: 18, bottom: 18, width: 190, padding: 14, borderRadius: rounded.DEFAULT },
-  card: { width: '100%', maxWidth: 500, alignSelf: 'center', padding: 22, borderWidth: 1, shadowOpacity: 0.08, shadowRadius: 2, shadowOffset: { width: 0, height: 1 } },
+  scroll: { flexGrow: 1 },
+  stage: { flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center' },
+  nav: { paddingHorizontal: layout.marginMobile, paddingTop: 48, paddingBottom: layout.stackMd },
+  navSpacer: { height: 48 },
+  back: { padding: 8, marginLeft: -8, alignSelf: 'flex-start' },
+  main: { flexGrow: 1, paddingHorizontal: layout.marginMobile },
+  subtitle: { marginTop: layout.stackSm },
+  body: { marginTop: layout.stackLg, gap: layout.stackMd },
+  footer: { paddingHorizontal: layout.marginMobile, paddingTop: layout.stackSm, paddingBottom: 48 },
+  footerInner: { width: '100%', maxWidth: 480, alignSelf: 'center' },
 });

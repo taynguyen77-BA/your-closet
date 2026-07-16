@@ -30,7 +30,7 @@ async function reachOtpScreen(page: Parameters<typeof clearAppStorage>[0]) {
 }
 
 async function submitOtp(page: Parameters<typeof clearAppStorage>[0], code = '000000') {
-  await page.getByPlaceholder('123456').fill(code);
+  await page.getByTestId('otp-digit-0').fill(code);
   await page.getByText('Xác minh OTP').click();
   // Wait for async verifyOtp to resolve and component to re-render
   await page.waitForTimeout(400);
@@ -72,7 +72,7 @@ test.describe('AC 42 — OTP retry counter and 60s cooldown', () => {
     // Resend button label changes to show remaining seconds
     await expect(page.getByText(/Gửi lại mã \(\d+s\)/)).toBeVisible();
     // Input is read-only during cooldown (editable=false → readonly on RN Web)
-    await expect(page.getByPlaceholder('123456')).toHaveAttribute('readonly', '');
+    await expect(page.getByTestId('otp-digit-0')).toHaveAttribute('readonly', '');
   });
 
   test('AC-42.2 expiry: after 60s cooldown expires, counter resets and Resend returns to normal', async ({ page }) => {
@@ -94,6 +94,6 @@ test.describe('AC 42 — OTP retry counter and 60s cooldown', () => {
     await expect(page.getByText('Gửi lại mã')).toBeVisible();
     await expect(page.getByText(/Gửi lại mã \(\d+s\)/)).toHaveCount(0);
     // Input is editable again (readonly attr removed)
-    await expect(page.getByPlaceholder('123456')).not.toHaveAttribute('readonly', '');
+    await expect(page.getByTestId('otp-digit-0')).not.toHaveAttribute('readonly', '');
   });
 });

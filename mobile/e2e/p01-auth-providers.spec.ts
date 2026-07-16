@@ -83,7 +83,7 @@ test.describe('P-01 — Auth provider restrictions', () => {
     // beforeEach already landed on /auth/welcome. Click the phone button.
     await page.getByText(/Tiếp tục với số điện thoại/i).click();
     await expect(page).toHaveURL(/auth\/phone/);
-    // Verify OTP input page renders (placeholder +84 or similar)
-    await expect(page.getByPlaceholder(/\+84|\d{9}/i).first()).toBeVisible();
+    // Phone entry renders: +84 is a fixed prefix label, the field takes the local number
+    await expect(page.getByPlaceholder('000 000 000')).toBeVisible();
   });
 });

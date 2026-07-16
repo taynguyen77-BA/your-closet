@@ -14,6 +14,8 @@ interface ButtonProps {
   disabled?: boolean;
   style?: ViewStyle;
   small?: boolean;
+  /** Taller footer action, matching the Stitch auth screens' py-5 primary button. */
+  large?: boolean;
   pill?: boolean;
 }
 
@@ -25,6 +27,7 @@ export function Button({
   disabled,
   style,
   small,
+  large,
   pill = false,
 }: ButtonProps) {
   const { colors, rounded } = useTheme();
@@ -72,7 +75,7 @@ export function Button({
           backgroundColor: bg,
           borderRadius: pill ? rounded.full : rounded.DEFAULT,
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
-          paddingVertical: small ? 8 : 12,
+          paddingVertical: small ? 8 : large ? 20 : 12,
           paddingHorizontal: small ? 12 : 16,
           borderWidth: variant === 'secondary' || variant === 'ghost' ? 1 : 0,
           borderColor,
