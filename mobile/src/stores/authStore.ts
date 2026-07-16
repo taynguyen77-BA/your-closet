@@ -228,7 +228,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     catch (error) { setFailure(set, error); return false; }
   },
   verifyOtp: async (code) => {
-    set({ isAuthLoading: true, authError: undefined });
+    // Do NOT set isAuthLoading: true here — doing so unmounts the OTP screen (layout
+    // returns the splash when isAuthLoading=true), which breaks the retry/cooldown
+    // counter and causes a false routing-gate redirect. The component manages its own
+    // loading state (isVerifying) for button feedback.
+    set({ authError: undefined });
     try {
       const currentUser = await otpVerify(code);
       setAuthenticated(set, currentUser);
