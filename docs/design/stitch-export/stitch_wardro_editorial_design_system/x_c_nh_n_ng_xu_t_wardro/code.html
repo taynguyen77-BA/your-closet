@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Wardro - Logout Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-container": "#eeeeee",
+                "tertiary-fixed": "#e5e2de",
+                "on-surface": "#1a1c1c",
+                "on-tertiary-container": "#858480",
+                "secondary": "#705b3e",
+                "on-secondary-fixed": "#281903",
+                "on-tertiary-fixed-variant": "#474744",
+                "on-tertiary": "#ffffff",
+                "on-secondary-container": "#755f42",
+                "inverse-on-surface": "#f0f1f1",
+                "on-secondary-fixed-variant": "#574329",
+                "error-container": "#ffdad6",
+                "background": "#f9f9f9",
+                "on-primary": "#ffffff",
+                "primary": "#000000",
+                "secondary-fixed-dim": "#dfc29f",
+                "primary-fixed": "#f1e0ce",
+                "tertiary": "#000000",
+                "surface-tint": "#695c4f",
+                "tertiary-fixed-dim": "#c8c6c2",
+                "secondary-container": "#f9dbb7",
+                "secondary-fixed": "#fcdeba",
+                "surface-container-highest": "#e2e2e2",
+                "primary-fixed-dim": "#d4c4b3",
+                "surface-variant": "#e2e2e2",
+                "on-error": "#ffffff",
+                "surface-bright": "#f9f9f9",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#f3f3f4",
+                "surface-container-high": "#e8e8e8",
+                "on-primary-fixed": "#231a0f",
+                "on-surface-variant": "#4d463e",
+                "primary-container": "#231a0f",
+                "tertiary-container": "#1c1c1a",
+                "surface-dim": "#dadada",
+                "on-error-container": "#93000a",
+                "outline": "#7e766d",
+                "on-secondary": "#ffffff",
+                "surface": "#f9f9f9",
+                "on-tertiary-fixed": "#1c1c1a",
+                "inverse-primary": "#d4c4b3",
+                "outline-variant": "#cfc5bb",
+                "on-primary-fixed-variant": "#504538",
+                "inverse-surface": "#2f3131",
+                "on-background": "#1a1c1c",
+                "error": "#ba1a1a",
+                "on-primary-container": "#908273"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "stack-lg": "48px",
+                "gutter": "24px",
+                "container-max": "1200px",
+                "margin-desktop": "64px",
+                "stack-sm": "12px",
+                "margin-mobile": "20px",
+                "stack-md": "24px",
+                "unit": "4px"
+            },
+            "fontFamily": {
+                "label-md": ["DM Sans"],
+                "label-sm": ["DM Sans"],
+                "display-lg-mobile": ["DM Serif Display"],
+                "headline-md": ["DM Serif Display"],
+                "body-md": ["DM Sans"],
+                "body-lg": ["DM Sans"],
+                "headline-sm": ["DM Serif Display"],
+                "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen-like background */
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for subtle luxury feel */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e2e2e2; border-radius: 10px; }
+
+        .profile-backdrop {
+            filter: blur(8px) brightness(0.8);
+            transition: filter 0.3s ease;
+        }
+        
+        .bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+
+        .overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased text-on-background">
+<!-- Mock Profile Page Content (The Backdrop) -->
+<div class="min-h-screen pb-32 profile-backdrop" id="main-content">
+<!-- Top App Bar - Fixed -->
+<header class="w-full top-0 sticky bg-background border-b border-outline-variant/10 z-30 flex justify-between items-center px-margin-mobile py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm-mobile tracking-tight text-primary">Wardro</h1>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A sophisticated close-up portrait of a stylish young individual against a neutral beige background, conveying a high-end fashion aesthetic with soft natural lighting and minimalist composition. The subject has an elegant expression, wearing a premium silk garment in muted tones, aligning with a luxury lifestyle brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW4r5a-_UKpvd0tNPA_zGwRxZ3UOJZFA5kodzDxFTmwsdYwd9JhoDbYYAh1rufMKnvMuIUe68HUT3r36tGLlnXuG9eAeAp8lpJrd8pHXuDmmyVdo--BXsY0EEhuhmM4acafA2C1pNwlHVBYwy8Gt-l-NJgauQaspQug1ZZVP8PiKSalbz3KkO_TLWFhQffGrp6ZKS02yKGCJMq4dejV_qcEqb3C7qsrn_WaJX2PZPk7b6fQm_Vkdjkfx-tVYjJPl_RYeR3i2xq92E"/>
+</div>
+</header>
+<main class="px-margin-mobile pt-stack-md">
+<!-- Profile Header -->
+<section class="flex flex-col items-center text-center mb-stack-lg">
+<div class="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A portrait of a fashionable person in a minimalist, high-end studio setting. The lighting is soft and editorial, emphasizing the texture of their high-quality linen clothing. The overall color palette is composed of warm whites, soft tans, and clean blacks, reflecting a premium Vietnamese lifestyle aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSVxvZbweDuwaOiRIestQUDDrO7evOGB8Xw_hk2fAuFwAl5tJY-luPQoyoOYBhZkbhCgC_wpPYcW1DwgNMA3gy93NdY9o38ujppn-Xvz0yEkRmC4yBgp6uLE6JN7eThv2O78UgwVFM_ja1bIjF2shJkTEKr3kXLEJOTv7COhM4kFXl5roNMy83uJkp5-dROfngmUlhomWTwIBJfERzaBwjexHVL78RNFZDPBFD3xIBLRLSTy1pApGqvA4oAEXCEntnZjWWRYIatAg"/>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-primary mb-1">Minh Anh</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">Hanoi, Vietnam • Fashion Enthusiast</p>
+<div class="flex gap-stack-md mt-stack-md">
+<div class="text-center">
+<span class="block font-bold text-headline-sm">128</span>
+<span class="text-label-sm uppercase tracking-widest text-outline">Items</span>
+</div>
+<div class="text-center">
+<span class="block font-bold text-headline-sm">42</span>
+<span class="text-label-sm uppercase tracking-widest text-outline">Outfits</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Wardrobe Sneak Peek -->
+<div class="grid grid-cols-2 gap-4 mb-stack-lg">
+<div class="aspect-[3/4] bg-surface-container-low rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-fashion editorial shot of a pristine white silk blouse draped elegantly over a minimalist wooden chair. The background is a clean, bright linen-textured wall with soft shadows. The lighting is ethereal and airy, highlighting the premium fabric quality and delicate stitching." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOuZhQ60exUE8gkdAxggWz0pSt-NtRFMAF-nlwexbRMC-NuBuh0PPxEvS8DByjlSB5d49uJuBSeyFMvTK7MSxeQ9wiS7xqLxXfdPkfSCK6zO5fhCJyKzsy33A8O6VFFWhbk-vT1-KgZ7QDg7MypQ_weObTK1QKrcuQhpB5lduBd82G0dnujdBBugvIzwkkSThW4CdWQbdRK2XBLnF1lbtKYm304oCg6LIRKvxyKI6UTlTyz85r_rD293EFDVcYi7mAhuemL4Cjr40"/>
+<div class="absolute bottom-3 left-3 bg-white/80 backdrop-blur px-2 py-1 rounded-sm">
+<span class="font-label-sm text-primary">Tops</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="aspect-square bg-surface-container-low rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close-up of luxury leather accessories including a minimalist black belt and a small structured handbag. The items are arranged on a pale sand-colored surface with sharp, artistic shadows creating a sophisticated editorial look. The mood is modern and utilitarian yet undeniably premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQjmm6PG8U0GIlW28syOmHU7Ji8sPe5c7gTDXNrL3FsqwtvSRgnTV0Scu9JA5cqs1cohKOtvA63T_7_aK8a2kOvnWV0XHeU30C8fVKcyhbmylycOYcVpk5lQ74UzpQi6giqGnvmKoR15lHhOnlSJGdAhPQKNlruFmsvOHLK4i_b9klhlDKY3n-F00gi1WnLptoDXrx5ORTuM5sW3N2ISfMpWhINaSQTxZcvM_vDH9Qr3-CqmiEJIN6yNOjsWhVIoW4V-1UtuHMa8"/>
+</div>
+<div class="aspect-square bg-surface-container-low rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A curated flat lay of neutral-toned trousers and a tailored blazer on a light gray concrete floor. The arrangement is rhythmic and precise, following a magazine-style grid. Soft natural light flows across the scene, creating a peaceful and expensive atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdyrKkWyH2MjC-pa52VS43mSbaTIxYClUhLCbEb_lhaOHzxo8fAmGSIf2PwSEJ5XBuNvBkP6Si-OkTqg4gIX2AKDnovk1Yv419uw9PVUiCSZx4EZX3NNTygqFm-vv5RqXgZAEuk2QPzMJu9QhhLHIyd0UWOtpbngM2PG30gIXU6hAAstoUClsZkOHQJbu92jQ3JZYe1_gvSejCYlhKnqc5OofcPVOT1MzaqILBcVuVzrkLFOlCZJckCJXWcf0KQYttzyLhBuK019k"/>
+</div>
+</div>
+</div>
+<!-- Profile Actions -->
+<div class="space-y-2">
+<button class="w-full flex items-center justify-between p-4 bg-white border border-outline-variant/10 rounded-xl">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">checkroom</span>
+<span class="font-label-md text-on-surface">My Wardrobe</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-white border border-outline-variant/10 rounded-xl">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">favorite</span>
+<span class="font-label-md text-on-surface">Saved Outfits</span>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-white border border-outline-variant/10 rounded-xl text-error">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md">Đăng xuất</span>
+</div>
+</button>
+</div>
+</main>
+</div>
+<!-- Bottom Navigation (Shared Component Context) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 pb-safe bg-surface-container-lowest border-t border-outline-variant/10 z-40 shadow-sm">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="checkroom">checkroom</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+</nav>
+<!-- Overlay Layer -->
+<div class="overlay fixed inset-0 bg-black/40 z-50 flex items-end" id="logout-overlay">
+<!-- Bottom Sheet -->
+<div class="bottom-sheet w-full bg-white rounded-t-3xl px-margin-mobile pt-4 pb-12 shadow-2xl" id="logout-sheet">
+<!-- Handle -->
+<div class="w-12 h-1 bg-outline-variant/30 rounded-full mx-auto mb-8"></div>
+<div class="text-center mb-stack-lg">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-2">Đăng xuất?</h3>
+<p class="font-body-md text-on-surface-variant px-4">
+                    Bạn có chắc chắn muốn đăng xuất khỏi tài khoản Wardro?
+                </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3">
+<button class="w-full py-4 bg-primary text-white font-label-md rounded-full active:scale-95 transition-transform duration-150 uppercase tracking-widest" onclick="handleLogout()">
+                    ĐĂNG XUẤT
+                </button>
+<button class="w-full py-4 bg-transparent text-on-surface-variant font-label-md rounded-full active:bg-surface-container transition-colors duration-200 uppercase tracking-widest" onclick="closeSheet()">
+                    HỦY
+                </button>
+</div>
+</div>
+</div>
+<script>
+        // Bottom Sheet Logic
+        const overlay = document.getElementById('logout-overlay');
+        const sheet = document.getElementById('logout-sheet');
+        const mainContent = document.getElementById('main-content');
+
+        function openSheet() {
+            overlay.classList.add('active');
+            sheet.classList.add('active');
+            mainContent.classList.add('profile-backdrop');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSheet() {
+            sheet.classList.remove('active');
+            overlay.classList.remove('active');
+            mainContent.classList.remove('profile-backdrop');
+            document.body.style.overflow = '';
+        }
+
+        function handleLogout() {
+            // Simulated logout action
+            const btn = event.target;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span>';
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+
+        // Close when clicking overlay (outside sheet)
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeSheet();
+        });
+
+        // Initialize state (showing the sheet as requested)
+        window.onload = () => {
+            setTimeout(openSheet, 500);
+        };
+    </script>
+</body></html>

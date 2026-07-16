@@ -1,0 +1,240 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro Style Survey - Step 2</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2f3131",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#000000",
+                        "inverse-primary": "#d4c4b3",
+                        "surface-tint": "#695c4f",
+                        "on-tertiary-container": "#858480",
+                        "on-primary-fixed-variant": "#504538",
+                        "surface-container-low": "#f3f3f4",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-secondary-container": "#755f42",
+                        "on-primary-fixed": "#231a0f",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "outline": "#7e766d",
+                        "surface": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#908273",
+                        "secondary-container": "#f9dbb7",
+                        "primary-container": "#231a0f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#281903",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "tertiary-container": "#1c1c1a",
+                        "primary-fixed": "#f1e0ce",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-fixed": "#fcdeba",
+                        "on-surface-variant": "#4d463e",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "surface-dim": "#dadada",
+                        "on-secondary-fixed-variant": "#574329",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#e5e2de",
+                        "tertiary": "#000000",
+                        "outline-variant": "#cfc5bb",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "secondary": "#705b3e",
+                        "linen": "#F7F4F0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-md": "24px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-sm": ["DM Serif Display"],
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "label-sm": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F7F4F0; /* Linen Brand Color */
+        }
+        .color-swatch-selected {
+            outline: 2px solid #dfc29f; /* Sand color */
+            outline-offset: 4px;
+        }
+        .step-progress {
+            transition: width 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- Top Navigation / Progress -->
+<header class="w-full pt-6 px-margin-mobile flex flex-col gap-4">
+<div class="flex justify-between items-center w-full">
+<span class="font-label-sm text-label-sm text-outline tracking-widest uppercase">Wardro</span>
+<button class="font-label-md text-label-md text-primary hover:opacity-70 transition-opacity">Bỏ qua</button>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-[2px] bg-outline-variant/30 relative mt-2">
+<div class="step-progress absolute left-0 top-0 h-full bg-primary" style="width: 40%;"></div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col px-margin-mobile pt-stack-lg pb-32">
+<!-- Editorial Thumbnail -->
+<div class="w-full aspect-[16/9] mb-stack-md overflow-hidden rounded-lg opacity-90">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" data-alt="Close-up editorial photography of high-quality fashion fabric textures. Layers of soft cream linen, charcoal gray wool, and olive green silk are arranged in a minimalist, tactile composition. The lighting is soft and natural, emphasizing the refined textures and premium feel of the Wardro aesthetic in a bright, modern studio setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAtTusM_WVXxn0tV5-250AKrS9NKqo5MJbuPhiQJj3h9YcY6pPJSdVuCu0bnFC3TP1LNCu5UCbiuI1k-i3OSN2T1ZhOwbCTm5qLuSodJncrTr8kCfw3Ms_Q0huDv_Rnmq_d0nPoAPw8BkvgywJq0m9i5_j8GIbiGPOh5EgJ8FN16ppj5PDycy8TJXQoeDNX3XaLkfm6pUCpK6EmVNkvTcLjhHpaUOPgm-eAVGHD5IFAC-UpJzTPgNw4Ua-TDX9xSUuB9i9sQBYLEKE')">
+</div>
+</div>
+<!-- Headline -->
+<section class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md text-primary leading-tight">Bạn thích màu nào?</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 opacity-80">Chọn những tông màu phản ánh phong cách cá nhân của bạn nhất.</p>
+</section>
+<!-- Color Grid -->
+<section class="grid grid-cols-4 gap-y-10 gap-x-gutter place-items-center">
+<!-- Neutral & Earthy -->
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#FFFFFF] border border-outline-variant transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Trắng</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#2C2C2C] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Đen</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#C5B4A2] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Be</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#5D5348] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Nâu đất</span>
+</button>
+<!-- Editorial Accents -->
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#0E3B29] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Lục bảo</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#7B1818] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Đỏ đô</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#1A3A5F] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Xanh navy</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#8E9084] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Xám rêu</span>
+</button>
+<!-- Pastel/Soft -->
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#D4C3B5] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Cát</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#E8E1D9] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Kem</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#4A5D4E] transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Olive</span>
+</button>
+<button class="flex flex-col items-center gap-3 tap-highlight-transparent group" onclick="toggleSwatch(this)">
+<div class="w-14 h-14 rounded-full bg-[#2A2A2A] border-[4px] border-outline-variant/20 transition-all duration-300 group-active:scale-90"></div>
+<span class="font-label-sm text-label-sm text-outline">Than</span>
+</button>
+</section>
+</main>
+<!-- Fixed Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 w-full bg-linen/90 backdrop-blur-md px-margin-mobile py-8 flex justify-between items-center z-50">
+<button class="flex items-center gap-2 font-label-md text-label-md text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Quay lại
+        </button>
+<button class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md uppercase tracking-wider transition-all hover:opacity-90 active:scale-95 shadow-lg shadow-primary/10">
+            Tiếp tục
+        </button>
+</footer>
+<!-- Interaction Script -->
+<script>
+        function toggleSwatch(element) {
+            const circle = element.querySelector('div');
+            circle.classList.toggle('color-swatch-selected');
+            
+            // Haptic feedback simulation
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(5);
+            }
+        }
+
+        // Entrance animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('main section button');
+            buttons.forEach((btn, index) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    btn.style.transition = 'all 0.5s ease-out';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, 100 + (index * 40));
+            });
+        });
+    </script>
+</body></html>

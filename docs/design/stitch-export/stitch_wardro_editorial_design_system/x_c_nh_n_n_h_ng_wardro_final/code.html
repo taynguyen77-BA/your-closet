@@ -1,0 +1,269 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Xác nhận đơn hàng - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#705b3e",
+                    "on-secondary-fixed": "#281903",
+                    "on-background": "#1a1c1c",
+                    "primary-fixed": "#f1e0ce",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3131",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "surface-container-low": "#f3f3f4",
+                    "secondary-fixed": "#fcdeba",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#000000",
+                    "surface-container": "#eeeeee",
+                    "surface-bright": "#f9f9f9",
+                    "on-primary-fixed": "#231a0f",
+                    "tertiary-fixed": "#e5e2de",
+                    "primary-container": "#231a0f",
+                    "surface-tint": "#695c4f",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-container": "#908273",
+                    "surface-shadow": "rgba(26, 18, 8, 0.08)",
+                    "on-tertiary-container": "#858480",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "outline": "#7e766d",
+                    "on-secondary-fixed-variant": "#574329",
+                    "on-primary-fixed-variant": "#504538",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "background": "#f9f9f9",
+                    "surface-dim": "#dadada",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#755f42",
+                    "surface-variant": "#e2e2e2",
+                    "tertiary-container": "#1c1c1a",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#1a1c1c",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#d4c4b3",
+                    "secondary-container": "#f9dbb7",
+                    "primary": "#000000",
+                    "on-surface-variant": "#4d463e",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "outline-variant": "#cfc5bb",
+                    "tertiary-fixed-dim": "#c8c6c2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "unit": "4px",
+                    "container-max": "1200px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "headline-sm": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen background */
+            color: #1a1c1c; /* Espresso primary text */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .editorial-shadow {
+            box-shadow: 0 4px 20px -2px rgba(26, 18, 8, 0.04);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-50 bg-background border-b border-outline-variant/10 flex items-center justify-between px-margin-mobile py-4 transition-all duration-300">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-start active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">arrow_back_ios_new</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm font-bold tracking-tight text-primary">Xác nhận đơn hàng</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<main class="max-w-screen-md mx-auto px-margin-mobile pt-stack-md pb-40">
+<!-- Section: Product Summary -->
+<section class="mb-stack-lg">
+<h2 class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-4">Sản phẩm của bạn</h2>
+<div class="flex gap-gutter items-start p-4 bg-surface-container-lowest rounded-lg border border-outline-variant/5 shadow-sm">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container overflow-hidden rounded">
+<img class="w-full h-full object-cover" data-alt="A high-end studio product photograph of a sand-colored linen blazer for women, displayed on a minimalist white mannequin. The lighting is soft and diffused, highlighting the organic texture of the linen fabric against a clean, neutral background that aligns with a soft-luxury fashion aesthetic. The palette consists of creamy beiges and warm espresso tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB93dpFCJsc8xRrzCw4LbiwAeBIxAbpJDAERPeIebQiDFgP8Xm_Bq6Oe6ITCOjl92u4lcYDt-FotI4MYiD3HfqRU9QvTJpsllMr9NntY5_tXnBa6CAj8ziD1LrFHcu9dK0zUsT7b9d83y8C_lLOmIOabWpvhYbNPYIC6I32eEJrPAQZVM8yetOEWWzOVQ5N5xb8G_HAqfYnVsnoj11woN8F7g5KHezxUm5XTLVyKzDRVwpVffsbTeXHCEw--vyAvbnuPTwfhjUBD98">
+</div>
+<div class="flex flex-col justify-between py-1 h-32">
+<div>
+<h3 class="font-headline-sm text-headline-sm-mobile text-primary mb-1">Áo Blazer Linen Cát</h3>
+<p class="font-body-md text-on-surface-variant">Size M</p>
+</div>
+<p class="font-body-lg text-body-lg text-primary font-bold">1.200.000đ</p>
+</div>
+</div>
+</section>
+<!-- Section: Shipping Address -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-end mb-4">
+<h2 class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">Địa chỉ nhận hàng</h2>
+<button class="flex items-center gap-1 text-secondary font-label-md text-label-md active:opacity-60 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">edit_square</span>
+                    Chỉnh sửa
+                </button>
+</div>
+<div class="p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/5 shadow-sm">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-1">location_on</span>
+<div class="flex flex-col gap-1">
+<span class="font-body-md font-bold text-primary">Nguyễn An <span class="mx-2 text-outline-variant font-normal">|</span> 090xxxx123</span>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                            123 Lê Lợi, Quận 1, TP.HCM
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Payment Method -->
+<section class="mb-stack-lg">
+<h2 class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-4">Phương thức thanh toán</h2>
+<div class="flex items-center justify-between p-5 bg-surface-container-lowest rounded-lg border border-outline-variant/5 shadow-sm cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-8 bg-secondary-fixed/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">payments</span>
+</div>
+<span class="font-body-md text-primary font-medium">Thanh toán khi nhận hàng</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</section>
+<!-- Section: Price Breakdown -->
+<section class="mb-stack-lg pt-stack-sm border-t border-outline-variant/20">
+<h2 class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-6">Chi tiết thanh toán</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-on-surface-variant">Giá sản phẩm</span>
+<span class="font-body-md text-primary">1.200.000đ</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-on-surface-variant">Phí nền tảng (10%)</span>
+<span class="font-body-md text-primary">120.000đ</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-on-surface-variant">Phí vận chuyển</span>
+<span class="font-body-md text-primary">30.000đ</span>
+</div>
+<div class="pt-4 mt-4 border-t border-outline-variant/10 flex justify-between items-center">
+<span class="font-body-lg text-body-lg font-bold text-primary">Tổng cộng</span>
+<span class="font-headline-sm text-headline-sm-mobile text-primary font-bold">1.350.000đ</span>
+</div>
+</div>
+</section>
+<!-- Aesthetic Note / Trust Badge -->
+<div class="flex flex-col items-center justify-center mt-12 mb-8 opacity-40">
+<span class="material-symbols-outlined text-4xl mb-2">verified_user</span>
+<p class="text-xs tracking-widest uppercase font-label-sm">Wardro Secure Checkout</p>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant/20 shadow-[0_-10px_30px_rgba(26,18,8,0.05)] px-margin-mobile py-6 pb-safe">
+<div class="max-w-screen-md mx-auto">
+<button class="w-full bg-primary text-on-primary py-5 rounded-full font-label-md text-label-md tracking-widest active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3" id="checkout-btn">
+<span>XÁC NHẬN &amp; THANH TOÁN</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('checkout-btn');
+            
+            btn.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.style.width = this.offsetWidth + 'px';
+                this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+                this.classList.add('opacity-80');
+                this.disabled = true;
+
+                // Simulate processing
+                setTimeout(() => {
+                    this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> <span>ĐANG HOÀN TẤT...</span>';
+                    this.classList.replace('bg-primary', 'bg-secondary');
+                    
+                    setTimeout(() => {
+                        alert('Đơn hàng của bạn đã được tiếp nhận! Cảm ơn bạn đã tin dùng Wardro.');
+                        // Reset state
+                        this.innerHTML = originalText;
+                        this.classList.replace('bg-secondary', 'bg-primary');
+                        this.classList.remove('opacity-80');
+                        this.disabled = false;
+                    }, 1000);
+                }, 1500);
+            });
+
+            // Reveal scroll animation for content sections
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-4');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('transition-all', 'duration-700', 'ease-out', 'opacity-0', 'translate-y-4');
+                observer.observe(section);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#eeeeee",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-surface": "#1a1c1c",
+                    "on-tertiary-container": "#858480",
+                    "secondary": "#705b3e",
+                    "on-secondary-fixed": "#281903",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#755f42",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-secondary-fixed-variant": "#574329",
+                    "error-container": "#ffdad6",
+                    "background": "#f9f9f9",
+                    "on-primary": "#ffffff",
+                    "primary": "#000000",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "primary-fixed": "#f1e0ce",
+                    "tertiary": "#000000",
+                    "surface-tint": "#695c4f",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "secondary-container": "#f9dbb7",
+                    "secondary-fixed": "#fcdeba",
+                    "surface-container-highest": "#e2e2e2",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "surface-variant": "#e2e2e2",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f9f9f9",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f3f3f4",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-fixed": "#231a0f",
+                    "on-surface-variant": "#4d463e",
+                    "primary-container": "#231a0f",
+                    "tertiary-container": "#1c1c1a",
+                    "surface-dim": "#dadada",
+                    "on-error-container": "#93000a",
+                    "outline": "#7e766d",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f9f9f9",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "inverse-primary": "#d4c4b3",
+                    "outline-variant": "#cfc5bb",
+                    "on-primary-fixed-variant": "#504538",
+                    "inverse-surface": "#2f3131",
+                    "on-background": "#1a1c1c",
+                    "error": "#ba1a1a",
+                    "on-primary-container": "#908273"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "margin-desktop": "64px",
+                    "stack-sm": "12px",
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "label-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-md": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "headline-sm": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen-like background */
+            font-family: 'DM Sans', sans-serif;
+            color: #1a1c1c;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .editorial-shadow {
+            box-shadow: 0 4px 20px -5px rgba(26, 28, 28, 0.05);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-background border-b border-outline-variant/10 flex justify-between items-center px-margin-mobile py-4">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile tracking-tight text-primary">Wardro</h1>
+</div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A chic, high-fashion portrait of a young Vietnamese woman wearing minimalist linen clothing. The lighting is soft and editorial, characteristic of a premium fashion magazine spread. The background is a clean, neutral studio setting that emphasizes her refined and stylish look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjQXwmC_8x8y2-xsxDF1vU1SoEUOwANnfVtHbak-JuX3pwbNKqyPVm3iJKQDObiQf2lUths8Vdx8oP6Cc-RlMhZQXDIyszr870vunpThG4FhIb6B2YUYe3oESI1vLzI20o2BPR9VbZ_IKIbt6FSRXLjGM7KWo3gq7px7d6-0lSLx_He3ESCveYzXD_hpUpTe8gPqOkUbt7KX0EAzregfdE4F-0SB_Fb1ZbIXTtq5TZlqDD5rocuqV6jqbOv-qSKk5a2AmP0kEG6hw"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="w-full max-w-container-max flex-1 px-margin-mobile pt-stack-md pb-32">
+<!-- Header Section -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md tracking-tight mb-2 uppercase">TRỢ GIÚP &amp; HỖ TRỢ</h2>
+<p class="font-body-md text-on-surface-variant max-w-md">Chúng tôi ở đây để giúp bạn tối ưu hóa tủ đồ của mình. Mọi thắc mắc và đóng góp luôn được trân trọng.</p>
+</section>
+<!-- Search Support (Atmospheric Micro-interaction) -->
+<div class="relative mb-stack-lg">
+<input class="w-full bg-white border border-outline-variant/30 rounded-lg py-4 px-12 focus:ring-0 focus:border-primary font-body-md placeholder:text-on-surface-variant/50 transition-all duration-300" placeholder="Tìm kiếm giải pháp..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+<!-- Support Categories Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-stack-lg">
+<!-- Contact Section -->
+<div class="bg-white p-6 rounded-xl border border-outline-variant/10 editorial-shadow hover:border-primary/20 transition-all">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-label-md text-label-md uppercase tracking-widest">Liên hệ hỗ trợ</h3>
+<span class="material-symbols-outlined text-secondary">support_agent</span>
+</div>
+<div class="space-y-4">
+<a class="flex items-center justify-between p-4 bg-background rounded-lg hover:bg-secondary-container transition-colors group" href="tel:19001234">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">call</span>
+<span class="font-body-md font-medium">Hotline 1900 1234</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<button class="w-full flex items-center justify-between p-4 bg-background rounded-lg hover:bg-secondary-container transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">chat_bubble</span>
+<span class="font-body-md font-medium">Chat trực tuyến</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Illustration/Visual Anchor -->
+<div class="hidden md:block relative h-full rounded-xl overflow-hidden min-h-[200px]">
+<img class="w-full h-full object-cover" data-alt="A minimalist and aesthetically pleasing overhead shot of high-quality fabrics, threads, and a sketchbook on a linen-covered surface. The scene is softly lit by natural sunlight, creating gentle shadows. The color palette consists of cream, sand, and deep espresso tones, reflecting a premium fashion atelier environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhQ8TnUTWf25cfdqD8kbJYIxQKzCrrmb9X9jfQCnXV51f6p7AZvU28rTW2c756gGZx9B_c_PXmpixy9dolqTXlSQU0DEiwLs9y4HsKU83k_PnaG8C1ptVS66Vrw5RD9XgAKgjY-udl7E0xPzGLOdulr0ZJTS13fmqpmjZg9UObkyDhgrhQ56zCzXIMRrvddo34d4bOvw3eyswlZOvMe8bIppq7XPhjHuIjvfZLilPYYyXb9K-JxAgsECRD-u5VC0Tn1PcblToDQTE"/>
+<div class="absolute inset-0 bg-black/10"></div>
+</div>
+</div>
+<!-- Detailed List Items -->
+<section class="space-y-stack-sm">
+<!-- FAQ Accordion (Simulated) -->
+<div class="group border-b border-outline-variant/10 pb-4">
+<button class="w-full flex items-center justify-between py-4" onclick="this.nextElementSibling.classList.toggle('hidden')">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">quiz</span>
+<span class="font-body-lg">Câu hỏi thường gặp (FAQ)</span>
+</div>
+<span class="material-symbols-outlined transition-transform duration-300 group-focus-within:rotate-180">expand_more</span>
+</button>
+<div class="hidden bg-surface-container-low p-6 rounded-lg mt-2 transition-all">
+<div class="space-y-4">
+<div class="border-b border-outline-variant/20 pb-4">
+<p class="font-label-md mb-2">Làm thế nào để thêm đồ vào Wardro?</p>
+<p class="font-body-md text-on-surface-variant">Bạn có thể chụp ảnh trực tiếp hoặc tải lên từ thư viện. AI sẽ tự động phân loại chất liệu và kiểu dáng cho bạn.</p>
+</div>
+<div>
+<p class="font-label-md mb-2">Tôi có thể chia sẻ bộ phối đồ không?</p>
+<p class="font-body-md text-on-surface-variant">Hoàn toàn có thể. Nhấn vào biểu tượng chia sẻ ở góc phải mỗi outfit để gửi cho bạn bè hoặc đăng lên Feed.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Terms -->
+<a class="flex items-center justify-between py-6 border-b border-outline-variant/10 hover:px-2 transition-all group" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">gavel</span>
+<span class="font-body-lg">Điều khoản dịch vụ</span>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">north_east</span>
+</a>
+<!-- Privacy -->
+<a class="flex items-center justify-between py-6 border-b border-outline-variant/10 hover:px-2 transition-all group" href="#">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">security</span>
+<span class="font-body-lg">Chính sách bảo mật</span>
+</div>
+<span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">north_east</span>
+</a>
+<!-- Version Info -->
+<div class="py-8 flex flex-col items-center justify-center opacity-40">
+<p class="font-label-sm uppercase tracking-widest mb-1">Wardro Operating System</p>
+<p class="font-label-sm">Phiên bản 2.4.0 (Build 2024)</p>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest border-t border-outline-variant/10 flex justify-around items-center px-4 py-2 pb-safe shadow-sm rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">auto_fix_high</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</a>
+</nav>
+<!-- FAB Suppression: Not present on this Help screen as per UX guidelines -->
+<script>
+        // Micro-interaction for the list items
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.98)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = 'scale(1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

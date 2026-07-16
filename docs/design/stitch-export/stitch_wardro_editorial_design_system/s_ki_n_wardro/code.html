@@ -1,0 +1,332 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Wardro - Sự kiện</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#000000",
+                        "on-tertiary-container": "#858480",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed": "#231a0f",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#695c4f",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-container": "#1c1c1a",
+                        "inverse-primary": "#d4c4b3",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#281903",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-container": "#eeeeee",
+                        "tertiary": "#000000",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-secondary": "#ffffff",
+                        "outline": "#7e766d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#f1e0ce",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "surface-bright": "#f9f9f9",
+                        "inverse-surface": "#2f3131",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed": "#e5e2de",
+                        "secondary": "#705b3e",
+                        "outline-variant": "#cfc5bb",
+                        "on-secondary-container": "#755f42",
+                        "primary-container": "#231a0f",
+                        "surface-container-high": "#e8e8e8",
+                        "on-primary-fixed-variant": "#504538",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "surface-dim": "#dadada",
+                        "surface-container-low": "#f3f3f4",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary-container": "#f9dbb7",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "on-secondary-fixed-variant": "#574329",
+                        "background": "#f9f9f9",
+                        "on-surface-variant": "#4d463e",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#908273",
+                        "secondary-fixed": "#fcdeba",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "container-max": "1200px",
+                        "stack-lg": "48px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "headline-sm": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "label-sm": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F7F4F0; /* Linen background for soft-luxury editorial feel */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface selection:bg-secondary-container">
+<!-- Top App Bar -->
+<header class="bg-background dark:bg-background border-b border-outline-variant/20 w-full top-0 sticky z-50">
+<div class="flex justify-between items-center px-margin-mobile py-unit w-full max-w-container-max mx-auto h-16">
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-2xl">menu</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">Wardro</h1>
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-2xl">shopping_bag</span>
+</div>
+</div>
+</header>
+<main class="pb-32">
+<!-- AI Usage Banner -->
+<div class="px-margin-mobile mt-stack-md">
+<div class="bg-secondary-container rounded-lg px-4 py-3 flex items-center justify-between border border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Lượt gợi ý AI còn lại: 12</span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary underline active:opacity-60 transition-opacity">Nâng cấp</button>
+</div>
+</div>
+<!-- Screen Title -->
+<section class="px-margin-mobile mt-stack-md">
+<h2 class="font-headline-md text-headline-md text-primary">Sự kiện</h2>
+</section>
+<!-- Section 1: Tạo sự kiện -->
+<section class="px-margin-mobile mt-stack-md">
+<div class="bg-surface-container-lowest rounded-xl p-stack-md border border-outline-variant/10 shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mb-stack-sm">Tạo sự kiện mới</h3>
+<div class="space-y-4">
+<div class="border-b border-outline-variant/40 pb-2">
+<label class="font-label-sm text-label-sm text-outline block mb-1">Tên sự kiện</label>
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-body-md font-body-md placeholder:text-outline-variant" placeholder="VD: Đám cưới Minh &amp; Lan" type="text">
+</div>
+<div class="border-b border-outline-variant/40 pb-2">
+<label class="font-label-sm text-label-sm text-outline block mb-1">Ngày (YYYY-MM-DD)</label>
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-body-md font-body-md" type="date">
+</div>
+<div class="border-b border-outline-variant/40 pb-2">
+<label class="font-label-sm text-label-sm text-outline block mb-1">Địa điểm</label>
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-body-md font-body-md placeholder:text-outline-variant" placeholder="VD: Park Hyatt Saigon" type="text">
+</div>
+<div class="border-b border-outline-variant/40 pb-2">
+<label class="font-label-sm text-label-sm text-outline block mb-1">Loại sự kiện</label>
+<select class="w-full bg-transparent border-none p-0 focus:ring-0 text-body-md font-body-md appearance-none">
+<option>Đám cưới</option>
+<option>Tiệc tối</option>
+<option>Công việc</option>
+<option>Du lịch</option>
+<option>Hẹn hò</option>
+</select>
+</div>
+</div>
+<div class="mt-8 space-y-3">
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                        Gợi ý outfit AI
+                    </button>
+<button class="w-full border border-secondary text-secondary py-4 rounded-lg font-label-md text-label-md active:bg-secondary-container transition-all">
+                        Lưu sự kiện
+                    </button>
+</div>
+</div>
+</section>
+<!-- Section 2: Outfit gợi ý -->
+<section class="mt-stack-lg">
+<div class="px-margin-mobile flex justify-between items-end mb-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-primary">Outfit gợi ý</h2>
+<button class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Xem tất cả</button>
+</div>
+<div class="flex overflow-x-auto gap-gutter px-margin-mobile hide-scrollbar snap-x">
+<!-- Outfit Card 1 -->
+<div class="min-w-[280px] w-[80%] snap-start group">
+<div class="relative aspect-[3/4] rounded-lg overflow-hidden mb-3 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A high-end fashion editorial photography shot of a luxury silk evening dress in champagne color, styled with minimalist gold accessories. The model is posed in a soft-lit, airy indoor space with linen textures in the background. The lighting is warm and cinematic, reflecting a premium Vietnamese fashion aesthetic with deep shadows and soft highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh-US-Q_SJcqH6sTPybD-Y4E6rZP9NZl6RlQWoUnSGMwbDn8L7HhEJHckvB-BjnZ5_3m_u1js4Pa9vdyzTw2k2RAbqclgr-b_XXD4zc2jzptd3tymuhkGxCOOl7fpCdDysvbDZye-ZtUcK1agnC59988Cp4AsQb1Ehq9db6NcQqBXf0DeRKxp9W1YDNIDFszc1S47bybbqf6OyP4aDfSTgSM4RsNeUcL3qO1efZ55sRz3q8t3WlaDXV0MBAo_zV39gOGnBCEx9qes">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-sm active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container/90 backdrop-blur-md text-on-secondary-container px-3 py-1.5 rounded-full font-label-sm text-label-sm border border-white/20">
+                                98% Match
+                            </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Evening Gala</p>
+<h4 class="font-body-lg text-body-lg text-primary font-medium">Lụa Hà Đông Cải Tiến</h4>
+</div>
+<span class="text-outline font-label-sm text-label-sm">2 món</span>
+</div>
+</div>
+<!-- Outfit Card 2 -->
+<div class="min-w-[280px] w-[80%] snap-start group">
+<div class="relative aspect-[3/4] rounded-lg overflow-hidden mb-3 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Modern editorial fashion shot of a crisp white linen blazer paired with tailored trousers in a sand color palette. The setting is a minimalist architectural balcony with natural sunlight casting sharp, clean shadows. The vibe is sophisticated, professional, and refined, aligning with a slow-fashion luxury brand identity using high-contrast lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTczco3PjqcGbQh8Yp0j_3YweUpmU0DFIG78Hk83Im1h1dxzpNgyP8nlS1MrDDrprG4ssTYEWcqour_8YAzFzUVunDKiUZBssabyGQoBvVKtXW5iWBVVW8zYvzIyJSIl2TJdmYGxk-tV4yNY4xUETqTkvb8IiLFDXWEauuzxqigEyXX2VP99nFczRSOJ62tmaLumZWMinMKfdq8-YKCqVX8cnr9l4WvTEBp3GZTeBURpTkkWfVNdNdhtiIuIvcBim0cqTzk4sl4Qc">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-sm active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+</div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary-container/90 backdrop-blur-md text-on-secondary-container px-3 py-1.5 rounded-full font-label-sm text-label-sm border border-white/20">
+                                92% Match
+                            </span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Business Lunch</p>
+<h4 class="font-body-lg text-body-lg text-primary font-medium">Blazer Linen Minimalist</h4>
+</div>
+<span class="text-outline font-label-sm text-label-sm">3 món</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Sự kiện của bạn -->
+<section class="px-margin-mobile mt-stack-lg">
+<h2 class="font-headline-sm text-headline-sm text-primary mb-stack-md">Sự kiện của bạn</h2>
+<div class="space-y-stack-md">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-lg border border-outline-variant/10 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-1 bg-secondary h-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-primary">Tiệc sinh nhật Tú Anh</h3>
+<span class="material-symbols-outlined text-outline">more_horiz</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">24/05/2024 · Chill Skybar · Tiệc tối</p>
+<div class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-[18px]">checkroom</span>
+<p class="font-label-sm text-label-sm text-secondary">Quy định trang phục: <span class="font-bold">Black Tie &amp; Gold Accent</span></p>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-lg border border-outline-variant/10 shadow-sm flex flex-col gap-2 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-1 bg-secondary h-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-primary">Họp đối tác Tokyo</h3>
+<span class="material-symbols-outlined text-outline">more_horiz</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">12/06/2024 · Landmark 81 · Công việc</p>
+<div class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-[18px]">checkroom</span>
+<p class="font-label-sm text-label-sm text-secondary">Quy định trang phục: <span class="font-bold">Business Formal</span></p>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-lg border border-outline-variant/10 shadow-sm flex flex-col gap-2 relative overflow-hidden group opacity-60">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-primary">Trip Đà Lạt</h3>
+<span class="material-symbols-outlined text-outline">check_circle</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">15/04/2024 · Đà Lạt · Du lịch</p>
+<div class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-secondary text-[18px]">checkroom</span>
+<p class="font-label-sm text-label-sm text-secondary">Đã hoàn thành</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface dark:bg-surface-container-high border-t border-outline-variant/10 rounded-t-full shadow-sm">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-sm text-label-sm mt-1">Tủ đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold active:scale-90 transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">architecture</span>
+<span class="font-label-sm text-label-sm mt-1">Thử đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm mt-1">Cộng đồng</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors active:scale-90 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Cá nhân</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for inputs and buttons
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('focus', () => {
+                el.parentElement.classList.add('border-primary');
+                el.parentElement.classList.remove('border-outline-variant/40');
+            });
+            el.addEventListener('blur', () => {
+                el.parentElement.classList.remove('border-primary');
+                el.parentElement.classList.add('border-outline-variant/40');
+            });
+        });
+
+        // Simple heart toggle effect
+        document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
+            if (icon.innerText === 'favorite') {
+                icon.addEventListener('click', function() {
+                    const isFilled = this.style.fontVariationSettings.includes("'FILL' 1");
+                    this.style.fontVariationSettings = isFilled ? "'FILL' 0" : "'FILL' 1";
+                    this.style.color = isFilled ? '' : '#ba1a1a';
+                });
+            }
+        });
+    </script>
+</body></html>

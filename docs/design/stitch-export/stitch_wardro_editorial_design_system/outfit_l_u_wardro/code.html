@@ -1,0 +1,280 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro — Outfit Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "tertiary-fixed": "#e5e2de",
+                "error": "#ba1a1a",
+                "tertiary-fixed-dim": "#c8c6c2",
+                "surface-variant": "#e2e2e2",
+                "surface-dim": "#dadada",
+                "on-surface": "#1a1c1c",
+                "on-secondary-container": "#755f42",
+                "surface": "#f9f9f9",
+                "primary-container": "#231a0f",
+                "on-tertiary": "#ffffff",
+                "surface-container-low": "#f3f3f4",
+                "on-primary-fixed-variant": "#504538",
+                "on-primary-fixed": "#231a0f",
+                "inverse-surface": "#2f3131",
+                "error-container": "#ffdad6",
+                "on-surface-variant": "#4d463e",
+                "outline": "#7e766d",
+                "on-error-container": "#93000a",
+                "surface-bright": "#f9f9f9",
+                "primary": "#000000",
+                "on-background": "#1a1c1c",
+                "inverse-primary": "#d4c4b3",
+                "secondary": "#705b3e",
+                "secondary-fixed-dim": "#dfc29f",
+                "surface-container-lowest": "#ffffff",
+                "on-primary": "#ffffff",
+                "background": "#f9f9f9",
+                "primary-fixed": "#f1e0ce",
+                "primary-fixed-dim": "#d4c4b3",
+                "surface-tint": "#695c4f",
+                "surface-container-high": "#e8e8e8",
+                "on-primary-container": "#908273",
+                "secondary-fixed": "#fcdeba",
+                "surface-container-highest": "#e2e2e2",
+                "tertiary": "#000000",
+                "inverse-on-surface": "#f0f1f1",
+                "surface-container": "#eeeeee",
+                "outline-variant": "#cfc5bb",
+                "on-tertiary-container": "#858480",
+                "on-secondary-fixed": "#281903",
+                "tertiary-container": "#1c1c1a",
+                "on-tertiary-fixed": "#1c1c1a",
+                "on-error": "#ffffff",
+                "on-secondary": "#ffffff",
+                "secondary-container": "#f9dbb7",
+                "on-tertiary-fixed-variant": "#474744",
+                "on-secondary-fixed-variant": "#574329",
+                "linen": "#F7F4F0",
+                "espresso": "#1A1208",
+                "sand": "#D4B896"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "stack-md": "24px",
+                "unit": "4px",
+                "stack-sm": "12px",
+                "stack-lg": "48px",
+                "margin-mobile": "20px",
+                "container-max": "1200px",
+                "margin-desktop": "64px",
+                "gutter": "24px"
+            },
+            "fontFamily": {
+                "body-md": ["DM Sans"],
+                "headline-md": ["DM Serif Display"],
+                "label-sm": ["DM Sans"],
+                "label-md": ["DM Sans"],
+                "headline-sm": ["DM Serif Display"],
+                "body-lg": ["DM Sans"],
+                "display-lg": ["DM Serif Display"],
+                "display-lg-mobile": ["DM Serif Display"]
+            },
+            "fontSize": {
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen background as requested */
+            color: #1A1208; /* Espresso text as requested */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim flex justify-between items-center px-margin-mobile h-16">
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">menu</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Wardro</h1>
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-container-max mx-auto">
+<!-- Header Section -->
+<section class="mb-stack-md">
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-espresso mb-unit">Bộ sưu tập đã lưu</h2>
+<p class="text-on-surface-variant font-body-md">Sắp xếp các bộ sưu tập phong cách của bạn</p>
+</section>
+<!-- Filter Row -->
+<nav class="flex gap-stack-sm mb-stack-lg overflow-x-auto no-scrollbar py-2">
+<button class="px-6 py-2 bg-espresso text-white rounded-full font-label-md transition-transform active:scale-95">Tất cả</button>
+<button class="px-6 py-2 border border-outline-variant bg-white text-espresso rounded-full font-label-md hover:bg-linen transition-colors active:scale-95">Yêu thích</button>
+<button class="px-6 py-2 border border-outline-variant bg-white text-espresso rounded-full font-label-md hover:bg-linen transition-colors active:scale-95 whitespace-nowrap">Đã mặc gần đây</button>
+</nav>
+<!-- Outfit Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+<!-- Outfit Card 1 -->
+<div class="group cursor-pointer">
+<div class="relative bg-white aspect-[3/4] overflow-hidden border border-espresso/5 mb-stack-sm">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A minimalist flat lay fashion composition featuring a high-quality beige linen blazer, dark brown tailored trousers, and a crisp white t-shirt. The clothing is arranged artistically on a soft cream background with subtle natural shadows, reflecting a premium editorial aesthetic. The lighting is soft and directional, emphasizing the textile textures and the sophisticated espresso and sand color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO5AuYXgoKMMW6qVd_JiFCwWKqP8sP_KxrUTqF-TdFKKn_O6P0oUhgmxjW-_ZRAcBSYmJsBPQXZ8QVmS3eJ_sqwEr3whlRD-PKKArWEfee9nJe3sXLw7gbfs99vWCgpZmXo_w3mikq3S9wq77BXzojBQQNFaFkwIe9F-iyDMF3TK2LOnAgWP8J-8VuKNwnTGZ6a478L68_F1npPnwdbb_6RXTFSOnIMDw2M1bGfntHQ4qyDh_wELsZb_j01a07PFe3-TAm0K6VZr8">
+<!-- Matching Score Badge -->
+<div class="absolute bottom-3 left-3 bg-sand/90 backdrop-blur-sm px-2 py-1 rounded-full">
+<span class="text-[10px] font-bold text-espresso uppercase tracking-wider">98% Match</span>
+</div>
+<!-- Favorite Icon -->
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-espresso active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="font-label-sm text-on-surface-variant">Đã mặc 5 lần</p>
+</div>
+<!-- Outfit Card 2 -->
+<div class="group cursor-pointer">
+<div class="relative bg-white aspect-[3/4] overflow-hidden border border-espresso/5 mb-stack-sm">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A premium fashion flat lay showing an elegant silk slip dress in a champagne tone paired with a structured espresso-colored wool coat and minimalist gold jewelry. The composition is clean and modern, following high-end magazine styling rules. The background is a textured linen fabric. The overall mood is sophisticated, quiet luxury, with warm lighting highlights on the silk fabric." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCMR31X2MvxhdEGa3SHa8YRw35JuTrh7AdePPcvUTa9GK1On6UUkEZKBLz7lnOFPZGhnF-9_jQ8KXqTz5oF07MMFYJQ3ypzRdV7XiJFqfnfhZ1a1TpnQnsIyc9bQBed6MPjlpas2ttEPsYDqlhM9B661KzKsnilqKnps66Cwb-vuC-0Eb2p_IynmsLt0llpo5oJm9AggnzXdis9rD_BVEJ-nBDmOd2uBZG9-8N69G_5m3PvRZfoUJddW67PIbkWFDZzMcUpQEoA5U">
+<div class="absolute bottom-3 left-3 bg-sand/90 backdrop-blur-sm px-2 py-1 rounded-full">
+<span class="text-[10px] font-bold text-espresso uppercase tracking-wider">92% Match</span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-espresso active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="font-label-sm text-on-surface-variant">Đã mặc 2 lần</p>
+</div>
+<!-- Outfit Card 3 -->
+<div class="group cursor-pointer">
+<div class="relative bg-white aspect-[3/4] overflow-hidden border border-espresso/5 mb-stack-sm">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An editorial style flat lay of a casual yet refined bộ sưu tập including premium dark indigo denim jeans, a heavy-weight sand-colored knit sweater, and polished leather loafers. The items are neatly folded and layered to show depth. The aesthetic is clean, utilitarian, and focused on material quality. Lighting is bright and even, casting minimal shadows on the white and linen background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQ8hDyjA1WsEA5WTVlLOzeErLCenFB-0iEi7hdC3D5C41LmvU09HnS9oaw26HWLStUQhdI6crOAmtXCkyu1cR4Ntid1h24ECeoGiURgrkPo5tliNfZKTq0FjKt6X13qJP0U-UB7HlISgUPSCh-Ko1HA91aUB4-uwrTwsOm-vKbLqJD936R4dlvbs_9k0dVpmnikZPhUvwH6at-ElUCtTH2i_cZgmfC4WJm_B1S6WKRN_GZfkZifHc3C2x4pfOwLCf7DDqHWsny5Nk">
+<div class="absolute bottom-3 left-3 bg-sand/90 backdrop-blur-sm px-2 py-1 rounded-full">
+<span class="text-[10px] font-bold text-espresso uppercase tracking-wider">85% Match</span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-espresso active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="font-label-sm text-on-surface-variant">Chưa mặc</p>
+</div>
+<!-- Outfit Card 4 -->
+<div class="group cursor-pointer">
+<div class="relative bg-white aspect-[3/4] overflow-hidden border border-espresso/5 mb-stack-sm">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A fashion photography flat lay featuring a spring-inspired bộ sưu tập with a light-wash denim jacket over a white pleated skirt and a striped cotton top. Accents of sand and espresso are visible in the accessories like a leather belt and minimalist sunglasses. The vibe is fresh and contemporary, suitable for a lifestyle blog. The layout is rhythmic and structured against a neutral beige background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZbKgNpcTbtisTACY5oy4LeN2xFOW6hPWZeSFHIh8ZwjWylvWMFrA1KEMfMZNuC0JPJvWlPu-Ofy91JxGV_Ylx3X1R9Q7FE5AVtfOMeGooaeTtS1yiSiBOBO-lf-j7XoQtPPZAW7eNBQGK1EYFafYCfngXlg4wqjeJ-R3DjS3w8qnxnGk3McxXdoDhpzSP3dZYg3f_GeIv-oA26zcwb2g6AEzs3-BUNwZm6lhM5Ba_jCXIX4Np__kEjDEpyszyJcqq5M4s04-6Yac">
+<div class="absolute bottom-3 left-3 bg-sand/90 backdrop-blur-sm px-2 py-1 rounded-full">
+<span class="text-[10px] font-bold text-espresso uppercase tracking-wider">95% Match</span>
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-espresso active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<p class="font-label-sm text-on-surface-variant">Đã mặc 12 lần</p>
+</div>
+</div>
+<!-- Empty State Variant (Hidden by default but structured as requested) -->
+<div class="hidden flex flex-col items-center justify-center py-stack-lg text-center" id="empty-state">
+<div class="w-48 h-48 mb-stack-md opacity-20">
+<span class="material-symbols-outlined text-[120px] text-espresso">dry_cleaning</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-espresso mb-stack-sm">Chưa có bộ sưu tập nào được lưu</h3>
+<p class="text-on-surface-variant mb-stack-md px-margin-mobile">Hãy bắt đầu sáng tạo phong cách riêng của bạn ngay hôm nay.</p>
+<button class="bg-espresso text-white px-8 py-3 rounded-full font-label-md active:scale-95 transition-transform">
+                Về trang chủ
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-unit pb-safe px-2 h-16 border-t border-outline-variant/30 bg-surface dark:bg-surface-container-low z-50">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</a>
+<!-- Closet - ACTIVE -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-secondary-fixed-dim font-bold active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dry_cleaning</span>
+<span class="font-label-sm text-label-sm">Tủ đồ</span>
+</a>
+<!-- Try On -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">flare</span>
+<span class="font-label-sm text-label-sm">Thử đồ</span>
+</a>
+<!-- Community -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">Cộng đồng</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Cá nhân</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for heart icons
+        document.querySelectorAll('button span.material-symbols-outlined').forEach(icon => {
+            if (icon.innerText === 'favorite') {
+                icon.parentElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                    if (isFilled) {
+                        icon.style.fontVariationSettings = "'FILL' 0, 'wght' 300";
+                        icon.classList.remove('text-red-500');
+                    } else {
+                        icon.style.fontVariationSettings = "'FILL' 1, 'wght' 300";
+                        icon.classList.add('text-red-500');
+                        
+                        // Simple haptic-like animation
+                        icon.parentElement.animate([
+                            { transform: 'scale(1)' },
+                            { transform: 'scale(1.4)' },
+                            { transform: 'scale(1)' }
+                        ], { duration: 300, easing: 'ease-out' });
+                    }
+                });
+            }
+        });
+
+        // Toggle empty state for demo purposes if needed
+        function toggleEmptyState() {
+            const grid = document.querySelector('.grid');
+            const empty = document.getElementById('empty-state');
+            grid.classList.toggle('hidden');
+            empty.classList.toggle('hidden');
+        }
+    </script>
+
+
+</body></html>

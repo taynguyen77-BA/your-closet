@@ -1,0 +1,408 @@
+<!DOCTYPE html><html class="light" lang="vi" style="width: 390px; height: 1193px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro | Membership Comparison</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e2e2e2",
+                    "tertiary-fixed": "#e5e2de",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "inverse-surface": "#2f3131",
+                    "on-error": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-secondary-container": "#755f42",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#695c4f",
+                    "secondary-fixed": "#fcdeba",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#858480",
+                    "primary": "#000000",
+                    "on-background": "#1a1c1c",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "outline-variant": "#cfc5bb",
+                    "surface-dim": "#dadada",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#1c1c1a",
+                    "on-primary-fixed": "#231a0f",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "surface-container-low": "#f3f3f4",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#908273",
+                    "inverse-primary": "#d4c4b3",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-on-surface": "#f0f1f1",
+                    "background": "#f9f9f9",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "on-surface": "#1a1c1c",
+                    "tertiary": "#000000",
+                    "outline": "#7e766d",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary-container": "#f9dbb7",
+                    "surface-container": "#eeeeee",
+                    "on-surface-variant": "#4d463e",
+                    "secondary": "#705b3e",
+                    "surface": "#f9f9f9",
+                    "on-secondary-fixed": "#281903",
+                    "on-tertiary-fixed-variant": "#474744"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "container-max": "1200px",
+                    "stack-lg": "48px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "headline-sm": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen background */
+            -webkit-font-smoothing: antialiased;
+            color: #1a1c1c;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        /* Hide scrollbar for clean editorial look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .membership-card {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .membership-card:active {
+            transform: scale(0.98);
+        }
+
+        .snap-x {
+            scroll-snap-type: x mandatory;
+        }
+        .snap-center {
+            scroll-snap-align: center;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- Top Navigation Bar (Shared Component Strategy) -->
+<header class="w-full top-0 sticky z-50 bg-surface dark:bg-surface border-b border-outline-variant/30 dark:border-outline-variant/10 flex justify-between items-center px-margin-mobile h-16 w-full">
+<button class="text-primary dark:text-primary hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<h1 class="font-display-lg text-display-lg-mobile tracking-widest text-primary dark:text-primary">Wardro</h1>
+<button class="text-primary dark:text-primary hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</header>
+<main class="max-w-container-max mx-auto pb-32">
+<!-- Hero Section -->
+<section class="px-margin-mobile pt-stack-lg pb-stack-md text-center">
+<h2 class="font-headline-md text-headline-md text-primary mb-stack-sm">Nâng cấp trải nghiệm của bạn</h2>
+<p class="font-body-md text-on-surface-variant max-w-md mx-auto">
+                Khám phá tiềm năng thời trang của bạn với các gói hội viên cao cấp được thiết kế riêng cho phong cách sống hiện đại.
+            </p>
+</section>
+<!-- Horizontal Swipeable Cards -->
+<div class="relative">
+<div class="flex overflow-x-auto snap-x no-scrollbar gap-gutter px-margin-mobile pb-stack-md">
+<!-- Free Tier -->
+<div class="flex-none w-[85%] md:w-[380px] snap-center bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-8 flex flex-col justify-between membership-card shadow-sm">
+<div>
+<div class="mb-stack-md">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Gói Cơ Bản</span>
+<h3 class="font-headline-sm text-headline-sm text-primary mt-2">Miễn phí</h3>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="sync">sync</span>
+<p class="font-body-md text-on-surface">1 lượt làm mới/ngày</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="styler">styler</span>
+<p class="font-body-md text-on-surface">2 lượt thử đồ/tháng</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
+<p class="font-body-md text-on-surface">Tối đa 50 món đồ</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="photo_camera">photo_camera</span>
+<p class="font-body-md text-on-surface">Ảnh thử đồ tiêu chuẩn</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-stack-lg py-4 border border-outline text-outline font-label-md text-label-md rounded-lg cursor-not-allowed" disabled="">
+                        Gói hiện tại
+                    </button>
+</div>
+<!-- Pro Tier (Popular) -->
+<div class="flex-none w-[85%] md:w-[380px] snap-center bg-surface-container-lowest border-2 border-primary rounded-xl p-8 flex flex-col justify-between membership-card shadow-md relative">
+<div class="absolute right-8 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm -top-4">
+                        Phổ biến nhất
+                    </div>
+<div>
+<div class="mb-stack-md">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary">Gói Pro</span>
+<div class="flex items-baseline gap-1 mt-2">
+<h3 class="font-headline-sm text-headline-sm text-primary">199.000<span class="ml-0.5">đ</span></h3>
+<span class="font-body-md text-on-surface-variant">/tháng</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="sync">sync</span>
+<p class="font-body-md text-on-surface">5 lượt làm mới/ngày</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="styler">styler</span>
+<p class="font-body-md text-on-surface">20 lượt thử đồ/tháng</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
+<p class="font-body-md text-on-surface">Tối đa 200 món đồ</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="hd">hd</span>
+<p class="font-body-md text-on-surface">Ảnh thử đồ chất lượng cao</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-stack-lg py-4 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity active:scale-95 transition-transform">
+                        Nâng cấp ngay
+                    </button>
+</div>
+<!-- Premium Tier -->
+<div class="flex-none w-[85%] md:w-[380px] snap-center bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-8 flex flex-col justify-between membership-card shadow-sm">
+<div>
+<div class="mb-stack-md">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Gói Premium</span>
+<div class="flex items-baseline gap-1 mt-2">
+<h3 class="font-headline-sm text-headline-sm text-primary">499.000<span class="ml-0.5">đ</span></h3>
+<span class="font-body-md text-on-surface-variant">/tháng</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="all_inclusive">all_inclusive</span>
+<p class="font-body-md text-on-surface">Không giới hạn làm mới</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="styler">styler</span>
+<p class="font-body-md text-on-surface">Không giới hạn thử đồ</p>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="door_front">door_front</span>
+<p class="font-body-md text-on-surface">Tủ đồ không giới hạn</p>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="auto_awesome">auto_awesome</span>
+<p class="font-body-md text-on-surface">Ảnh chất lượng cao nhất + gợi ý phong cách chuyên sâu</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-stack-lg py-4 bg-secondary-fixed text-on-secondary-fixed font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity active:scale-95 transition-transform">
+                        Nâng cấp ngay
+                    </button>
+</div>
+</div>
+<!-- Visual Indication of Swiping for Desktop/Mobile -->
+<div class="flex justify-center gap-2 mt-4 md:hidden">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+</div>
+</div>
+<!-- Comparative Feature Grid (Desktop Only) -->
+<section class="hidden md:block px-margin-desktop mt-stack-lg">
+<h4 class="font-headline-sm text-headline-sm text-center mb-12">So sánh chi tiết tính năng</h4>
+<div class="bg-white rounded-xl overflow-hidden border border-outline-variant/10">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low border-b border-outline-variant/20">
+<tr>
+<th class="p-6 font-label-md text-label-md">Tính năng</th>
+<th class="p-6 font-label-md text-label-md text-center">Tự do</th>
+<th class="p-6 font-label-md text-label-md text-center">Pro</th>
+<th class="p-6 font-label-md text-label-md text-center">Premium</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10 leading-relaxed">
+<tr>
+<td class="p-6 font-body-md">Số lượng làm mới gợi ý</td>
+<td class="p-6 text-center text-on-surface-variant">1/ngày</td>
+<td class="p-6 text-center font-bold">5/ngày</td>
+<td class="p-6 text-center font-bold">Vô hạn</td>
+</tr>
+<tr>
+<td class="p-6 font-body-md">Thử đồ AI (Virtual Try-on)</td>
+<td class="p-6 text-center text-on-surface-variant">2/tháng</td>
+<td class="p-6 text-center">20/tháng</td>
+<td class="p-6 text-center font-bold">Vô hạn</td>
+</tr>
+<tr>
+<td class="p-6 font-body-md">Dung lượng tủ đồ số</td>
+<td class="p-6 text-center">50 món</td>
+<td class="p-6 text-center">200 món</td>
+<td class="p-6 text-center font-bold">Vô hạn</td>
+</tr>
+<tr>
+<td class="p-6 font-body-md">Độ phân giải hình ảnh</td>
+<td class="p-6 text-center">720p</td>
+<td class="p-6 text-center">1080p (HD)</td>
+<td class="p-6 text-center font-bold">4K Ultra</td>
+</tr>
+<tr>
+<td class="p-6 font-body-md">Tư vấn chuyên sâu AI</td>
+<td class="p-6 text-center">—</td>
+<td class="p-6 text-center">—</td>
+<td class="p-6 text-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Aesthetic Imagery Footer -->
+<section class="px-margin-mobile mt-stack-lg">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="aspect-[3/4] rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="Close-up of a high-quality linen garment hanging in a minimalist, sun-drenched walk-in closet. The light is soft and warm, highlighting the fabric texture. Neutral beige and white tones dominate the scene, evoking a quiet luxury and sustainable fashion aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6501Ee0swefUpW0mSaUvt-RDSDud28Ug5ZUEgAWdILrgSAfp5gvfi_rB95chQJnnu0Yq8oAmEUIIrqkH35EWJVu_v46nLykvQi4rK6WC8F3C5cxQtaerBll-7ADWRu3KUwkjVQ4uHXvsHuxksxZzIxChyBcTO4RdP0bVHiPtj04vsQjrGo91MqiSALDWeOvGLC8e21PDZLfVWfKhi6iZhkkQykf06KS6dcha_9KcYSjR0kgG8FihRdBmz6lcFeYa5NL26-oEk9Qk">
+</div>
+<div class="aspect-[3/4] rounded-lg overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A chic woman standing in a modern, white-walled apartment, looking at her smartphone. She is wearing a structured minimalist blazer in charcoal grey. The background features a large window with soft morning light. The overall mood is sophisticated, focused, and tech-forward." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBKm_w7ySRneUpszCjFUnKLyLZz9Xx0gdp9q3mkPSHeOfbxKNErZVf4snq4gBsLVgLeWdZuZ7k-UQFhnrPXGBIBGtbhpu4KmY7wnhXi5Hm8uthNW1C0IRXfoWIQnDhzq10WQJhowjU2vLhjffYZH5MFL2q_lKGvUqXPVX38R7yIPL7Vi4N07wvt7HKQ9HQ9cqOQRA9o5EuIhgyqA4V6x-xO0QRBgUMs8GwSN-tmIuBjtkdhpAYR0HJhfJXcEkoYMPVrDyRj1GG8Kk">
+</div>
+<div class="aspect-[3/4] rounded-lg overflow-hidden relative hidden md:block">
+<img class="w-full h-full object-cover" data-alt="Minimalist flat lay of fashion essentials: a black leather belt, a pair of premium sunglasses, and a linen shirt. The composition is clean with plenty of white space. The lighting is crisp and editorial, reinforcing a curated personal brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiDefxOJy0xaC1QiiSLhDC7e3FiMT7YA_2eir1OlmSOaQLe94Tozc6Z2w_Qn5TvYehTNwoJTiHvDun5Fpo3yBuUk0fWaVuAiAQ4CRulR9AEp3VdHBESli964WoQxCHwNqGAPrGGwHSjSDhoyNDnZXAwjemzpeVSmIE3ZGSc9-lgjO6ePo2ESxLPZhpRw3FcuR7osqciOe3tQrjUTyFT_J8k0y9SoMMqXM8NhpImgLQ_RePCx8K7iz3jBzud9gAMz-5KPBqfwYlL1k">
+</div>
+<div class="aspect-[3/4] rounded-lg overflow-hidden relative hidden md:block">
+<img class="w-full h-full object-cover" data-alt="Abstract shot of ripples in a pool of clear water, reflecting a bright white sky. The aesthetic is clean, serene, and represents the 'Linen' theme of pureness and simplicity. Soft blue and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5V6_POU7H0H5kJf8LdtFYYkDzR3Y-FytfSzqEHrPfow7vw7HkWVEgt-WcRA-9ZD1iGrjswAyn2sKQioQp9P3o5wM1Uw2VgCTK9o0nvqoFrw8PdnSmW4DXk-SK_pL3ufv3UMIBorI-xYMTWiXqXAO5ZdMnass18FyACiM-L_tx9IckOdwa2MJ7hMRBe_PNIRvH8aTID4UTI-S-TP7NssMm7YNHywnmatc8AAsE7XmwZnojapn41JcShhpk5lZQJGN0BcL-1NIV1Ag">
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Strategy) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 pb-safe bg-surface/90 dark:bg-surface/90 backdrop-blur-md border-t border-outline-variant/30 dark:border-outline-variant/10 flex justify-around items-center h-20 px-2 w-full">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-label-sm text-label-sm mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="checkroom">checkroom</span>
+<span class="font-label-sm text-label-sm mt-1">Tủ đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="styler">styler</span>
+<span class="font-label-sm text-label-sm mt-1">Thử đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary dark:hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-sm text-label-sm mt-1">Cộng đồng</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm mt-1">Cá nhân</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for membership cards
+        const cards = document.querySelectorAll('.membership-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if (!window.matchMedia("(max-width: 768px)").matches) {
+                    card.classList.add('shadow-xl');
+                    card.style.transform = 'translateY(-8px)';
+                }
+            });
+            card.addEventListener('mouseleave', () => {
+                if (!window.matchMedia("(max-width: 768px)").matches) {
+                    card.classList.remove('shadow-xl');
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Simple Intersection Observer to update pagination dots on mobile
+        const observerOptions = {
+            root: document.querySelector('.overflow-x-auto'),
+            threshold: 0.5
+        };
+
+        const dots = document.querySelectorAll('.rounded-full.bg-outline-variant, .rounded-full.bg-primary');
+        const cardElements = document.querySelectorAll('.snap-center');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const index = Array.from(cardElements).indexOf(entry.target);
+                    dots.forEach((dot, i) => {
+                        if (i === index) {
+                            dot.classList.remove('bg-outline-variant');
+                            dot.classList.add('bg-primary');
+                        } else {
+                            dot.classList.add('bg-outline-variant');
+                            dot.classList.remove('bg-primary');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        cardElements.forEach(card => observer.observe(card));
+    </script>
+
+
+
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

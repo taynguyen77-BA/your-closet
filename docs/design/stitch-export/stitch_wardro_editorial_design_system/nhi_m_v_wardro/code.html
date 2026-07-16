@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Wardro - Nhiệm Vụ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
+        }
+        /* Hide scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .editorial-mask {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#eeeeee",
+                      "tertiary-fixed": "#e5e2de",
+                      "on-surface": "#1a1c1c",
+                      "on-tertiary-container": "#858480",
+                      "secondary": "#705b3e",
+                      "on-secondary-fixed": "#281903",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-container": "#755f42",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-secondary-fixed-variant": "#574329",
+                      "error-container": "#ffdad6",
+                      "background": "#f9f9f9",
+                      "on-primary": "#ffffff",
+                      "primary": "#000000",
+                      "secondary-fixed-dim": "#dfc29f",
+                      "primary-fixed": "#f1e0ce",
+                      "tertiary": "#000000",
+                      "surface-tint": "#695c4f",
+                      "tertiary-fixed-dim": "#c8c6c2",
+                      "secondary-container": "#f9dbb7",
+                      "secondary-fixed": "#fcdeba",
+                      "surface-container-highest": "#e2e2e2",
+                      "primary-fixed-dim": "#d4c4b3",
+                      "surface-variant": "#e2e2e2",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#f9f9f9",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f3f3f4",
+                      "surface-container-high": "#e8e8e8",
+                      "on-primary-fixed": "#231a0f",
+                      "on-surface-variant": "#4d463e",
+                      "primary-container": "#231a0f",
+                      "tertiary-container": "#1c1c1a",
+                      "surface-dim": "#dadada",
+                      "on-error-container": "#93000a",
+                      "outline": "#7e766d",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f9f9f9",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "inverse-primary": "#d4c4b3",
+                      "outline-variant": "#cfc5bb",
+                      "on-primary-fixed-variant": "#504538",
+                      "inverse-surface": "#2f3131",
+                      "on-background": "#1a1c1c",
+                      "error": "#ba1a1a",
+                      "on-primary-container": "#908273"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "container-max": "1200px",
+                      "margin-desktop": "64px",
+                      "stack-sm": "12px",
+                      "margin-mobile": "20px",
+                      "stack-md": "24px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "label-md": ["DM Sans"],
+                      "label-sm": ["DM Sans"],
+                      "display-lg-mobile": ["DM Serif Display"],
+                      "headline-md": ["DM Serif Display"],
+                      "body-md": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "headline-sm": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-container">
+<!-- Top Navigation -->
+<header class="w-full top-0 sticky z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/10">
+<div class="flex justify-between items-center px-margin-mobile py-4 w-full">
+<button class="text-primary hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md-mobile text-headline-md-mobile tracking-tight text-primary">Wardro</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional, high-fashion portrait of a stylish person with a minimalist aesthetic. The lighting is soft and natural, emphasizing a high-end editorial feel with a clean, light-colored background that matches a premium wardrobe application's interface. The person is wearing a classic black turtleneck, reflecting a sophisticated and timeless fashion sense." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOrZrHEoErGKpJ0a7rVgN7e5TDZ4vpaS7ch4A3xDJDDZwjhs6ytH0Xl0VdcAAKBsn3vL50Ohb8UNEu0-QjyhAynTBwp6X4adgQAWnrNdDoKXwlXzVJ4MQU2_9OwPbBgI98DkB7KT3wDYTMstaMHE5nBtnElSpe7bQr01GS9f3IwY5Jx1pYoQ_R_gQSxaHdh3njPyTgbBVh7aX2L90TnAGaCFZ861uy7v-VkyPVi0STBpudEqX5QTIk5wIwjJwMHhMlqxdL_fvCQqs"/>
+</div>
+</div>
+</header>
+<main class="pb-24 max-w-container-max mx-auto">
+<!-- Hero Section -->
+<section class="px-margin-mobile pt-stack-md pb-stack-lg">
+<div class="flex flex-col space-y-2">
+<p class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">Thử thách phong cách</p>
+<h2 class="font-display-lg-mobile text-display-lg-mobile text-primary leading-tight">NHIỆM VỤ</h2>
+<div class="h-1 w-12 bg-primary mt-2"></div>
+</div>
+<!-- Stats Overview - Editorial Bento Style -->
+<div class="grid grid-cols-2 gap-stack-sm mt-stack-md">
+<div class="bg-white p-6 border border-outline-variant/10 rounded-lg flex flex-col justify-between h-32">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lượt thử đồ AI</span>
+<div class="flex items-baseline space-x-1">
+<span class="font-headline-sm text-headline-sm text-primary">12</span>
+<span class="font-label-md text-label-md text-on-surface-variant">còn lại</span>
+</div>
+</div>
+<div class="bg-secondary-container/30 p-6 border border-outline-variant/10 rounded-lg flex flex-col justify-between h-32 relative overflow-hidden">
+
+<span class="font-label-sm text-label-sm text-on-secondary-container">Huy chương</span>
+<div class="flex items-baseline space-x-1">
+<span class="font-headline-sm text-headline-sm text-secondary">08</span>
+<span class="font-label-md text-label-md text-on-secondary-container">đã đạt</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Mission Tabs -->
+<section class="px-margin-mobile">
+<div class="flex border-b border-outline-variant/20 mb-stack-md">
+<button class="pb-3 px-2 font-label-md text-label-md text-primary border-b-2 border-primary transition-all">Hàng ngày</button>
+<button class="pb-3 px-6 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all">Hàng tuần</button>
+<button class="pb-3 px-6 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all">Sự kiện</button>
+</div>
+<!-- Tasks List -->
+<div class="space-y-stack-md">
+<!-- Task Card 1 -->
+<div class="group bg-white p-stack-md border border-outline-variant/10 hover:border-outline/40 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-bold text-primary mb-1">Cảm hứng buổi sáng</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">Tạo 01 bộ đồ mới dựa trên gợi ý thời tiết hôm nay.</p>
+</div>
+<div class="flex items-center space-x-1 bg-surface-container-low px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-secondary scale-75" data-icon="auto_fix_high">auto_fix_high</span>
+<span class="font-label-sm text-label-sm text-secondary">+2 Lượt</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tiến độ: 0/1</span>
+<span class="font-label-sm text-label-sm text-secondary">0%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-0 transition-all duration-700" style="width: 0%"></div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 bg-primary text-white font-label-md text-label-md hover:opacity-90 transition-opacity flex justify-center items-center gap-2">
+<span>Bắt đầu ngay</span>
+<span class="material-symbols-outlined scale-75" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Task Card 2 (In Progress) -->
+<div class="group bg-white p-stack-md border border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="flex-1">
+<h3 class="font-body-lg text-body-lg font-bold text-primary mb-1">Thẩm mỹ nội tâm</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">Đánh giá 05 bộ trang phục từ cộng đồng.</p>
+</div>
+<div class="flex items-center space-x-1 bg-secondary-container/30 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-on-secondary-container scale-75" data-icon="stars">stars</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container">15 XP</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tiến độ: 3/5</span>
+<span class="font-label-sm text-label-sm text-primary">60%</span>
+</div>
+<div class="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[60%] transition-all duration-700"></div>
+</div>
+</div>
+<button class="w-full mt-6 py-3 border border-primary text-primary font-label-md text-label-md hover:bg-surface-container-lowest transition-colors flex justify-center items-center gap-2">
+<span>Tiếp tục</span>
+</button>
+</div>
+<!-- Task Card 3 (Completed) -->
+<div class="bg-surface-container-low/50 p-stack-md border border-outline-variant/20 opacity-80">
+<div class="flex justify-between items-start mb-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface-variant line-through">Dọn dẹp tủ đồ</h3>
+<span class="material-symbols-outlined text-green-600 scale-75" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Thêm 02 món đồ mới vào kho lưu trữ số.</p>
+</div>
+<div class="flex items-center space-x-1 bg-surface-container px-3 py-1 rounded-full opacity-50">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Đã nhận</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hoàn thành</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">100%</span>
+</div>
+<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-on-surface-variant h-full w-full"></div>
+</div>
+</div>
+</div>
+<!-- Section: Weekly Special -->
+<div class="mt-stack-lg border-t border-outline-variant/10 pt-stack-md">
+<div class="flex items-center justify-between mb-stack-md">
+<h3 class="font-headline-sm text-headline-sm text-primary">Sự kiện hàng tuần</h3>
+<span class="font-label-sm text-label-sm text-error font-bold">2 ngày còn lại</span>
+</div>
+<div class="relative w-full h-48 rounded-lg overflow-hidden group cursor-pointer">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="An atmospheric, cinematic long shot of a high-end luxury fashion boutique interior. Minimalist design with soft sand-toned walls, thin metal clothing racks, and warm spotlighting creating dramatic shadows. The mood is exclusive, refined, and calm, reflecting the aesthetic of a premium personal style management app. High-contrast editorial photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB1Npz62MZbZk4jTMo-leiSlUwk15GbfRyafZteCz2SjlJJAxZWfRinBZe0a7UrAZTnCXOn2opp82Ls1xYtyW-nkt91y4QT36C_caSIDVuXZ4LSCCVs7XvAfzXae-UqdQn-V7HkIpGUpqXGFhxP8pqBTenvQTaefVoEHDwRpJp2nOzkQa37S6TASbOCOxKyCwzKTnWFJIMqNJI48v0s6ggh8ZXDp2iqluGJUYAULi2ACDWlc9xlitPrig_vSzIVYqMlETMBwL3a-Y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+<h4 class="text-white font-headline-sm text-headline-sm mb-1">Biểu tượng Minimalism</h4>
+<p class="text-white/80 font-label-md text-label-md mb-4">Hoàn thành 7 bộ trang phục phong cách tối giản để nhận Huy chương "Zen Fashionista".</p>
+<div class="flex items-center justify-between">
+<div class="flex-1 mr-4">
+<div class="w-full bg-white/20 h-1 rounded-full overflow-hidden">
+<div class="bg-white h-full w-[40%]"></div>
+</div>
+</div>
+<span class="text-white font-label-sm text-label-sm">3/7</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 px-4 py-2 pb-safe bg-surface-container-lowest border-t border-outline-variant/10 flex justify-around items-center shadow-sm rounded-t-xl">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</a>
+<!-- Wardrobe -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="checkroom">checkroom</span>
+</a>
+<!-- AI Magic -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+</a>
+<!-- Community -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+</a>
+<!-- Profile (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full p-2 scale-90 duration-200" href="#">
+<span class="material-symbols-outlined active-icon" data-icon="person">person</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for mission cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add visual interest to the weekly card on scroll
+        const weeklyCard = document.querySelector('.relative.group');
+        window.addEventListener('scroll', () => {
+            const rect = weeklyCard.getBoundingClientRect();
+            if(rect.top < window.innerHeight && rect.bottom > 0) {
+                const shift = (window.innerHeight - rect.top) * 0.05;
+                weeklyCard.querySelector('img').style.transform = `scale(1.05) translateY(${shift}px)`;
+            }
+        });
+    </script>
+</body></html>

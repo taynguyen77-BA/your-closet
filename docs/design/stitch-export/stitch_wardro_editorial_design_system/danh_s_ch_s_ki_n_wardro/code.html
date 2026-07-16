@@ -1,0 +1,265 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Sự kiện của bạn - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=DM+Serif+Display&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        body {
+            background-color: #f9f9f9; /* Linen equivalent from theme */
+            -webkit-font-smoothing: antialiased;
+        }
+        .editorial-shadow {
+            box-shadow: 0 4px 20px -4px rgba(26, 18, 8, 0.08);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#231a0f",
+                        "tertiary-fixed": "#e5e2de",
+                        "primary": "#000000",
+                        "surface": "#f9f9f9",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-primary-container": "#908273",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#574329",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-container": "#1c1c1a",
+                        "surface-bright": "#f9f9f9",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#231a0f",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "inverse-on-surface": "#f0f1f1",
+                        "secondary-fixed": "#fcdeba",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-container": "#f9dbb7",
+                        "surface-dim": "#dadada",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "on-primary-fixed-variant": "#504538",
+                        "inverse-primary": "#d4c4b3",
+                        "surface-variant": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#695c4f",
+                        "inverse-surface": "#2f3131",
+                        "primary-fixed": "#f1e0ce",
+                        "on-secondary-fixed": "#281903",
+                        "background": "#f9f9f9",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "secondary": "#705b3e",
+                        "outline-variant": "#cfc5bb",
+                        "on-secondary-container": "#755f42",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-tertiary-container": "#858480",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "outline": "#7e766d",
+                        "surface-container-low": "#f3f3f4",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-surface-variant": "#4d463e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "stack-sm": "12px",
+                        "margin-mobile": "20px",
+                        "stack-lg": "48px",
+                        "unit": "4px",
+                        "margin-desktop": "64px",
+                        "container-max": "1200px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["DM Sans"],
+                        "body-lg": ["DM Sans"],
+                        "headline-sm": ["DM Serif Display"],
+                        "label-sm": ["DM Sans"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "headline-md": ["DM Serif Display"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-50 bg-background flex justify-between items-center px-margin-mobile h-16">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm tracking-tight text-primary uppercase">Wardro</h1>
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+</header>
+<main class="pb-32">
+<!-- Header Section -->
+<section class="px-margin-mobile pt-stack-md pb-stack-lg">
+<h2 class="font-display-lg-mobile text-display-lg-mobile text-on-background mb-4">Sự kiện của bạn</h2>
+<p class="font-body-md text-on-surface-variant mb-stack-md max-w-[80%]">Lên lịch và chuẩn bị những bộ cánh hoàn hảo cho mọi dịp đặc biệt.</p>
+<button class="w-full bg-primary text-on-primary py-4 px-6 font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'wght' 400;">add</span>
+                TẠO SỰ KIỆN MỚI
+            </button>
+</section>
+<!-- Events List -->
+<section class="px-margin-mobile flex flex-col gap-stack-lg">
+<!-- Event Card 1 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden mb-4 bg-surface-container">
+<img class="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic fashion editorial photograph of a high-end luxury wedding reception. Soft, warm candle lighting illuminates a sophisticated interior with draped linen fabrics. A focused shot of a tailored tuxedo and a minimal silk gown in the background, captured with a shallow depth of field. The aesthetic is modern, minimalist, and deeply elegant, using a palette of creams, blacks, and deep espresso tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo2J-F8Ib3oDBRjQNxI7HlC1y55ATv4bem1nkh-rDt_ydSozoiVQ7DHxc1sdJNe25QtOjLyqFeB35WJQCdG19A_09CqHQFTAFpZlJ36wosJAMzmlE-rpVy6CqEVNxg5faffBHTD1ddFa89UkK_QeU-8193vuhWOBVngBeihK0IviFw1h6kdKtDcqtSbklaHZQu5kYAWnJUxbbmiCcNoeKPygxZyxqGu4yLVr1rNuDMSKsiYdHJV7PWiREx0F5QwxxFJkEjbnCH9Io">
+<div class="absolute top-4 right-4 bg-primary px-3 py-1">
+<span class="text-white font-label-sm text-[10px] uppercase tracking-widest">Outfit đã chọn</span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-1">Tiệc cưới Minh &amp; Lan</h3>
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-2">24 Tháng 12, 2024 • 19:00</p>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-body-md">TP. Hồ Chí Minh</span>
+</div>
+</div>
+<button class="p-2 border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden mb-4 bg-surface-container">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A professional editorial fashion photography scene showcasing a minimalist runway during Fashion Week. The lighting is sharp and directional, creating high-contrast shadows. Modern architectural silhouettes are visible in the background. The color scheme is monochrome with subtle sand accents. Models are wearing structured, avant-garde minimalist clothing. The mood is artistic, high-speed, and trend-focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf4JhFtyxXEVReanxSvVneDujnzflLUDXTeENm-Dygujs70UhhEvlSs1P3PeToixh1NP4-mj4yL0qb8kac415cgSJygAW4UEb0bvPUK3UrAK_7RbLpnVlKlE8zlLxDE-JO124mHYw2UP4zr7e6inqdcloCVfRGvGhhRruN7dx1k5qda05mtfStL1AIVbCGXCiaBVtB9SEWCdWWlw8WvQ-BDrPvdTvlcEBfFnvEhBj1yYzKeG6ekNY4GKQBpJVMhUWEWfcixic03rQ">
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 border border-primary/10">
+<span class="text-primary font-label-sm text-[10px] uppercase tracking-widest">Cần gợi ý</span>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-1">Fashion Week 2024</h3>
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-2">15 Tháng 01, 2025 • 14:00</p>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-body-md">Trung tâm Triển lãm SECC</span>
+</div>
+</div>
+<button class="p-2 border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden mb-4 bg-surface-container">
+<img class="w-80 h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="An editorial shot of a sophisticated gala dinner at an upscale rooftop lounge at dusk. The city skyline of Saigon glows softly in the background with bokeh lights. The foreground features minimalist table settings and silhouettes of guests in elegant formal attire. The lighting is moody and cinematic with a focus on dark espresso tones and soft golden highlights. Minimalist luxury fashion photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA33qxmU-pQs0Z5q0XSRTA6x78540Snhvy-cTVh-gntxMXcv9prPVbOFpHFsngbnbVxeRmmcQEqgwZDVDHiOG3_9qY2Y7I0e3izHQPnzSiffKBzPrph4pmQ5CHkSNMdCt654PJpUbMEycRbu9prlMEBr-146M3NZKMBTG4QzPk2JOLer_trS1cQI4M3jJWvPY958nqEwCke2SkMAeS1glICBOM-uj8t3h-YqRFIYdsZO8_Ftzf5_WvXzPmL7KjQfvUBVU9K6rMM3Eg">
+</div>
+<div class="flex justify-between items-start">
+<div class="flex-1">
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-1">Gala Dinner: Year End</h3>
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-2">29 Tháng 12, 2024 • 20:30</p>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-body-md text-body-md">The Deck, Thảo Điền</span>
+</div>
+</div>
+<button class="p-2 border border-outline-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Optional Empty State (Hidden by default) -->
+<section class="hidden px-margin-mobile flex flex-col items-center justify-center py-20 text-center" id="empty-state">
+<div class="w-32 h-32 mb-6 opacity-20">
+<span class="material-symbols-outlined text-[128px] font-light">calendar_today</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-background mb-2">Bạn chưa có sự kiện nào</h3>
+<p class="font-body-md text-on-surface-variant mb-8 max-w-[240px]">Bắt đầu lên lịch cho những dịp đặc biệt để nhận gợi ý phối đồ.</p>
+<button class="border border-primary text-primary py-3 px-10 font-label-md text-label-md hover:bg-primary hover:text-white transition-all">
+                TẠO SỰ KIỆN NGAY
+            </button>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-28 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-40 md:hidden">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 400;">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest flex justify-around items-center px-4 pb-6 pt-2 border-t border-outline-variant/30">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant h-[44px] min-w-[44px] opacity-60 hover:bg-surface-container-low transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant h-[44px] min-w-[44px] opacity-60 hover:bg-surface-container-low transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">wardrobe</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider mt-1">Closet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary h-[44px] min-w-[44px] hover:bg-surface-container-low transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider mt-1">Sự kiện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant h-[44px] min-w-[44px] opacity-60 hover:bg-surface-container-low transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider mt-1">Community</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant h-[44px] min-w-[44px] opacity-60 hover:bg-surface-container-low transition-colors active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple logic to toggle empty state for demonstration if list was empty
+        // In a real app, this would be data-driven
+        const eventCount = 3; 
+        if (eventCount === 0) {
+            document.querySelector('main > section:nth-of-type(2)').classList.add('hidden');
+            document.getElementById('empty-state').classList.remove('hidden');
+        }
+
+        // Micro-interaction for event cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+
+
+
+
+
+</body></html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro — Thêm món đồ mới</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#000000",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed-dim": "#d4c4b3",
+                      "secondary-fixed": "#fcdeba",
+                      "inverse-primary": "#d4c4b3",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-low": "#f3f3f4",
+                      "on-error": "#ffffff",
+                      "secondary-container": "#f9dbb7",
+                      "outline": "#7e766d",
+                      "surface-tint": "#695c4f",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-surface-variant": "#4d463e",
+                      "secondary": "#705b3e",
+                      "background": "#f9f9f9",
+                      "tertiary-container": "#1c1c1a",
+                      "secondary-fixed-dim": "#dfc29f",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#f1e0ce",
+                      "surface-container-high": "#e8e8e8",
+                      "on-primary-container": "#908273",
+                      "primary-container": "#231a0f",
+                      "on-error-container": "#93000a",
+                      "on-background": "#1a1c1c",
+                      "on-surface": "#1a1c1c",
+                      "surface": "#f9f9f9",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "on-secondary-fixed-variant": "#574329",
+                      "on-primary-fixed": "#231a0f",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#858480",
+                      "surface-variant": "#e2e2e2",
+                      "on-secondary-fixed": "#281903",
+                      "tertiary-fixed": "#e5e2de",
+                      "on-secondary-container": "#755f42",
+                      "inverse-on-surface": "#f0f1f1",
+                      "surface-container": "#eeeeee",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "surface-bright": "#f9f9f9",
+                      "on-primary-fixed-variant": "#504538",
+                      "inverse-surface": "#2f3131",
+                      "surface-dim": "#dadada",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#cfc5bb",
+                      "error": "#ba1a1a",
+                      "primary": "#000000",
+                      "tertiary-fixed-dim": "#c8c6c2"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "margin-mobile": "20px",
+                      "stack-md": "24px",
+                      "stack-lg": "48px",
+                      "unit": "4px",
+                      "stack-sm": "12px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "label-md": ["DM Sans"],
+                      "headline-md": ["DM Serif Display"],
+                      "label-sm": ["DM Sans"],
+                      "headline-sm": ["DM Serif Display"],
+                      "body-md": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "display-lg-mobile": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .bottom-sheet-up {
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .linen-overlay {
+            background-color: rgba(247, 244, 240, 0.6);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden h-screen">
+<!-- BACKGROUND: SCREEN 1 (Closet Grid) Blurred & Dimmed -->
+<div class="fixed inset-0 z-0 linen-overlay">
+<!-- TopAppBar Placeholder (from JSON context) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface">
+<span class="material-symbols-outlined text-primary">menu</span>
+<h1 class="font-headline-sm text-headline-sm text-primary tracking-tight">Wardro</h1>
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</header>
+<main class="pt-24 px-margin-mobile">
+<div class="grid grid-cols-2 gap-gutter mb-stack-lg">
+<!-- Mock grid items -->
+<div class="aspect-[3/4] bg-surface-container overflow-hidden rounded-lg opacity-30">
+<img class="w-full h-full object-cover" data-alt="High-end studio photography of a minimalist silk blouse in soft ivory, draped elegantly on a textured linen background. Editorial fashion lighting with soft shadows, highlighting the delicate fabric weave." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRdXrV-q6pswB8jq2LhVSTy_Iff3OKRMROgrwZGkJFwPRrzTwab4TsP4nj5OglWreaRpQiJkREKrC53WmOePyvgb0pbCdLU4FJRBHXM_DK2hFP3w0jO_vpmNgm6DG8wfcu5t8jrdlvag4NCwufy60z1KSxd4QsM2bjp0gykJ7mn5X7Sy2Z1-0u7dNLWUkif53Moqtft31eRU_s0vGI23XtVbQQBKYBZNI712RbPIoIlFWjT7VSwHMOOaffyVCs4ZipsQPenDZmEO0">
+</div>
+<div class="aspect-[3/4] bg-surface-container overflow-hidden rounded-lg opacity-30">
+<img class="w-full h-full object-cover" data-alt="Close-up editorial shot of tailored charcoal wool trousers. The lighting is dramatic yet soft, emphasizing the sharp pleats and premium textile quality. Set against a minimalist architectural background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA49HvSiTLEL9uR3A0MeNuDjx86nN9tw4QATLP5b5IGVq_xhy-3jm0OI5YsAqW4418aV_dj9P2-TmM9SRvZoww5o2PcPfm1J5uoc--Y-0A_pLng-9098mXTwkwbpwFgG8MdCXbdGHfRHQMuiGH6UoW8Irozu-HFDZD_okgUCLvSZStRYjY2HJE9rw4NnYef4_SMYI7M4W6xeYKGBo1ZY1NQsAOCPJHFFBSM2saSnmrEpMOJn3Yc68J1BByNGY5hH5k_f3tTjdGM6WY">
+</div>
+<div class="aspect-[3/4] bg-surface-container overflow-hidden rounded-lg opacity-30">
+<img class="w-full h-full object-cover" data-alt="A pair of designer leather loafers in espresso brown, positioned artistically on a stone plinth. The aesthetic is clean and modern, with a focus on craftsmanship and luxury texture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEG2qrV_fK1haLdnrkDe3yyZ71iqeix2WR7XcDWNcM_bMEe1BlkvPQEzo6N8qC2xNxLmYTw5AtVO2kQnzJgDAt6UwRKiWo_-OTUKHtR84024atdqn2UpYLPXbjXNrFGQadzBl3ebJOS6nU52jO2VBuGyD8DxkW7zvfW-_Sa09WRTLPkJRDV6l33sxLjK8Byd3BcxZ22sSSAfSlAQ1uY0y3CoimqUaTDr6VTkHKNHi2GDLEg5df7ANotiX6eJT9XB4kEMHIoqmqzKk">
+</div>
+<div class="aspect-[3/4] bg-surface-container overflow-hidden rounded-lg opacity-30">
+<img class="w-full h-full object-cover" data-alt="A premium structured handbag in matte black leather, captured with high-contrast editorial lighting. The background is a soft beige sand color, providing a neutral, expensive feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwxuTkRySdPmBTs2cX1KFw4xQw_wVY-LVlUZ1p4kUt7QHjO-xzEnFL-PtQaKmkrT12pHZSX76nLThUfgx7HIfQV1EVMtwH0wXfA9vmkB0z-_DUvdkBgaSSQJSmFSZmOyNlgQd9FlrQYJrGW5no5S-vJTtqvvGNuK2GA2aSMahbKBNpUQTjCdPFeSLEPkpEw86SDat1hhHCKEdZGa9YV3bsYR1TXYdijxoT-xwxKo5vynOhWKndIMuwocnHnf-3uJzqo11MTuANdig">
+</div>
+</div>
+</main>
+</div>
+<!-- BOTTOM SHEET OVERLAY -->
+<div class="fixed inset-0 z-50 flex flex-col justify-end">
+<!-- Semi-transparent backdrop -->
+<div class="absolute inset-0 bg-black/20" onclick="window.history.back()"></div>
+<!-- Sheet Content -->
+<div class="relative bg-white w-full max-h-[795px] rounded-t-[32px] bottom-sheet-up flex flex-col overflow-hidden shadow-2xl">
+<!-- Pull Indicator -->
+<div class="w-12 h-1 bg-outline-variant/30 rounded-full mx-auto mt-4 mb-6"></div>
+<!-- Header -->
+<div class="px-margin-mobile mb-stack-md flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-primary">Thêm món đồ mới</h2>
+<button class="p-2 active:scale-95 transition-transform" onclick="window.history.back()">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto px-margin-mobile pb-32">
+<!-- Action Targets -->
+<div class="grid grid-cols-2 gap-4 mb-stack-md">
+<button class="flex flex-col items-center justify-center p-6 border border-outline-variant/40 rounded-xl hover:bg-surface-container-low transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">photo_camera</span>
+<span class="font-label-md text-label-md text-primary">Chụp ảnh</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 border border-outline-variant/40 rounded-xl bg-surface-container-lowest hover:bg-surface-container-low transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">gallery_thumbnail</span>
+<span class="font-label-md text-label-md text-primary">Chọn từ thư viện</span>
+</button>
+</div>
+<!-- Gallery Selection Section -->
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Thư viện của bạn</h3>
+<span class="font-label-sm text-label-sm text-primary">Đã chọn 3/5 ảnh</span>
+</div>
+<!-- Grid Picker -->
+<div class="grid grid-cols-3 gap-2">
+<!-- Selected Item 1 -->
+<div class="relative aspect-square rounded-lg overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="High-fashion photography of a beige cashmere sweater folded neatly. The lighting is bright and airy, typical of a modern luxury lifestyle magazine. Soft textures and neutral tones dominate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDU8vEz7CaAGP292vQT9kNbbaMu0D1cO6VT1lVW2OPupbGbRetUNtWaij4hOsQGEMuEH8gU8b503XKbmc1er4GP4WZrxdHcUFj3P1Bn0JJZU7LEcfRYChDHIJUg6goKP_pfBbsNHxHNXlFe6juCFRjRtgA3Ab7cXNVRmgOCkSrMHr3hO0gT09haVZLrm1joIIpg_x_wRmn_5-HSPwBo-1A9htagALH588X6fHKPFBvGEAb6JXGiN0KDEfZA3zvvLVEBWEc_CgyV0Mg">
+<div class="absolute top-2 right-2 bg-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">1</div>
+</div>
+<!-- Selected Item 2 -->
+<div class="relative aspect-square rounded-lg overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Editorial close-up of a pair of high-waisted linen trousers in sage green. The focus is on the organic texture of the fabric and the meticulous stitching. Natural sunlight creates soft transitions." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXhuirxequfzwBY8Ab1ed2_45Oyb4aXeCxdBwAQaZHOaHcWqXawH9zBs1SrC-8U6HByjQhccsWT_V9GTAIq9gHraJJJfJAWKJfvpl8KwHdT-knoDVqkPqJLwfm-5O_CYGG2NCOSq9rKsE5XtmvST4psDhWeyXn6PcDCLz0--lU-q_rqSujjq1v6KmB4F776NvD2c907_0FpVabJN2RmXn6xYZDSt558MEWFcIrN4XEEVrUx_5VsUoZZXJrK7BFuEoNUlFf3lRPlUw">
+<div class="absolute top-2 right-2 bg-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">2</div>
+</div>
+<!-- Selected Item 3 -->
+<div class="relative aspect-square rounded-lg overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="Product photography of a minimalist silver watch with a black leather strap, presented on a white marble surface. Crisp edges and reflective surfaces suggest a premium accessory." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOkpq_Jj45QxMvjts0ZSHruXZmP7At1id9m45o7dcfh4jLYONg9RUbL60kV9HO0UdMYW221VcTQuZkzOKioWuRU4VcnzjkDKkBGgXrHOiy-HHrVCchhWNHpEXoHY9oHJV2lcUVcCZ85T6893XU4ME1U8-ivQ8OzoNQ8sOQ6Xhe5iMMY-FHg0De4BP2t3kc2l2fPi9LFCqpzZuFrocdbUdkiUkF6FJglaBILb-l5iVBz4y1truzaMMySXpbwRLyDFe6QPQUq2QyrrM">
+<div class="absolute top-2 right-2 bg-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">3</div>
+</div>
+<!-- Unselected Items -->
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container opacity-60">
+<img class="w-full h-full object-cover" data-alt="A stack of high-quality denim jeans in various washes, from light indigo to deep black. Soft-focus background with a warm, sun-drenched boutique atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV2zZUd0NwaTJqj97Mopw4RtGYlIP0pKarqgwY6gSoyo8g826ts_U3r-_oTJ4fQ_VfVkXSFC67N0ZTAbIiPVcOp_CTtXpQn0mOz71HEdpZuICM36ALNAls7zLoBDgyswde1LRG6EHq7XD85N27eKWNcqn8HoH9TK8v-GDeR1m_HD4ZjDO5MGk4zb2rJwNKx0GBaBsBdUr16nxO1RvS-cUGIeyPLk3pqHuEiSG_fSPgHUwt_2q7qEE3REr3eG9yI4csdYTN1kjYaRk">
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container opacity-60">
+<img class="w-full h-full object-cover" data-alt="Close-up of a silk scarf with a modern geometric pattern in earthy tones of burnt orange, sand, and espresso. The silk has a subtle sheen under soft studio lights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIiSGyffJTYuPOX451lDZrzF60DXRqIEFN3b9pwVBfnSr-fnbuah9w932keb2E8icR7Zr3FB835o0Vuq6OQDgRFZcKBxmnkvP1eSklEKbek4Z8DaSN-wC2vdr8YxHhY0Gz72ouuG42P_0TB3H2Qbao-SKS3j_LUkucicHszBcct3NFnZ-NVR5NsWYwbagdH5VSqhgwbu8A003P_vUB2Q7_AF22y4aQZRRTJoiu1avTDUOs5MeHMh6uMhhgVTTPqzbXT0EtmM_dyww">
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-container opacity-60">
+<img class="w-full h-full object-cover" data-alt="Minimalist photography of a crisp white cotton t-shirt hanging on a wooden hanger against a clean linen-textured wall. Bright, high-key lighting for a fresh editorial look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcjP7hg0aPcaHIiI5BdPSZycVPgTXsKqfeRfs-8PjP_AC9fWE_rADmttyYzo3d4x7HStOjfIc8FkqCYntIhyg8_UOg1XCspvOTpzdYX7zWc4DXhnAJVCF9ncLZ6WyYD-OvPX360sQUCOuueZnOxUbrCqRDgc2m9cH6ZZ1Vi_SDOTl0SmEtCEpKwrHptMGwhUd2QdZYkjnfGK-jiLAl2I2-xIcN5FhTlutwQK01ATVzGNTGkdY4I5yhdtxr3CAUEsI7SxwY_Fr4gt0">
+</div>
+</div>
+<!-- Inline Message/Toast -->
+<div class="mt-6 p-4 bg-surface-container-low rounded-xl border border-outline-variant/20 flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-lg">info</span>
+<p class="font-label-md text-label-md text-on-surface-variant leading-snug">
+                        Bạn chỉ có thể chọn tối đa 5 ảnh cho mỗi lần upload.
+                    </p>
+</div>
+</div>
+<!-- Fixed Footer Button -->
+<div class="absolute bottom-0 left-0 w-full p-margin-mobile bg-gradient-to-t from-white via-white to-transparent pt-8">
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label-md text-label-md uppercase tracking-widest active:scale-[0.97] transition-transform shadow-lg shadow-black/5">
+                    Tải lên
+                </button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Shell (Consistent with Screen 1 context) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-unit pb-6 px-2 h-16 bg-surface border-t border-outline-variant/30 z-[60]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary font-bold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dry_cleaning</span>
+<span class="font-label-sm text-label-sm">Tủ đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60">
+<span class="material-symbols-outlined">flare</span>
+<span class="font-label-sm text-label-sm">Thử đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">Cộng đồng</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Cá nhân</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for gallery items
+        const galleryItems = document.querySelectorAll('.grid-picker > div');
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Simple toggle simulation
+                item.classList.toggle('border-primary');
+                item.classList.toggle('border-2');
+            });
+        });
+
+        // Prevention of scrolling background when modal is open
+        document.body.style.overflow = 'hidden';
+    </script>
+</body></html>

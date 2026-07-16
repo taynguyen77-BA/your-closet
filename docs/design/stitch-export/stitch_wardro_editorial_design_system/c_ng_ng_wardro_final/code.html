@@ -1,0 +1,330 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "on-surface-variant": "#4d463e",
+                            "on-background": "#1a1c1c",
+                            "primary-fixed-dim": "#d4c4b3",
+                            "on-secondary-fixed-variant": "#574329",
+                            "background": "#f9f9f9",
+                            "secondary-container": "#f9dbb7",
+                            "tertiary-fixed-dim": "#c8c6c2",
+                            "surface-dim": "#dadada",
+                            "surface-container-low": "#f3f3f4",
+                            "surface-container-highest": "#e2e2e2",
+                            "surface-container-high": "#e8e8e8",
+                            "on-primary-fixed-variant": "#504538",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed": "#fcdeba",
+                            "surface-container-lowest": "#ffffff",
+                            "on-primary-container": "#908273",
+                            "on-error": "#ffffff",
+                            "error": "#ba1a1a",
+                            "on-tertiary-fixed-variant": "#474744",
+                            "surface-bright": "#f9f9f9",
+                            "primary-fixed": "#f1e0ce",
+                            "on-tertiary-fixed": "#1c1c1a",
+                            "outline": "#7e766d",
+                            "on-tertiary": "#ffffff",
+                            "primary-container": "#231a0f",
+                            "tertiary-fixed": "#e5e2de",
+                            "secondary": "#705b3e",
+                            "outline-variant": "#cfc5bb",
+                            "on-secondary-container": "#755f42",
+                            "surface": "#f9f9f9",
+                            "inverse-surface": "#2f3131",
+                            "on-secondary-fixed": "#281903",
+                            "inverse-primary": "#d4c4b3",
+                            "error-container": "#ffdad6",
+                            "tertiary-container": "#1c1c1a",
+                            "on-secondary": "#ffffff",
+                            "secondary-fixed-dim": "#dfc29f",
+                            "tertiary": "#000000",
+                            "surface-container": "#eeeeee",
+                            "inverse-on-surface": "#f0f1f1",
+                            "on-primary-fixed": "#231a0f",
+                            "surface-variant": "#e2e2e2",
+                            "primary": "#000000",
+                            "on-tertiary-container": "#858480",
+                            "on-surface": "#1a1c1c",
+                            "surface-tint": "#695c4f",
+                            "on-error-container": "#93000a"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                        },
+                        "spacing": {
+                            "margin-desktop": "64px",
+                            "container-max": "1200px",
+                            "stack-lg": "48px",
+                            "gutter": "24px",
+                            "unit": "4px",
+                            "stack-sm": "12px",
+                            "stack-md": "24px",
+                            "margin-mobile": "20px"
+                        },
+                        "fontFamily": {
+                            "headline-md": ["DM Serif Display"],
+                            "headline-sm": ["DM Serif Display"],
+                            "body-lg": ["DM Sans"],
+                            "display-lg": ["DM Serif Display"],
+                            "display-lg-mobile": ["DM Serif Display"],
+                            "label-sm": ["DM Sans"],
+                            "label-md": ["DM Sans"],
+                            "body-md": ["DM Sans"]
+                        },
+                        "fontSize": {
+                            "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                            "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                            "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    </script>
+<style>
+        .masonry-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md bg-background min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="w-full top-0 sticky z-40 bg-background border-b border-outline-variant/10 flex items-center justify-between px-margin-mobile py-4 md:px-margin-desktop gap-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-primary tracking-tight whitespace-nowrap">Wardro</h1>
+</div>
+<div class="flex items-center gap-4">
+
+<span class="material-symbols-outlined text-primary cursor-pointer">shopping_bag</span>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 pb-32">
+<!-- Screen Header Title -->
+<div class="mb-6">
+<h2 class="font-headline-md text-headline-md text-primary">Cộng đồng - Wardro</h2>
+<p class="text-on-surface-variant text-body-md mt-1">Kết nối, trao đổi và tái sử dụng thời trang.</p>
+</div>
+<!-- Search & Filters -->
+<section class="mb-stack-lg space-y-6">
+<div class="relative w-full max-w-2xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-white border border-outline-variant/30 rounded-xl focus:outline-none focus:border-primary transition-colors font-body-md" placeholder="Tìm kiếm trang phục, phụ kiện..." type="text">
+</div>
+<div class="flex items-center gap-3 overflow-x-auto hide-scrollbar pb-2">
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md">Tất cả</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-white border border-outline-variant/30 text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">Bán</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-white border border-outline-variant/30 text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">Trao đổi</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-white border border-outline-variant/30 text-on-surface-variant font-label-md text-label-md hover:bg-surface-variant transition-colors">Tặng</button>
+</div>
+</section>
+<!-- Listing Grid -->
+<div class="masonry-grid items-start">
+<!-- Listing Card 1 (Bán) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-primary text-white text-[10px] font-bold uppercase tracking-wider rounded-full">Bán</span>
+</div>
+<img alt="Áo Blazer Linen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9m3XPiDL6nyPzeSJLityxOCDn0VFaeuBArf0HiBmuTdQppywiaHSiYCh371IitzTCjr9jTNlgXNxkqMaG0OuogWGB46zYY2ygI14tdF6uaPWh_aWdFzVSzJcc6uLoiM405FKiIjVvPYgtNu1nuQan5e62489--f-i4rachDxZVyxzZnMEfNCIqoKCTtKRaFP-XxMlVYHGvpZmlcH1_nGdJIq3Yme79Ag0ve8WAVn4aIZ_sPaQ3lw3PaisYj4bouKjg0OCKyXTGE0">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Áo Blazer Linen</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">Mới</span>
+</div>
+<p class="font-bold text-primary">250.000đ</p>
+</div>
+</article>
+<!-- Listing Card 2 (Trao đổi) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase tracking-wider rounded-full">Trao đổi</span>
+</div>
+<img alt="Khăn lụa tơ tằm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTRsDUnKD6zeOOKxV7MuelokbMsGW4Tk-nR7NmB8hEElkVjcxIlqTfCcgTVU-eY5dA7gP7uQoypr1GBiqPv3ci11lRNjhd8eYDMOatq4D38l3Nf7IE91Q-l2UhQsduiYPqVyYdO7U3dvDhvzFOe4LUsc67cB-oZBz_wDSZgFyeF_jVnojVyOD4jS8od5LRvfJtFAvJG_cQMVETZRynfeAcWxX0YUBb6b5e_HNRc35DwLpeXU5GBIFojRZkCwHO4NXdBY57gPmkZGU">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Khăn lụa tơ tằm</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">95%</span>
+</div>
+<p class="text-on-surface-variant text-label-sm italic">Thương lượng</p>
+</div>
+</article>
+<!-- Listing Card 3 (Tặng) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-white border border-primary text-primary text-[10px] font-bold uppercase tracking-wider rounded-full">Tặng</span>
+</div>
+<img alt="Giày Canvas Trắng" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAr-7bt73ShLAW7VCcjksVAwAbR1mCJUa9Vj1TmMbg2_owSeko_pFKbh-tt4b0nqShLiWC_aXABaEsR4k8y4TKfOsJjvAhdmPTYgmlvuDIlXM1vezzQQzChNgeMt7R9TjpuHdqm2RYyI1SvtmQQQ23WfGE9z4dxTsOSy0BrnJ9cy2I2LDu5g-D1MJp23vpGenMHSV7gqZoQhugdO70ZrXP6Q9I33-loXgwPGcGtU-D0Izw1lWADejFucD79hThsxk9UAkD22TD36Jk">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Giày Canvas Trắng</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">Cũ</span>
+</div>
+<p class="font-bold text-primary">Miễn phí</p>
+</div>
+</article>
+<!-- Listing Card 4 (Bán) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-primary text-white text-[10px] font-bold uppercase tracking-wider rounded-full">Bán</span>
+</div>
+<img alt="Túi xách Da thật" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN_QGad9z3oL5Z_xOaBWf5aSVRs5MOkg_qw4h-2sUcCB7zshpnn-thNMev_U9TU2VHiUb1zNS5lYLhRK4FVs8RHZZ2wjJtVi3mlQXfqo4FJCSpbHDmXnWwui_b90KOzBrp0dAQml8KddqSd_Hx73WmItEt3LYikn1GEVyGr-Qk8IFVLlUPD2XSHRBNc8BV7Iy4urg1nWgcu-XeeN8gzLUHgmEQjcjcpqGUGlOmhoaNkgX-Op9oPPlkEjePJ_fj0XYud8Px79-hzAQ">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Túi xách Da thật</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">Mới</span>
+</div>
+<p class="font-bold text-primary">1.200.000đ</p>
+</div>
+</article>
+<!-- Listing Card 5 (Trao đổi) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase tracking-wider rounded-full">Trao đổi</span>
+</div>
+<img alt="Bộ trang sức Bạc" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7ABgVQ4eqx14Dzt9dVgh7Oyq21SCBym7nr53GReW3d3TPOBjnKNlgfUUBYCW9HlUPcTIB0AHlYZWcF0eBsEPuuRHW5ov4jKDE3zXLw-MWBope0OhpUk4ajH6xtn8jvEDdUJDlXb1fDp2aKhUSl34-NFn_ewlPsrynnBO3NLTv4dZ0JcAF8As4pgBUy01120wHFTHBJW9H9Ohy3cMF5QRtAVlNDZOKf6gmPfDY2L8MsUrgYEe4B-9nPrQsrwbgz820ActWEGc1ssw">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Bộ trang sức Bạc</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">99%</span>
+</div>
+<p class="text-on-surface-variant text-label-sm italic">Trao đổi váy</p>
+</div>
+</article>
+<!-- Listing Card 6 (Bán) -->
+<article class="group cursor-pointer">
+<div class="relative aspect-[3/4] overflow-hidden rounded-lg bg-white mb-3">
+<div class="absolute top-3 left-3 z-10">
+<span class="px-3 py-1 bg-primary text-white text-[10px] font-bold uppercase tracking-wider rounded-full">Bán</span>
+</div>
+<img alt="Quần Denim Nhật" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyFAhNKDBGYHY0eMpKGPgndt1IN8JbyvLTU7OQpiWDNyP5hZZt2EQ2TIt1ouzNzASTpYut3Vnq_1qrakBJSkCXWaJsPWs2Qxi7_11-oJWwBGohmjfgNEtW3IRiv7W7flvByb1Ue3LU99WodvOFXOIWJvr8WQuNDnZLNFgb4_TlBxes-_HVJLM1m_s2LyZtekZ4ymryI0RmUbbZ627yXBoVK8NDwqKVUle6bhub1-NSPpt2Er40u841OCeqiFbI_YLURzCZIufDVag">
+<button class="absolute bottom-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between items-start gap-2">
+<h3 class="font-headline-sm text-[16px] leading-tight flex-1">Quần Denim Nhật</h3>
+<span class="bg-secondary-fixed/30 text-secondary text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0">80%</span>
+</div>
+<p class="font-bold text-primary">450.000đ</p>
+</div>
+</article>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-surface-container-lowest border-t border-outline-variant/20 shadow-[0_-2px_10px_rgba(26,18,8,0.05)] z-50 rounded-t-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-sm text-label-sm">Tủ đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">styler</span>
+<span class="font-label-sm text-label-sm">Thử đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-secondary-fixed/30 rounded-full px-3 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-label-sm text-label-sm">Cộng đồng</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Cá nhân</span>
+</a>
+</nav>
+<script>
+    // Micro-interaction for filter chips
+    const filterButtons = document.querySelectorAll('section .flex button');
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => {
+                b.classList.remove('bg-primary', 'text-on-primary');
+                b.classList.add('bg-white', 'border', 'border-outline-variant/30', 'text-on-surface-variant');
+            });
+            btn.classList.add('bg-primary', 'text-on-primary');
+            btn.classList.remove('bg-white', 'border', 'border-outline-variant/30', 'text-on-surface-variant');
+        });
+    });
+
+    // Micro-interaction for favorite buttons
+    const favButtons = document.querySelectorAll('.group button');
+    favButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if (icon.style.fontVariationSettings && icon.style.fontVariationSettings.includes("'FILL' 1")) {
+                icon.style.fontVariationSettings = "'FILL' 0, 'wght' 300";
+                icon.classList.remove('text-red-500');
+                icon.classList.add('text-primary');
+            } else {
+                icon.style.fontVariationSettings = "'FILL' 1, 'wght' 300";
+                icon.classList.add('text-red-500');
+            }
+        });
+    });
+</script>
+
+
+<button class="fixed bottom-[80px] right-4 w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg z-50 active:scale-95 transition-transform duration-150">
+    <span class="material-symbols-outlined text-[28px]">add</span>
+</button></body></html>

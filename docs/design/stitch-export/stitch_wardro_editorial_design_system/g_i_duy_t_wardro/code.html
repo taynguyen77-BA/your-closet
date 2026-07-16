@@ -1,0 +1,211 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Đã gửi duyệt - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#d4c4b3",
+                    "surface-variant": "#e2e2e2",
+                    "on-tertiary-container": "#858480",
+                    "surface-container-high": "#e8e8e8",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-container": "#eeeeee",
+                    "on-background": "#1a1c1c",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "on-primary-fixed-variant": "#504538",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "tertiary": "#000000",
+                    "surface-dim": "#dadada",
+                    "inverse-surface": "#2f3131",
+                    "secondary-container": "#f9dbb7",
+                    "background": "#f9f9f9",
+                    "primary": "#000000",
+                    "on-surface-variant": "#4d463e",
+                    "secondary-fixed": "#fcdeba",
+                    "on-secondary-fixed-variant": "#574329",
+                    "on-primary": "#ffffff",
+                    "inverse-primary": "#d4c4b3",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "surface-container-low": "#f3f3f4",
+                    "on-primary-fixed": "#231a0f",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "outline-variant": "#cfc5bb",
+                    "outline": "#7e766d",
+                    "secondary": "#705b3e",
+                    "surface-tint": "#695c4f",
+                    "on-primary-container": "#908273",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#1c1c1a",
+                    "on-secondary-fixed": "#281903",
+                    "on-secondary-container": "#755f42",
+                    "surface-bright": "#f9f9f9",
+                    "surface": "#f9f9f9",
+                    "on-surface": "#1a1c1c",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f1",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .success-gradient {
+            background: linear-gradient(135deg, #d4b896 0%, #705b3e 100%);
+        }
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            animation: float-up 3s ease-out infinite;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Success Confirmation Screen -->
+<main class="success-gradient relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-margin-mobile text-center">
+<!-- Decorative Elements/Particles -->
+<div class="absolute inset-0 z-0" id="particle-container"><div class="particle bg-white/10" style="width: 5.53093px; height: 5.53093px; border-radius: 50%; left: 94.221%; bottom: -20px; animation-delay: 0.639917s; animation-duration: 5.33305s; opacity: 0.362858;"></div><div class="particle bg-white/10" style="width: 3.57403px; height: 3.57403px; border-radius: 50%; left: 5.41946%; bottom: -20px; animation-delay: 4.45333s; animation-duration: 6.61056s; opacity: 0.246946;"></div><div class="particle bg-white/10" style="width: 3.83399px; height: 3.83399px; border-radius: 50%; left: 72.8524%; bottom: -20px; animation-delay: 2.83935s; animation-duration: 4.71384s; opacity: 0.138488;"></div><div class="particle bg-white/10" style="width: 5.64724px; height: 5.64724px; border-radius: 50%; left: 11.43%; bottom: -20px; animation-delay: 3.23874s; animation-duration: 4.21948s; opacity: 0.272743;"></div><div class="particle bg-white/10" style="width: 5.66218px; height: 5.66218px; border-radius: 50%; left: 66.5491%; bottom: -20px; animation-delay: 1.86275s; animation-duration: 6.0353s; opacity: 0.259416;"></div><div class="particle bg-white/10" style="width: 3.05201px; height: 3.05201px; border-radius: 50%; left: 27.7958%; bottom: -20px; animation-delay: 0.356832s; animation-duration: 5.79151s; opacity: 0.357966;"></div><div class="particle bg-white/10" style="width: 2.05374px; height: 2.05374px; border-radius: 50%; left: 54.9868%; bottom: -20px; animation-delay: 4.119s; animation-duration: 4.26991s; opacity: 0.428814;"></div><div class="particle bg-white/10" style="width: 4.03207px; height: 4.03207px; border-radius: 50%; left: 81.5249%; bottom: -20px; animation-delay: 3.58188s; animation-duration: 5.39831s; opacity: 0.512175;"></div><div class="particle bg-white/10" style="width: 2.9243px; height: 2.9243px; border-radius: 50%; left: 16.1472%; bottom: -20px; animation-delay: 2.45655s; animation-duration: 5.4992s; opacity: 0.267314;"></div><div class="particle bg-white/10" style="width: 4.69159px; height: 4.69159px; border-radius: 50%; left: 15.4079%; bottom: -20px; animation-delay: 4.75776s; animation-duration: 4.48984s; opacity: 0.225306;"></div><div class="particle bg-white/10" style="width: 2.1611px; height: 2.1611px; border-radius: 50%; left: 20.6986%; bottom: -20px; animation-delay: 0.254018s; animation-duration: 6.25534s; opacity: 0.211556;"></div><div class="particle bg-white/10" style="width: 2.42913px; height: 2.42913px; border-radius: 50%; left: 64.3026%; bottom: -20px; animation-delay: 1.33164s; animation-duration: 4.11071s; opacity: 0.217791;"></div><div class="particle bg-white/10" style="width: 5.78009px; height: 5.78009px; border-radius: 50%; left: 58.3457%; bottom: -20px; animation-delay: 1.11171s; animation-duration: 4.21722s; opacity: 0.440948;"></div><div class="particle bg-white/10" style="width: 2.25337px; height: 2.25337px; border-radius: 50%; left: 18.6826%; bottom: -20px; animation-delay: 4.64747s; animation-duration: 4.417s; opacity: 0.136812;"></div><div class="particle bg-white/10" style="width: 3.20563px; height: 3.20563px; border-radius: 50%; left: 42.3847%; bottom: -20px; animation-delay: 4.2903s; animation-duration: 6.42563s; opacity: 0.596286;"></div></div>
+<!-- Animation Layer -->
+<div class="relative z-10 w-full max-w-lg flex flex-col items-center">
+<!-- Icon/Graphic Container -->
+<div class="mb-stack-lg relative">
+<div class="w-32 h-32 md:w-48 md:h-48 rounded-full border border-white/20 flex items-center justify-center bg-white/10 backdrop-blur-sm animate-pulse">
+<span class="material-symbols-outlined text-[64px] md:text-[96px] text-white" style="font-variation-settings: 'wght' 200;">
+                        check_circle
+                    </span>
+</div>
+<!-- Micro-glow effect -->
+<div class="absolute inset-0 bg-white/20 blur-3xl -z-10 rounded-full"></div>
+</div>
+<!-- Content Area -->
+<div class="space-y-stack-md mb-stack-lg max-w-sm">
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm text-white tracking-tight">
+                    Đã gửi duyệt!
+                </h1>
+<p class="font-body-md text-body-md text-white/90 leading-relaxed px-4">
+                    Món của bạn đã nằm trong <span class="font-bold">Tin đăng của tôi</span> với trạng thái <span class="italic text-white underline decoration-white/30 underline-offset-4">Chờ duyệt</span>.
+                </p>
+</div>
+<!-- Transactional Actions -->
+<div class="flex flex-col gap-4 w-full px-4 items-center">
+<button class="w-full max-w-[280px] h-14 rounded-full border border-white text-white font-label-md text-label-md hover:bg-white hover:text-secondary transition-all duration-300 active:scale-95 flex items-center justify-center gap-2">
+                    Xem tin đăng của tôi
+                </button>
+<button class="w-full max-w-[280px] h-12 rounded-full text-white/80 font-label-md text-label-md hover:text-white transition-colors duration-200 flex items-center justify-center gap-2">
+                    Về cộng đồng
+                </button>
+</div>
+</div>
+<!-- Aesthetic Branding Footnote -->
+<div class="absolute bottom-12 left-0 w-full text-center z-10">
+<span class="font-display-lg-mobile text-white/20 tracking-widest text-label-sm uppercase pointer-events-none">WARDRO • 2024</span>
+</div>
+</main>
+<script>
+        // Micro-interactions: Floating particles for celebratory feel
+        const container = document.getElementById('particle-container');
+        const particleCount = 15;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle bg-white/10';
+            
+            // Random styling
+            const size = Math.random() * 4 + 2;
+            const left = Math.random() * 100;
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 3 + 4;
+            const opacity = Math.random() * 0.5 + 0.1;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.borderRadius = '50%';
+            particle.style.left = `${left}%`;
+            particle.style.bottom = `-20px`;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.opacity = opacity;
+            
+            container.appendChild(particle);
+        }
+
+        // Button hover effect logic (optional micro-interactions)
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Subtle interaction logic if needed
+            });
+        });
+    </script>
+
+
+</body></html>

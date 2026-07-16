@@ -1,0 +1,256 @@
+<!DOCTYPE html><html class="light" lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Wardro - Thêm vào bộ đồ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#908273",
+                        "on-background": "#1a1c1c",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#504538",
+                        "inverse-surface": "#2f3131",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "inverse-primary": "#d4c4b3",
+                        "outline-variant": "#cfc5bb",
+                        "outline": "#7e766d",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#1c1c1a",
+                        "surface-dim": "#dadada",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#231a0f",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3f4",
+                        "surface-container-high": "#e8e8e8",
+                        "on-primary-fixed": "#231a0f",
+                        "on-surface-variant": "#4d463e",
+                        "surface-bright": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "surface-variant": "#e2e2e2",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#fcdeba",
+                        "surface-tint": "#695c4f",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "secondary-container": "#f9dbb7",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "primary-fixed": "#f1e0ce",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "background": "#f9f9f9",
+                        "on-secondary-fixed-variant": "#574329",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#755f42",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-secondary-fixed": "#281903",
+                        "secondary": "#705b3e",
+                        "tertiary-fixed": "#e5e2de",
+                        "on-surface": "#1a1c1c",
+                        "on-tertiary-container": "#858480",
+                        "surface-container": "#eeeeee"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "12px",
+                        "margin-mobile": "20px",
+                        "stack-md": "24px",
+                        "unit": "4px",
+                        "stack-lg": "48px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["DM Sans"],
+                        "headline-md": ["DM Serif Display"],
+                        "body-md": ["DM Sans"],
+                        "body-lg": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "headline-sm": ["DM Serif Display"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .bottom-sheet-transition {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .linen-overlay {
+            background-color: #F7F4F0;
+        }
+        .glass-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden h-screen">
+<!-- Background Context (Blurred) -->
+<div class="fixed inset-0 z-0 blur-xl scale-105 opacity-60"><div class="w-full h-full relative">
+    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ0gTZ6c7GDMgtKKwkHhSPfGWQEH12lbGbWwESup35yI-Z5IWv8EkbG9r7_z8ggUp2_OWDw9Wv225_kTk734I-rFqlnc4ql02mVdTTwtjfza6ooGyorPrvRzTYIYpeYqqDNqexIco84LRgTwWG2gFRaNahHOXjZoGQ8FvsVqAPHrHItc7ErVmXOhD-XJAoGo8BjiXoHlx4agS2AQuOAIWOYxCcVpPc2fBAf4efdlGGIdrtkEs7HotoTL0zI2f5aMZDQhAzBjSkjG8" class="w-full h-full object-cover" alt="Bối cảnh thời trang">
+    <div class="absolute inset-0 bg-black/10"></div>
+</div></div>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 bg-on-background/20 z-40 transition-opacity duration-300 opacity-100" id="modal-backdrop"></div>
+<!-- Bottom Sheet Modal -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest rounded-t-[2rem] shadow-2xl bottom-sheet-transition translate-y-0 max-h-[795px] flex flex-col" id="bottom-sheet" style="transform: translateY(0px);">
+<!-- Handle -->
+<div class="w-full flex justify-center py-4">
+<div class="w-12 h-1 bg-outline-variant/40 rounded-full"></div>
+</div>
+<!-- Header -->
+<header class="px-margin-mobile pb-stack-md">
+<h1 class="font-headline-sm text-headline-sm text-on-background">Chọn bộ sưu tập</h1>
+</header>
+<!-- Content Area (Scrollable) -->
+<div class="flex-1 overflow-y-auto px-margin-mobile space-y-4">
+<!-- Outfit List -->
+<div class="space-y-stack-sm">
+<!-- Row 1 -->
+<button class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="A minimalist high-fashion editorial photography shot of a perfectly styled office outfit featuring a tailored linen blazer and structured trousers in soft neutral tones. The scene is bright and airy with high-key lighting reflecting a sophisticated, luxury lifestyle aesthetic. Clean, sharp lines and premium fabric textures are highlighted against a soft linen-colored studio backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ0gTZ6c7GDMgtKKwkHhSPfGWQEH12lbGbWwESup35yI-Z5IWv8EkbG9r7_z8ggUp2_OWDw9Wv225_kTk734I-rFqlnc4ql02mVdTTwtjfza6ooGyorPrvRzTYIYpeYqqDNqexIco84LRgTwWG2gFRaNahHOXjZoGQ8FvsVqAPHrHItc7ErVmXOhD-XJAoGo8BjiXoHlx4agS2AQuOAIWOYxCcVpPc2fBAf4efdlGGIdrtkEs7HotoTL0zI2f5aMZDQhAzBjSkjG8">
+</div>
+<span class="font-label-md text-label-md text-on-background">Đi làm thanh lịch</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container bg-primary rounded-full p-1 group-active:scale-90 transition-transform">add</span>
+</button>
+<!-- Row 2 -->
+<button class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="A premium fashion flat-lay of a casual weekend outfit featuring a designer denim jacket, organic cotton tee, and minimalist leather sneakers. The photography uses soft natural window light to create gentle shadows and highlight the quality of the materials. The color palette is composed of indigo, cream, and sand, maintaining a clean editorial look suitable for a high-end lifestyle app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZOwZFlA_ar__yoAvMXWEGDIP96-eWQn-20B6x-XjvFu2s5IN5KsX_wnhZf6pty1hK7rX8U6U4ihx63Oj52P04vpxmVEILSD4J3j4Vayb7g4PW2-4fyTp5CSWqq71bLYFHIlJEZ2m0z0KUEnjRiN8Wa-3G32Xvn9SOPm221bQbZeBm-73qFcmDsp8PTo_De-KyvjNZ9KqXBlONbu98EpY5NcZzXEOoRcf88_Si1yxmFUbkzB-Z7tG6os-E3H0YtaCRVMszhyLch20">
+</div>
+<span class="font-label-md text-label-md text-on-background">Dạo phố cuối tuần</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container bg-primary rounded-full p-1 group-active:scale-90 transition-transform">add</span>
+</button>
+<!-- Row 3 -->
+<button class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/10">
+<img class="w-full h-full object-cover" data-alt="An elegant evening wear composition featuring a silk slip dress and a delicate gold clutch. The lighting is moody yet sophisticated, with warm highlights dancing off the silk texture. The background is a minimalist, dark architectural space that emphasizes the luxury and exclusivity of the outfit. High contrast and deep blacks define this editorial-style fashion shot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8zfK5DvG-uRRJz-KP4FdL14ctLV-_wKH9anh__BymmmHTxHHb1Kt5UgsnOq59XUkL9Swk2lESrMTQ6Yd44o4idvBpHKp5rZpDvKHIBcGaU5a96mo291NMJ9JWuuglYu6xO0WFlQVSzu3f-f3-b6TVpPq2iaovL-Qd2Kce6kNC1zVVQJoSRM4aAVLkClbZ-deeINRWgkZKxW6PFNJhoFEcAF5FaY0BFmOOMIjT5IRslwML0R3g9-oPrHrsUnmz0K4iwb66RRUee6k">
+</div>
+<span class="font-label-md text-label-md text-on-background">Tiệc tối sang trọng</span>
+</div>
+<span class="material-symbols-outlined text-secondary-container bg-primary rounded-full p-1 group-active:scale-90 transition-transform">add</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-xl border border-dashed border-outline-variant/40 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 rounded-lg flex items-center justify-center bg-surface-container-high">
+
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Tạo bộ sưu tập mới</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/70 group-hover:text-on-surface">chevron_right</span>
+</button></div>
+<!-- Separator -->
+<!-- Empty State Illustration/Action -->
+</div>
+<!-- Sticky Footer Action -->
+<footer class="p-margin-mobile border-t border-outline-variant/10 bg-surface-container-lowest/80 backdrop-blur-xl">
+<button class="w-full py-4 font-label-md text-label-md text-on-surface-variant/70 hover:text-on-surface transition-colors flex items-center justify-center space-x-2" id="close-btn">
+<span class="">Đóng</span>
+</button>
+</footer>
+<!-- Bottom Spacer for Safe Area -->
+<div class="h-8"></div>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        const bottomSheet = document.getElementById('bottom-sheet');
+        const backdrop = document.getElementById('modal-backdrop');
+        const closeBtn = document.getElementById('close-btn');
+
+        function closeModal() {
+            bottomSheet.style.transform = 'translateY(100%)';
+            backdrop.style.opacity = '0';
+            setTimeout(() => {
+                // In a real app, this would remove the component from DOM
+                bottomSheet.style.display = 'none';
+                backdrop.style.display = 'none';
+            }, 400);
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', closeModal);
+
+        // Simulated entry animation
+        window.addEventListener('load', () => {
+            bottomSheet.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                bottomSheet.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Basic drag-to-dismiss hint logic
+        let startY = 0;
+        bottomSheet.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        });
+
+        bottomSheet.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+            if (diff > 0) {
+                bottomSheet.style.transform = `translateY(${diff}px)`;
+            }
+        });
+
+        bottomSheet.addEventListener('touchend', (e) => {
+            const currentY = e.changedTouches[0].clientY;
+            const diff = currentY - startY;
+            if (diff > 150) {
+                closeModal();
+            } else {
+                bottomSheet.style.transform = 'translateY(0)';
+            }
+        });
+    </script>
+
+
+
+
+
+
+</body></html>

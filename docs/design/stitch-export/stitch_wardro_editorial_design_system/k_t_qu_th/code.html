@@ -1,0 +1,205 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kết quả thử đồ AI - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#281903",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "secondary-container": "#f9dbb7",
+                    "primary-container": "#231a0f",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-container": "#1c1c1a",
+                    "primary-fixed": "#f1e0ce",
+                    "surface": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "outline": "#7e766d",
+                    "on-primary-container": "#908273",
+                    "surface-container-highest": "#e2e2e2",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "on-secondary-container": "#755f42",
+                    "on-primary-fixed": "#231a0f",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#000000",
+                    "inverse-primary": "#d4c4b3",
+                    "inverse-surface": "#2f3131",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-low": "#f3f3f4",
+                    "background": "#f9f9f9",
+                    "surface-tint": "#695c4f",
+                    "on-tertiary-container": "#858480",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-surface": "#1a1c1c",
+                    "secondary": "#705b3e",
+                    "tertiary": "#000000",
+                    "outline-variant": "#cfc5bb",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e8e8e8",
+                    "surface-dim": "#dadada",
+                    "surface-container": "#eeeeee",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#fcdeba",
+                    "on-surface-variant": "#4d463e",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#dfc29f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .scrim-bottom {
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden">
+<!-- Full-bleed background result -->
+<div class="fixed inset-0 z-0">
+<img alt="Virtual try-on result" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe9x4_mZK6gVQqKHsEEHGA4qPR6N8rRF5p-TSBSbSLpNkXPGPgBWCotUOW4Q72GoYVK2XcByAWae_11sGLbvA6DJ-WiXygQnEaobpAki4HgufBkbWWnBkP5pb6uDiyMtVDatmQmXfYbTXe_kidDrIQ9X_dnsFCJ-EIjzFWxXdE_jml28vlR23TLlg5TsAQL8-sPfZ3M1FIC9TY2P1ULcpbBF6GSUsqXm7qis4VmPxpm6hRjDeSOA7TuFg6zCFM_wwPlBgWjIb772I">
+<!-- Subtle Scrim for UI Legibility -->
+<div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/20 to-transparent"></div>
+<div class="absolute inset-x-0 bottom-0 h-64 scrim-bottom"></div>
+<!-- Branded Watermark -->
+<div class="absolute bottom-32 right-margin-mobile opacity-40 select-none">
+<span class="font-headline-sm text-surface tracking-widest text-[14px] uppercase">Wardro</span>
+</div>
+</div>
+<!-- Floating TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 glass-header">
+<button class="w-10 h-10 flex items-center justify-center text-surface active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-label-sm text-surface uppercase tracking-[0.2em] pt-1">Kết quả thử đồ - Wardro</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<!-- Main Canvas (Layout-less container for mobile full bleed) -->
+<main class="relative z-10 flex flex-col h-screen justify-end items-center pb-12">
+<!-- Action Container -->
+<div class="w-full max-w-[400px] px-margin-mobile space-y-6 text-center">
+<!-- Bottom Action Bar (Bento-style Glass Cards) -->
+<div class="grid grid-cols-3 gap-3">
+<!-- Save Image -->
+<button class="bg-surface/10 backdrop-blur-md border border-surface/20 rounded-xl p-4 flex flex-col items-center justify-center space-y-2 text-surface active:scale-90 transition-all">
+<span class="material-symbols-outlined">download</span>
+<span class="font-label-sm text-[10px] uppercase">Lưu ảnh</span>
+</button>
+<!-- Share -->
+<button class="bg-surface/10 backdrop-blur-md border border-surface/20 rounded-xl p-4 flex flex-col items-center justify-center space-y-2 text-surface active:scale-90 transition-all">
+<span class="material-symbols-outlined">share</span>
+<span class="font-label-sm text-[10px] uppercase">Chia sẻ</span>
+</button>
+<!-- Save Outfit -->
+<button class="bg-surface-container-lowest rounded-xl p-4 flex flex-col items-center justify-center space-y-2 text-primary active:scale-90 transition-all shadow-xl">
+<span class="material-symbols-outlined fill-icon" style="font-variation-settings: 'FILL' 1;">checkroom</span>
+<span class="font-label-sm text-[10px] uppercase">Lưu outfit</span>
+</button>
+</div>
+<!-- Context Retray Action -->
+<button class="group inline-flex flex-col items-center space-y-2 text-surface/80 hover:text-surface transition-colors">
+<span class="font-label-md border-b border-surface/30 pb-0.5 group-hover:border-surface transition-all">Thử lại với bối cảnh khác</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Shell (Suppressed for focus per "Relevance Check" logic, but placeholder for structure if needed) -->
+<!-- In this Task-Focused screen, we hide the global nav to prioritize the result canvas -->
+<script>
+        // Micro-interaction for the "Save Outfit" success feedback
+        const saveBtn = document.querySelector('button.bg-surface-container-lowest');
+        saveBtn.addEventListener('click', () => {
+            const label = saveBtn.querySelector('span:last-child');
+            const icon = saveBtn.querySelector('.material-symbols-outlined');
+            
+            const originalLabel = label.textContent;
+            const originalIcon = icon.textContent;
+
+            label.textContent = "Đã lưu";
+            icon.textContent = "done_all";
+            saveBtn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+            
+            setTimeout(() => {
+                label.textContent = originalLabel;
+                icon.textContent = originalIcon;
+                saveBtn.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+            }, 2000);
+        });
+
+        // Interactive subtle parallax on move
+        document.body.addEventListener('mousemove', (e) => {
+            const img = document.querySelector('img');
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            img.style.transform = `scale(1.05) translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
+
+
+
+
+</body></html>

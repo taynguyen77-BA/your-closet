@@ -1,0 +1,282 @@
+<!DOCTYPE html><html class="light" lang="vi" style="width: 390px; height: 884px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Lịch sử mua sắm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Theme Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-tint": "#695c4f",
+                "outline-variant": "#cfc5bb",
+                "inverse-primary": "#d4c4b3",
+                "secondary-fixed": "#fcdeba",
+                "background": "#f9f9f9",
+                "error-container": "#ffdad6",
+                "on-primary-fixed": "#231a0f",
+                "tertiary": "#000000",
+                "tertiary-container": "#1c1c1a",
+                "surface-bright": "#f9f9f9",
+                "on-tertiary-fixed-variant": "#474744",
+                "on-surface": "#1a1c1c",
+                "surface-container-highest": "#e2e2e2",
+                "surface-variant": "#e2e2e2",
+                "surface-container-low": "#f3f3f4",
+                "primary": "#000000",
+                "on-secondary-fixed": "#281903",
+                "surface": "#f9f9f9",
+                "secondary-container": "#f9dbb7",
+                "surface-dim": "#dadada",
+                "inverse-surface": "#2f3131",
+                "surface-container-lowest": "#ffffff",
+                "primary-fixed": "#f1e0ce",
+                "tertiary-fixed": "#e5e2de",
+                "on-secondary-container": "#755f42",
+                "on-background": "#1a1c1c",
+                "outline": "#7e766d",
+                "surface-container-high": "#e8e8e8",
+                "on-primary": "#ffffff",
+                "surface-container": "#eeeeee",
+                "on-primary-fixed-variant": "#504538",
+                "inverse-on-surface": "#f0f1f1",
+                "on-tertiary-fixed": "#1c1c1a",
+                "on-surface-variant": "#4d463e",
+                "on-primary-container": "#908273",
+                "on-error-container": "#93000a",
+                "secondary": "#705b3e",
+                "on-tertiary": "#ffffff",
+                "primary-fixed-dim": "#d4c4b3",
+                "on-secondary": "#ffffff",
+                "primary-container": "#231a0f",
+                "on-secondary-fixed-variant": "#574329",
+                "on-error": "#ffffff",
+                "error": "#ba1a1a",
+                "tertiary-fixed-dim": "#c8c6c2",
+                "on-tertiary-container": "#858480",
+                "secondary-fixed-dim": "#dfc29f"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "unit": "4px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "container-max": "1200px",
+                "margin-desktop": "64px",
+                "stack-lg": "48px",
+                "stack-sm": "12px",
+                "stack-md": "24px"
+            },
+            "fontFamily": {
+                "display-lg-mobile": ["DM Serif Display"],
+                "headline-sm": ["DM Serif Display"],
+                "headline-md": ["DM Serif Display"],
+                "body-lg": ["DM Sans"],
+                "label-md": ["DM Sans"],
+                "display-lg": ["DM Serif Display"],
+                "label-sm": ["DM Sans"],
+                "body-md": ["DM Sans"]
+            },
+            "fontSize": {
+                "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Sand / Background */
+            color: #1a1c1c; /* Espresso / On-Background */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 2px solid #000000;
+        }
+        .order-card-hover:active {
+            transform: scale(0.98);
+            transition: transform 0.2s ease;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background selection:bg-secondary-fixed">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky bg-background dark:bg-background z-40 transition-shadow duration-300" id="header">
+<div class="flex justify-between items-center px-margin-mobile py-stack-md w-full max-w-container-max mx-auto">
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-on-background">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary dark:text-on-background">Lịch sử mua sắm</h1>
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-on-background">shopping_bag</span>
+</button>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile pb-32">
+<!-- Custom Tab System -->
+<div class="flex border-b border-outline-variant/30 mb-stack-md">
+<button class="flex-1 py-4 font-label-md text-label-md active-tab text-primary transition-all duration-300" id="tab-active" onclick="switchTab('active')">
+                Đang đến
+            </button>
+<button class="flex-1 py-4 font-label-md text-label-md text-outline hover:text-primary transition-all duration-300" id="tab-history" onclick="switchTab('history')">
+                Lịch sử
+            </button>
+</div>
+<!-- Orders Container -->
+<div class="space-y-stack-md" id="orders-list">
+<!-- Order Card 1: Active -->
+<div class="active-order flex flex-col bg-surface-container-lowest border border-outline-variant/20 rounded shadow-sm overflow-hidden order-card-hover">
+<div class="flex justify-between items-center p-4 border-b border-outline-variant/10">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">#WRD8829</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm rounded-full">Đang giao</span>
+</div>
+<div class="p-4 flex gap-4">
+<div class="w-20 h-24 bg-surface-container rounded-sm overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-end editorial fashion shot of a luxury minimalist linen blazer in a neutral sand color, presented in soft, diffused morning sunlight against a clean off-white background. The fabric texture is crisp and detailed, embodying a soft-luxury and sophisticated aesthetic. The overall mood is serene, high-fashion, and premium, using a palette of espresso and cream tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-0uClezzaGIYRSh09FRiVTWvsPr79TDe9_vTM5kkVKxCWuFF6U0zsGoiu49y2-6OMWnIzAShgjlIhGbL3jwkmiK3615kSFZE8s8lTojvt1s30UUvw4j6HQjn6BS86ZJ3AAadkfduB70wfIGgUDNMJK87adQGujIG2SgfymL3N4x9rotz09Jx05i9PCQSVBULCKt74ropK5EmY3OpzFCIPDEJlVjgCUpRgFIf1bfXu54LPUuVvXBdYRJdWDCimOX6ACANI6MTNqrw">
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-body-md text-body-md font-bold text-primary">Áo Blazer Linen Casual</h3>
+<p class="font-label-sm text-label-sm text-outline mt-1">Đặt ngày: 12/10/2023</p>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary">2.450.000đ</p>
+</div>
+</div>
+<div class="px-4 py-3 bg-surface-container-low flex justify-end">
+<button class="text-label-sm font-label-sm text-primary uppercase tracking-wider flex items-center gap-1">
+                        Chi tiết <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Order Card 2: Completed -->
+<div class="history-order hidden flex flex-col bg-surface-container-lowest border border-outline-variant/20 rounded shadow-sm overflow-hidden order-card-hover">
+<div class="flex justify-between items-center p-4 border-b border-outline-variant/10">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">#WRD7741</span>
+<span class="px-3 py-1 bg-surface-container text-outline font-label-sm text-label-sm rounded-full">Đã hoàn thành</span>
+</div>
+<div class="p-4 flex gap-4">
+<div class="w-20 h-24 bg-surface-container rounded-sm overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up editorial photography of a pair of tailored espresso-colored trousers, showcasing impeccable stitching and premium wool fabric. The trousers are displayed on a minimalist gallery pedestal with artistic shadows. The lighting is high-contrast yet soft, highlighting the luxurious texture and deep color palette of the brand. Professional fashion photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPRB7GQwnP6JVyF1Gn9BA5v79pMpBSkXyP6MPuGVlrJSnT5KqzgTlpgIkaTJyZ2FEh1ivpkJmhXtIEc9D4koOmQI3KIXnGYXQWDSzoLYpd9KD6jfszsHHspkpFMstcfITXoJS_v8NjVQh5SDVzMaW6PIDsPNZRZodbC885fcEnfpmp2xi5rXnXdyH7mEjaTwNKNKz1S05TCo3Eb2F2HaeQytZpe0jRxdl3HiLV-XcI-iyRP6MUQLfiTiCOXSH0aItYu0XxBtDy5zk">
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h3 class="font-body-md text-body-md font-bold text-primary">Quần Âu Tailored Espresso</h3>
+<p class="font-label-sm text-label-sm text-outline mt-1">Đặt ngày: 28/09/2023</p>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary">1.850.000đ</p>
+</div>
+</div>
+<div class="px-4 py-3 bg-surface-container-low flex justify-end">
+<button class="text-label-sm font-label-sm text-secondary uppercase tracking-wider flex items-center gap-1">
+                        Mua lại <span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Empty State (Hidden by default, used when no items exist) -->
+<div class="hidden py-stack-lg flex flex-col items-center justify-center text-center px-8" id="empty-state">
+<div class="w-48 h-48 mb-8 opacity-40">
+
+</div>
+<h2 class="font-headline-sm text-headline-sm text-primary mb-2">Bạn chưa có đơn hàng nào</h2>
+<p class="font-body-md text-body-md text-outline mb-stack-md max-w-[280px]">Bắt đầu làm mới tủ đồ của bạn với những thiết kế mới nhất từ Wardro.</p>
+<button class="px-8 py-4 bg-primary text-on-primary font-label-md text-label-md uppercase tracking-widest active:scale-95 transition-transform">
+                    Khám phá ngay
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant/30 shadow-sm flex justify-around items-center px-4 pb-4 pt-2 rounded-t-full">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-secondary transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-secondary transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">checkroom</span>
+<span class="font-label-sm text-label-sm">Tủ đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-secondary transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">psychology_alt</span>
+<span class="font-label-sm text-label-sm">Thử đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-secondary transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">Cộng đồng</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary font-bold scale-110 hover:text-secondary transition-colors active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Cá nhân</span>
+</a>
+</nav>
+<script>
+        function switchTab(type) {
+            const activeTab = document.getElementById('tab-active');
+            const historyTab = document.getElementById('tab-history');
+            const activeOrders = document.querySelectorAll('.active-order');
+            const historyOrders = document.querySelectorAll('.history-order');
+            const emptyState = document.getElementById('empty-state');
+
+            if (type === 'active') {
+                activeTab.classList.add('active-tab', 'text-primary');
+                activeTab.classList.remove('text-outline');
+                historyTab.classList.remove('active-tab', 'text-primary');
+                historyTab.classList.add('text-outline');
+
+                activeOrders.forEach(el => el.classList.remove('hidden'));
+                historyOrders.forEach(el => el.classList.add('hidden'));
+                
+                // Demo logic for empty state
+                if (activeOrders.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+
+            } else {
+                historyTab.classList.add('active-tab', 'text-primary');
+                historyTab.classList.remove('text-outline');
+                activeTab.classList.remove('active-tab', 'text-primary');
+                activeTab.classList.add('text-outline');
+
+                activeOrders.forEach(el => el.classList.add('hidden'));
+                historyOrders.forEach(el => el.classList.remove('hidden'));
+
+                // Demo logic for empty state
+                if (historyOrders.length === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+            }
+        }
+
+        // Simple scroll effect for header
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

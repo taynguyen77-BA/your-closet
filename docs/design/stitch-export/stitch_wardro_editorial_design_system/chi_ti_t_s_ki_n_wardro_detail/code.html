@@ -1,0 +1,301 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .linen-bg {
+            background-color: #f9f9f9; /* Linen token from config */
+        }
+        .espresso-text {
+            color: #1a1c1c; /* On-background/On-surface token */
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .horizontal-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(26, 28, 28, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error-container": "#ffdad6",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-container": "#858480",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "surface-container-low": "#f3f3f4",
+                      "surface-container": "#eeeeee",
+                      "surface-bright": "#f9f9f9",
+                      "outline-variant": "#cfc5bb",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#e5e2de",
+                      "surface": "#f9f9f9",
+                      "inverse-primary": "#d4c4b3",
+                      "surface-tint": "#695c4f",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#574329",
+                      "on-background": "#1a1c1c",
+                      "background": "#f9f9f9",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "secondary-fixed-dim": "#dfc29f",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#d4c4b3",
+                      "on-primary-container": "#908273",
+                      "primary": "#000000",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#f1e0ce",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed": "#281903",
+                      "tertiary-fixed-dim": "#c8c6c2",
+                      "secondary": "#705b3e",
+                      "surface-variant": "#e2e2e2",
+                      "tertiary-container": "#1c1c1a",
+                      "on-surface": "#1a1c1c",
+                      "on-secondary-container": "#755f42",
+                      "secondary-container": "#f9dbb7",
+                      "surface-dim": "#dadada",
+                      "on-surface-variant": "#4d463e",
+                      "secondary-fixed": "#fcdeba",
+                      "on-primary-fixed-variant": "#504538",
+                      "on-primary-fixed": "#231a0f",
+                      "tertiary": "#000000",
+                      "primary-container": "#231a0f",
+                      "outline": "#7e766d",
+                      "surface-container-high": "#e8e8e8",
+                      "inverse-surface": "#2f3131",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "12px",
+                      "stack-md": "24px",
+                      "margin-mobile": "20px",
+                      "unit": "4px",
+                      "container-max": "1200px",
+                      "stack-lg": "48px",
+                      "margin-desktop": "64px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-md": ["DM Sans"],
+                      "headline-sm": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"],
+                      "headline-md": ["DM Serif Display"],
+                      "display-lg-mobile": ["DM Serif Display"],
+                      "label-sm": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "body-md": ["DM Sans"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="linen-bg text-on-surface font-body-md min-h-screen pb-stack-lg">
+<!-- Top AppBar (Simulated from JSON but without nav for sub-page) -->
+<header class="w-full top-0 sticky z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-margin-mobile py-unit w-full max-w-container-max mx-auto h-16">
+<button class="cursor-pointer active:scale-95 transition-transform p-2">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile text-primary tracking-tight">Chi tiết sự kiện</h1>
+<button class="cursor-pointer active:scale-95 transition-transform p-2">
+<span class="material-symbols-outlined text-primary">share</span>
+</button>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mt-stack-md">
+<!-- Hero Section: Event Info -->
+<section class="mb-stack-lg">
+<div class="flex flex-col gap-unit">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-widest">SỰ KIỆN SẮP TỚI</span>
+<h2 class="font-display-lg-mobile text-display-lg-mobile md:text-display-lg text-primary leading-tight">Tiệc sinh nhật Tú Anh</h2>
+</div>
+<div class="mt-stack-sm flex flex-wrap gap-stack-md border-t border-outline-variant/30 pt-stack-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">calendar_today</span>
+<span class="font-body-md text-on-surface-variant">Thứ Bảy, 24 Tháng 8, 2024</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">schedule</span>
+<span class="font-body-md text-on-surface-variant">19:30</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+<span class="font-body-md text-on-surface-variant">The Log, TP. Hồ Chí Minh</span>
+</div>
+</div>
+</section>
+<!-- Main Section: Selected Outfit -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-end mb-stack-sm">
+<h3 class="font-headline-sm text-headline-sm-mobile text-primary">Outfit đã chọn</h3>
+<button class="font-label-sm text-label-sm text-secondary underline hover:opacity-80 transition-opacity">
+                    Thay đổi outfit
+                </button>
+</div>
+<div class="relative group aspect-[3/4] md:aspect-[16/9] w-full overflow-hidden rounded-xl bg-surface-container shadow-sm border border-outline-variant/10">
+<div class="absolute inset-0 z-0 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A high-end editorial fashion composite for a luxury birthday event. The image features a perfectly styled flat-lay or model shot of a premium silk black slip dress, paired with minimalist gold jewelry and sleek designer heels. The lighting is dramatic yet soft, like an indoor evening studio shoot, with warm highlights reflecting off the fabric. The aesthetic is clean and editorial, using the signature Wardro linen and espresso color palette to convey a sense of modern Vietnamese luxury." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBeKDopniLfJzYWYOmHThlRpMxuvOCjFhG6Qy5_fbhmpmk7Em6r-Clnp0SDBecrKH8Uhty1NE8Pm1G57voFpMzV_eJVWT_s6YMStoQkXgQSv5y7nqFbpmMD5DiDW3OhtSsnBzZeT0YUqdnb33m5kXYxaPsUM_TzwrFGEKahquc4mwPDAuFovUAGrmsUOkX5NYO0RRG0lWdEM3G-pVz5sRAJCjIaOR3s-8MarCabIdQJrRXt4TpsjIJVw_Mk0KnmEtfGFIMdXXluirM')">
+</div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
+<div class="absolute bottom-0 left-0 p-stack-md flex flex-col gap-unit">
+<div class="flex gap-2">
+<span class="bg-primary text-on-primary px-3 py-1 rounded-full text-label-sm font-label-sm">Elegant Night</span>
+<span class="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-label-sm font-label-sm border border-white/30">98% Match</span>
+</div>
+<p class="text-white/90 text-body-md italic mt-1 font-body-md">"Sự kết hợp hoàn hảo cho không gian sang trọng của The Log."</p>
+</div>
+</div>
+</section>
+<!-- Middle Section: AI Suggestions -->
+<section class="mb-stack-lg overflow-hidden">
+<div class="flex items-center justify-between mb-stack-sm">
+<h3 class="font-headline-sm text-headline-sm-mobile text-primary">Gợi ý thêm từ AI</h3>
+<div class="flex gap-2">
+<button class="p-1 border border-outline-variant rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 border border-outline-variant rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-gutter overflow-x-auto horizontal-scroll pb-4 -mx-margin-mobile px-margin-mobile">
+<!-- Suggestion Card 1 -->
+<div class="min-w-[160px] md:min-w-[220px] flex flex-col gap-stack-sm">
+<div class="aspect-square bg-white rounded-lg border border-outline-variant/10 overflow-hidden relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="A detailed product shot of a luxury designer handbag in a muted espresso brown leather with subtle gold hardware. The bag is placed on a textured linen surface with soft, directional lighting that creates elegant shadows. The style is minimalist and editorial, focusing on the craftsmanship and material quality of the accessory." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCSXxg03vMHFZpHB6PW-H8koXg86P5UHDxaTLX3Hn_3Ad27o3T3zyPJcPpadNdKTXsHVz3567PMTgr1_kzl3ZJJw-aYeZLyAe1-l-7ly2-nCQHR8PUIY_R2I6l1q-0yF1PS6zeam0_367PW8FfvupUFtowd4OQFoQotRNrPsLPLSKr3Nr3HH8CvLok8_wmgtxKnAkgSFEd1N80kivJMkneTuRNXlIOlaw-sL7wK7u3BvynGWZBhGfgf9WQqdICm0DnvpWqK5LLQQ4')"></div>
+<button class="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">add</span>
+</button>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-primary">Túi Mini Leather</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">PHỤ KIỆN</p>
+</div>
+</div>
+<!-- Suggestion Card 2 -->
+<div class="min-w-[160px] md:min-w-[220px] flex flex-col gap-stack-sm">
+<div class="aspect-square bg-white rounded-lg border border-outline-variant/10 overflow-hidden relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Close-up of a pair of refined gold hoop earrings with a hammered texture, resting on a beige silk cloth. The lighting is warm and expensive-looking, typical of a high-end fashion magazine spread. The image captures the delicate details of the metal, fitting the soft-luxury editorial aesthetic of the Wardro brand." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC--LTkkf0hnMm_VuZlujg12epmESH-k3MSKilCL5RyGjTFpq4_YqPwBRB1XH9k1KhoRGWyn9EbrGJfVo7wnmd87p-rWD-C-G0x3LV3e2nQ4VTEc8q_NnAvbsXx3lAf3apZNNjzXkmUcuKKy1Lji1lpAVmTNlldHgHsy534Iiw_JGxaGD0U9N8M5js9mKD-n9sda_UPwiX-XgmdbYW_kscThsoJLzKEIwHFppRIaxL97o_uLHzCGXY_b-JKsSemCI2aAeBVxQWGZIg')"></div>
+<button class="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">add</span>
+</button>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-primary">Khuyên tai Gold Hoop</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">TRANG SỨC</p>
+</div>
+</div>
+<!-- Suggestion Card 3 -->
+<div class="min-w-[160px] md:min-w-[220px] flex flex-col gap-stack-sm">
+<div class="aspect-square bg-white rounded-lg border border-outline-variant/10 overflow-hidden relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="High-end fashion photography of a tailored beige blazer draped over a chair in a sunlit, minimalist room. The fabric has a visible fine weave. The overall mood is sophisticated and quiet-luxury, utilizing a palette of off-whites, tans, and deep blacks. The composition is clean with plenty of white space." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0XN3igsYnCelk0FdZkQ4dniKT0uJCfVHNwHW2Gm5s-x1gr0heLZ1F0xNUzHljIW_sBiI110yc-Ke3eIZNgjMy0yVNpcxWlxObCDBdU0Kp_oGQ57aPabq2JrE8SddAjfnETMjyN9YXb0AAgOtGZ7i_vDxAguCwWMbQA96-71rnki-6gKUcHKLwWuIi4-BI96kGpae7Zi8GND_-KDPBCdLS7uVY9IPenM16xCsF2_2N8-bVmAk22nOIIHZzXaU3LgVgVnNidoC2nMw')"></div>
+<button class="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">add</span>
+</button>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-primary">Blazer Linen Cát</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">KHOÁC NGOÀI</p>
+</div>
+</div>
+<!-- Suggestion Card 4 -->
+<div class="min-w-[160px] md:min-w-[220px] flex flex-col gap-stack-sm">
+<div class="aspect-square bg-white rounded-lg border border-outline-variant/10 overflow-hidden relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Sleek black pointed-toe stiletto heels on a marble floor. The lighting is high-key and sharp, emphasizing the silhouette of the shoes. The image is styled as a luxury fashion editorial, minimal and focused on form and texture, adhering to the espresso and linen color theme." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDG-U-kCdqYVHtLQyDISe_SPpycdmSxZeBmSQHkEtYHwIeVuP1A8V01Qjx3QUjIlvxnZFNxOe5p3pH7fjS7XNZ83D50-KLFA8ZhTwWsT_NMdgUuuCaSeF4I4RxEKBULaBpPK3FHFk73y4PEb7qkXyt6gMIkrUJMlRARzMHxp0m6rSkCsTRRCf4H-pAoAsAp3kt8JcEAsavnBSp58z-KD4hhK_VZnPtk9kg0cMoDhNTG3wxM7Xu0NWPVkoJ-XMxwOFi3fL-IRTOAR1U')"></div>
+<button class="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur rounded-full shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">add</span>
+</button>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-primary">Giày Cao Gót Mũi Nhọn</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-tighter">GIÀY DÉP</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom: Reminders & Actions -->
+<section class="flex flex-col gap-stack-md">
+<!-- Reminder Toggle -->
+<div class="p-stack-md glass-card rounded-xl flex items-center justify-between border border-outline-variant/20">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">notifications_active</span>
+<div>
+<p class="font-body-md text-primary font-medium">Nhắc nhở sự kiện</p>
+<p class="text-label-sm text-on-surface-variant">Bật thông báo trước 2 tiếng</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-surface-container rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-unit mt-stack-sm">
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label-md text-label-md active:scale-[0.98] transition-transform shadow-sm">
+                    Chỉnh sửa sự kiện
+                </button>
+<button class="w-full border border-error text-error py-4 rounded-lg font-label-md text-label-md active:scale-[0.98] transition-transform hover:bg-error-container/10">
+                    Xóa sự kiện
+                </button>
+</div>
+</section>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.active\\:scale-95').forEach(button => {
+            button.addEventListener('mousedown', () => {
+                button.style.transform = 'scale(0.95)';
+            });
+            button.addEventListener('mouseup', () => {
+                button.style.transform = 'scale(1)';
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'scale(1)';
+            });
+        });
+
+        // Toggle Switch functionality (Visual only)
+        const toggle = document.querySelector('input[type="checkbox"]');
+        toggle.addEventListener('change', function() {
+            if(this.checked) {
+                console.log('Reminder enabled');
+            } else {
+                console.log('Reminder disabled');
+            }
+        });
+    </script>
+</body></html>

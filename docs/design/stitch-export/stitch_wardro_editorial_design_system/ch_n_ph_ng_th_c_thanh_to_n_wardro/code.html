@@ -1,0 +1,231 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e2e2e2",
+                    "tertiary-fixed": "#e5e2de",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e8e8e8",
+                    "inverse-surface": "#2f3131",
+                    "on-error": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-secondary-container": "#755f42",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#695c4f",
+                    "secondary-fixed": "#fcdeba",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#858480",
+                    "primary": "#000000",
+                    "on-background": "#1a1c1c",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "outline-variant": "#cfc5bb",
+                    "surface-dim": "#dadada",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#1c1c1a",
+                    "on-primary-fixed": "#231a0f",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "surface-container-low": "#f3f3f4",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#908273",
+                    "inverse-primary": "#d4c4b3",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-on-surface": "#f0f1f1",
+                    "background": "#f9f9f9",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "on-surface": "#1a1c1c",
+                    "tertiary": "#000000",
+                    "outline": "#7e766d",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary-container": "#f9dbb7",
+                    "surface-container": "#eeeeee",
+                    "on-surface-variant": "#4d463e",
+                    "secondary": "#705b3e",
+                    "surface": "#f9f9f9",
+                    "on-secondary-fixed": "#281903",
+                    "on-tertiary-fixed-variant": "#474744"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "container-max": "1200px",
+                    "stack-lg": "48px",
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "headline-sm": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen Backdrop */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-sheet-transition {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .active-ring {
+            border-color: #000000 !important;
+            background-color: #F9F9F9 !important;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface min-h-screen overflow-hidden">
+<!-- Background Content (Simulating the App State under the sheet) -->
+<main class="w-full max-w-md mx-auto h-screen relative bg-[#F7F4F0] p-margin-mobile">
+<div class="flex flex-col gap-stack-md opacity-40">
+<div class="h-48 bg-surface-container rounded-xl w-full"></div>
+<div class="h-12 bg-surface-container rounded-xl w-3/4"></div>
+<div class="space-y-unit">
+<div class="h-6 bg-surface-container rounded-lg w-full"></div>
+<div class="h-6 bg-surface-container rounded-lg w-5/6"></div>
+</div>
+<div class="grid grid-cols-2 gap-gutter">
+<div class="aspect-square bg-surface-container rounded-xl"></div>
+<div class="aspect-square bg-surface-container rounded-xl"></div>
+</div>
+</div>
+</main>
+<!-- Overlay / Scrim -->
+<div class="fixed inset-0 bg-primary/20 backdrop-blur-[2px] z-40 transition-opacity duration-300" id="scrim"></div>
+<!-- Bottom Sheet Container -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center" id="bottom-sheet">
+<div class="bg-surface-container-lowest w-full max-w-md rounded-t-full bottom-sheet-transition shadow-[0_-8px_32px_rgba(35,26,15,0.08)]">
+<!-- Handle -->
+<div class="w-full flex justify-center pt-4 pb-2">
+<div class="w-10 h-1 bg-outline-variant/40 rounded-full"></div>
+</div>
+<div class="px-margin-mobile pt-stack-sm pb-10">
+<!-- Header -->
+<div class="flex items-center justify-between mb-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-primary">Chọn phương thức thanh toán</h2>
+<button class="p-1 hover:opacity-70 transition-opacity" id="close-btn">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Payment Options -->
+<div class="flex flex-col gap-stack-sm">
+<!-- VNPay Option -->
+<label class="relative block cursor-pointer group">
+<input checked="" class="peer sr-only" name="payment_method" type="radio" value="vnpay">
+<div class="flex items-center justify-between p-stack-md border border-outline-variant/30 rounded-xl bg-surface transition-all duration-300 peer-checked:border-primary peer-checked:bg-surface-container-low group-hover:border-outline">
+<div class="flex items-center gap-stack-md">
+<div class="w-14 h-14 flex items-center justify-center bg-white rounded-lg p-2 shadow-sm border border-outline-variant/10">
+<img class="w-full h-auto object-contain" data-alt="Official high-resolution VNPay logo featuring the distinct red and blue color palette in a minimalist editorial style for a premium fashion application. The design is clean, crisp, and professional, optimized for a light-mode mobile interface with soft-luxury aesthetics and high-end whitespace management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9xlOLZZ_nIxohfvEhvIhqe46oCjPhHqIpDd6uNtTnTwPKxy16dAqkWvbxtQJoDGu_QE11IGxoxQLGqUn-zlspyRd1vv4rnCILozoonQdp_iuyzSE8L8FTvGteuZhjxNdNmF0qyl458cqzB4fR9h1q6X-nGyp5kkKHOgmk-4htNnzNEy3rYhZf_oSL9_0jLo515NFvwpfAApuv_ha6xRdBx10CGfCtdPI2fmKHrvJylY0M77_1doz2YUe1M62Umd6o5mvuOsWC9jE">
+</div>
+<span class="font-label-md text-label-md text-primary tracking-wider">VNPay</span>
+</div>
+<div class="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center peer-checked:border-primary">
+<div class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform duration-200 peer-checked:scale-100"></div>
+</div>
+</div>
+</label>
+<!-- MoMo Option -->
+<label class="relative block cursor-pointer group">
+<input class="peer sr-only" name="payment_method" type="radio" value="momo">
+<div class="flex items-center justify-between p-stack-md border border-outline-variant/30 rounded-xl bg-surface transition-all duration-300 peer-checked:border-primary peer-checked:bg-surface-container-low group-hover:border-outline">
+<div class="flex items-center gap-stack-md">
+<div class="w-14 h-14 flex items-center justify-center bg-white rounded-lg p-2 shadow-sm border border-outline-variant/10">
+<img class="w-full h-auto object-contain" data-alt="Official MoMo payment logo displayed on a clean white background, showcasing its signature vibrant pink aesthetic. The lighting is soft and neutral, fitting perfectly into a sophisticated, fashion-forward editorial UI design. The logo is rendered with high precision and clarity to maintain brand integrity within a high-end luxury lifestyle app environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAD5gP3enDVhwoS8twgKnBfDDhDGnKmHCdml9TwtZOK5k55nyJLI30iwkbelFkJVXGa35aAu0sc1XkdxKdFxnJJgmFI29EvB58gG00pO5fHaVREkc8kxu1pXk9KP8zMPV895UjSUFfGUOx6AVZQieK7SzUO0905HkkRvQLXk5R_o0r0FpMnSPvzJOegOes-qKPcr3Y17XW6sWtFkR7rGLFU09xKdZ6I1jZwOs3lqcceNyXpw5vi6USvV92L0SoevwSBFFGoX2QiyA">
+</div>
+<span class="font-label-md text-label-md text-primary tracking-wider">MoMo</span>
+</div>
+<div class="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center peer-checked:border-primary">
+<div class="w-2.5 h-2.5 rounded-full bg-primary scale-0 transition-transform duration-200 peer-checked:scale-100"></div>
+</div>
+</div>
+</label>
+</div>
+<!-- Spacer -->
+<div class="mt-stack-lg"></div>
+<!-- Action Button -->
+<button class="w-full h-16 bg-primary text-on-primary font-label-md text-label-md rounded-xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-lg shadow-primary/5">
+                    Tiếp tục
+                </button>
+</div>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sheet = document.getElementById('bottom-sheet');
+            const scrim = document.getElementById('scrim');
+            const closeBtn = document.getElementById('close-btn');
+
+            // Simulate entry animation
+            const openSheet = () => {
+                sheet.style.transform = 'translateY(100%)';
+                scrim.style.opacity = '0';
+                
+                requestAnimationFrame(() => {
+                    sheet.style.transform = 'translateY(0)';
+                    scrim.style.opacity = '1';
+                });
+            };
+
+            const closeSheet = () => {
+                sheet.style.transform = 'translateY(100%)';
+                scrim.style.opacity = '0';
+                setTimeout(() => {
+                    // Logic to actually navigate back or close
+                    console.log('Sheet closed');
+                }, 400);
+            };
+
+            closeBtn.addEventListener('click', closeSheet);
+            scrim.addEventListener('click', closeSheet);
+
+            // Simple radio logic handler for custom styling (Tailwind peer handled mostly)
+            const inputs = document.querySelectorAll('input[type="radio"]');
+            inputs.forEach(input => {
+                input.addEventListener('change', (e) => {
+                    // Force update for peer states if needed (Tailwind does this automatically)
+                    console.log('Selected:', e.target.value);
+                });
+            });
+
+            openSheet();
+        });
+    </script>
+</body></html>

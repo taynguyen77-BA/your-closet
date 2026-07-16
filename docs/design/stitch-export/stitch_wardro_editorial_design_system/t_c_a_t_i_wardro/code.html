@@ -1,0 +1,300 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Tủ đồ của tôi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#000000",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "secondary-fixed": "#fcdeba",
+                    "inverse-primary": "#d4c4b3",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f3f3f4",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#f9dbb7",
+                    "outline": "#7e766d",
+                    "surface-tint": "#695c4f",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-surface-variant": "#4d463e",
+                    "secondary": "#705b3e",
+                    "background": "#f9f9f9",
+                    "tertiary-container": "#1c1c1a",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-container": "#908273",
+                    "primary-container": "#231a0f",
+                    "on-error-container": "#93000a",
+                    "on-background": "#1a1c1c",
+                    "on-surface": "#1a1c1c",
+                    "surface": "#f9f9f9",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-secondary-fixed-variant": "#574329",
+                    "on-primary-fixed": "#231a0f",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#858480",
+                    "surface-variant": "#e2e2e2",
+                    "on-secondary-fixed": "#281903",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-secondary-container": "#755f42",
+                    "inverse-on-surface": "#f0f1f1",
+                    "surface-container": "#eeeeee",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-primary-fixed-variant": "#504538",
+                    "inverse-surface": "#2f3131",
+                    "surface-dim": "#dadada",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#cfc5bb",
+                    "error": "#ba1a1a",
+                    "primary": "#000000",
+                    "tertiary-fixed-dim": "#c8c6c2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "stack-lg": "48px",
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "label-sm": ["DM Sans"],
+                    "headline-sm": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* The "Linen" background defined in Style Guidance */
+            color: #231a0f; /* Espresso-like text from primary mapping */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top AppBar Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-surface dark:bg-surface-dim flex justify-between items-center px-margin-mobile h-16">
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">menu</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim tracking-tight">Wardro</h1>
+<div class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</div>
+</nav>
+<!-- Content Canvas -->
+<main class="pt-16 pb-32 px-margin-mobile max-w-container-max mx-auto">
+<!-- Header Section -->
+<section class="mt-stack-lg mb-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-primary">Tủ đồ của tôi</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">42 món đồ</p>
+</section>
+<!-- Filter Chips -->
+<section class="mb-stack-md flex items-center gap-stack-sm overflow-x-auto no-scrollbar py-2 -mx-margin-mobile px-margin-mobile">
+<button class="flex-shrink-0 bg-primary text-on-primary px-5 py-2 rounded-full font-label-sm text-label-sm">Tất cả</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant px-5 py-2 rounded-full font-label-sm text-label-sm hover:bg-surface-variant/10 transition-colors">Áo</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant px-5 py-2 rounded-full font-label-sm text-label-sm hover:bg-surface-variant/10 transition-colors">Quần</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant px-5 py-2 rounded-full font-label-sm text-label-sm hover:bg-surface-variant/10 transition-colors">Váy</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant px-5 py-2 rounded-full font-label-sm text-label-sm hover:bg-surface-variant/10 transition-colors">Giày</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant px-5 py-2 rounded-full font-label-sm text-label-sm hover:bg-surface-variant/10 transition-colors">Phụ kiện</button>
+<button class="flex-shrink-0 border border-outline-variant/30 text-on-surface-variant p-2 rounded-full flex items-center justify-center hover:bg-surface-variant/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</section>
+<!-- Closet Grid -->
+<section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+<!-- Item Card 1 (with Badge) -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A professional studio photography shot of a high-end minimalist cream-colored oversized linen shirt. The lighting is soft and diffused, highlighting the delicate fabric texture. The background is a clean, off-white studio setting, embodying a modern luxury editorial aesthetic. High-key lighting, soft shadows, neutral color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATUuAuR_XJuC3OAYsiF-Zul4ust1WCRqIo1ZeZQW8k47Fmm1YXtflnoR35_81Q-8_LmhtlkQyq-04DxVrZGenhfMAbHqnQvC9DrKJPXaOsWpFAeCgkS5wrPubJW1Ki8StEpIjx5qseWNsucY2vOGJkYVIn8A7ijWuT2TAqWTzssf4cTT6ZnGMWvnevOLT6Vcyv28CWboGM4m_xMxRvNZOl6LsKfkJqvP2NgCQGpD2PyRrXPa1jgazrfBRgohzT3LIAEg6ZZw5wR-U">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+<!-- AI Badge -->
+<div class="absolute bottom-2 left-2 bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        AI cần xem lại
+                    </div>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Áo sơ mi</p>
+</div>
+</div>
+<!-- Item Card 2 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A high-fashion product photo of a pair of tailored espresso-colored wool trousers. The garment is laid flat with precise folds, showing off the fine stitching. The lighting is editorial and moody, with slight shadows on a beige linen background. Minimalist aesthetic, rich textures, Earth tones, professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgJfZHXa8OWyDIiKWrZcUcYYH203DRSMR5LQozEb7Vyxq-MuI-FHR7Ef8qyaLwwRKryP6DxvIEEStcudDLtP8X9T2SBYHKOmuu3S5RMabYhH-1cByhJt_afq-8bEqw-Vkbb4zLZj-hV-WNxkXz4U6dJnJNQP4GB2JYRM-joZJT8xKowyQgt2Oqedx5OwXq038hKuby4pJaB6ms2vR5XSGu3lW6Yc0MIltf8-PL3m7xbgnLD1pIncjQ2SDtAWwFQGhWhB7plCMbr7c">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Quần tây</p>
+</div>
+</div>
+<!-- Item Card 3 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close up of a luxury designer handbag made of tan leather with gold-tone hardware. The bag sits on a minimalist white stone pedestal under bright, natural daylight. The shot is photography-forward, emphasizing the quality of the leather and the elegant design. Clean lines, sophisticated fashion, high-end lifestyle curation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnyH9JExjvcuQyCG4JcnCFKvtvbPnDC5_Ed8Ki-22cGe63FeEUMKdpHv6zXIgKVafrJBdZQxLp5CDYiaRGGe84Dn1h6IVrKlBNcvM4l0wH9Mx2mc36ddFm0gcCRMIhWVSM7d-OydOa_FGQmr8TFkqGB_jaJReO21LNWkaOXXaJEbTWgglLsfYxhjVREVPNQkPIXO8nvoeXR8IYzdtUeEektbBjyI-Ze_eHMS3trGGeErUtT1W9ViruocW3dWzJuPJhXRfBXGyeSZc">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Phụ kiện</p>
+</div>
+</div>
+<!-- Item Card 4 (with Badge) -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Editorial photograph of a minimalist black slip dress made from premium silk. The dress is displayed on a thin architectural wire hanger against a textured sand-colored wall. Soft lighting creates gentle highlights on the silk's sheen. Professional fashion photography, elegant, clean, minimal white space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjoUG5TZ64Z7j3vJxOOcTY7MspoEd0EuZr4zef5cOtNAyNz2EkAM2jOJalNuNK_JDDqGOkdO-dj72b0o9RNV1RQgJ3sWJQaBTqji1Ofu8-0pZgNkyf9pHa7tnL4UBnpWNQAqcxpnoPm1RT8cZrbtl6ThTaumHv89dESNu6SRnsjPvw6hzXVKfYxWK0Tp3KbfHDJBmcdB-zjAFLbMwrnf2AZ_04YUVdiCl0pQPRbXDO6cdystnzcobz7PwBkmwFj7RXTrLQBy9Zt38">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm text-error" style="font-variation-settings: 'FILL' 1;">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+<div class="absolute bottom-2 left-2 bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        AI cần xem lại
+                    </div>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Váy</p>
+</div>
+</div>
+<!-- Item Card 5 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A pair of clean, minimalist white leather sneakers photographed from a low-angle perspective. The sneakers are set against a soft linen-textured background. The aesthetic is utilitarian yet premium, with clear lighting that highlights the smooth leather surface. Modern, high-speed digital utility style, neutral palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJU5KN7rkxfDUcc0D4Z9kpvBS0dsNI9vg5_-ECcQb3ZQ8-YlFd80mOsc6_YMF0iNaZRtu8OI9s_VjgKxQ_RGHTd_abmvTPLJTopP-TGMXfdlpAmbxX7Q9VtkVlYlJCWs72-qZ41J1WE_gMiVHHIc5gdxNz_7g_l8WgWjnlZu6_BOFT3u7OmPHjf_xW2z7BLZQ5gapcTtxC1ACpdwVULoLUbbmm0qCNygHvqHzJ3v78w8bNT7Wq63HRwgguQ9ImuLVZZKVC-LemrGQ">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Giày</p>
+</div>
+</div>
+<!-- Item Card 6 -->
+<div class="flex flex-col group cursor-pointer">
+<div class="relative aspect-square bg-white rounded-lg overflow-hidden border border-primary/5">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close up of a charcoal grey cashmere sweater with a delicate knit pattern. The image captures the tactile softness of the wool under warm, golden hour interior lighting. Minimalist editorial style, focusing on slow-fashion quality and warmth. Rich contrast, luxurious texture, photography-forward." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQgUYclvISuEC6aywyu0_-xT2PbHJWhEKVeUKHQdjBeQBg4kbaKJPEQD2oP-cXSqc-o0JdwRbHelcuadQJcv5D5FL9bNCticMVa3XX49aZpKvsZ4Yb0rGkV1Vub63bQdWAnjSFlRelC0akFEiifXUd9e6RMS-GngtvP9qRZkWQTEcnOfJN91uNgSLokGkHaAwv_-gUvoKN2IznWxusx8JJ8isoPOmfTt5QH8qwcKZkveKj7FMbf6V5gywwMT0as1mp_U6uuyegcMg">
+<button class="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="mt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant/80 uppercase">Áo len</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-margin-mobile w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center cursor-pointer active:scale-90 transition-transform duration-200 z-40">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-unit pb-safe px-2 h-16 border-t border-outline-variant/30 bg-surface dark:bg-surface-container-low z-50">
+<!-- Trang chủ -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-0.5">Trang chủ</span>
+</a>
+<!-- Tủ đồ (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-secondary-fixed-dim font-bold active:scale-90 transition-transform duration-200" href="#" style="color: rgb(26, 18, 8);">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">checkroom</span>
+<span class="font-label-sm text-label-sm mt-0.5">Tủ đồ</span>
+</a>
+<!-- Thử đồ -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">styler</span>
+<span class="font-label-sm text-label-sm mt-0.5">Thử đồ</span>
+</a>
+<!-- Cộng đồng -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm mt-0.5">Cộng đồng</span>
+</a>
+<!-- Cá nhân -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline opacity-60 hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-0.5">Cá nhân</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Filter Chip Toggle
+        const filterChips = document.querySelectorAll('section button.flex-shrink-0');
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary');
+                    c.classList.add('border', 'border-outline-variant/30', 'text-on-surface-variant');
+                });
+                chip.classList.add('bg-primary', 'text-on-primary');
+                chip.classList.remove('border', 'border-outline-variant/30', 'text-on-surface-variant');
+            });
+        });
+
+        // Micro-interaction: Favorite Toggle
+        const favButtons = document.querySelectorAll('.group button');
+        favButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const icon = btn.querySelector('.material-symbols-outlined');
+                const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                
+                if (isFilled) {
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    btn.classList.remove('text-error');
+                } else {
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    btn.classList.add('text-error');
+                }
+            });
+        });
+    </script>
+
+
+
+</body></html>

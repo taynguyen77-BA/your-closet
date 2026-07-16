@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+    
+    @keyframes slow-shimmer {
+      0% { opacity: 0.4; }
+      50% { opacity: 0.7; }
+      100% { opacity: 0.4; }
+    }
+    
+    .shimmer-effect {
+      animation: slow-shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes progress-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .animate-spin-slow {
+      animation: progress-spin 8s linear infinite;
+    }
+
+    .editorial-blur {
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#858480",
+            "on-tertiary-fixed-variant": "#474744",
+            "surface-container-low": "#f3f3f4",
+            "surface-container": "#eeeeee",
+            "surface-bright": "#f9f9f9",
+            "outline-variant": "#cfc5bb",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#e5e2de",
+            "surface": "#f9f9f9",
+            "inverse-primary": "#d4c4b3",
+            "surface-tint": "#695c4f",
+            "surface-container-highest": "#e2e2e2",
+            "on-secondary-fixed-variant": "#574329",
+            "on-background": "#1a1c1c",
+            "background": "#f9f9f9",
+            "on-tertiary-fixed": "#1c1c1a",
+            "secondary-fixed-dim": "#dfc29f",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "primary-fixed-dim": "#d4c4b3",
+            "on-primary-container": "#908273",
+            "primary": "#000000",
+            "on-secondary": "#ffffff",
+            "primary-fixed": "#f1e0ce",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#281903",
+            "tertiary-fixed-dim": "#c8c6c2",
+            "secondary": "#705b3e",
+            "surface-variant": "#e2e2e2",
+            "tertiary-container": "#1c1c1a",
+            "on-surface": "#1a1c1c",
+            "on-secondary-container": "#755f42",
+            "secondary-container": "#f9dbb7",
+            "surface-dim": "#dadada",
+            "on-surface-variant": "#4d463e",
+            "secondary-fixed": "#fcdeba",
+            "on-primary-fixed-variant": "#504538",
+            "on-primary-fixed": "#231a0f",
+            "tertiary": "#000000",
+            "primary-container": "#231a0f",
+            "outline": "#7e766d",
+            "surface-container-high": "#e8e8e8",
+            "inverse-surface": "#2f3131",
+            "inverse-on-surface": "#f0f1f1",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "stack-sm": "12px",
+            "stack-md": "24px",
+            "margin-mobile": "20px",
+            "unit": "4px",
+            "container-max": "1200px",
+            "stack-lg": "48px",
+            "margin-desktop": "64px",
+            "gutter": "24px"
+          },
+          "fontFamily": {
+            "label-md": ["DM Sans"],
+            "headline-sm": ["DM Serif Display"],
+            "display-lg": ["DM Serif Display"],
+            "headline-md": ["DM Serif Display"],
+            "display-lg-mobile": ["DM Serif Display"],
+            "label-sm": ["DM Sans"],
+            "body-lg": ["DM Sans"],
+            "body-md": ["DM Sans"]
+          },
+          "fontSize": {
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+            "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+            "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+            "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface selection:bg-secondary-container">
+<!-- TopAppBar from JSON Authority -->
+<header class="w-full top-0 sticky bg-background dark:bg-background border-b border-outline-variant/20 dark:border-outline/20 z-50">
+<div class="flex justify-between items-center px-margin-mobile py-unit w-full max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined cursor-pointer active:scale-95 transition-transform text-primary dark:text-primary-fixed" data-icon="arrow_back">arrow_back</button>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary dark:text-primary-fixed">Wardro</h1>
+<div class="flex items-center">
+<span class="material-symbols-outlined cursor-pointer active:scale-95 transition-transform text-primary dark:text-primary-fixed" data-icon="shopping_bag">shopping_bag</span>
+</div>
+</div>
+</header>
+<main class="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-margin-mobile text-center">
+<!-- Title Section -->
+<div class="mb-stack-lg max-w-md mx-auto">
+<h2 class="font-headline-md text-headline-md text-primary mb-stack-sm">Đang tìm outfit phù hợp...</h2>
+<p class="font-body-md text-body-md text-on-surface-variant px-4">AI đang phân tích tủ đồ và bối cảnh sự kiện của bạn</p>
+</div>
+<!-- Central Editorial Loading Element -->
+<div class="relative w-full max-w-[280px] md:max-w-[340px] aspect-[3/4] mb-stack-lg mx-auto">
+<!-- Rotating Outer Ring -->
+<div class="absolute -inset-8 flex items-center justify-center">
+<svg class="w-full h-full animate-spin-slow opacity-20" viewBox="0 0 100 100">
+<circle class="text-primary" cx="50" cy="50" fill="none" r="48" stroke="currentColor" stroke-dasharray="2 6" stroke-width="0.5"></circle>
+</svg>
+</div>
+<!-- Main Visual Container -->
+<div class="relative w-full h-full overflow-hidden rounded-lg shadow-sm border border-outline-variant/10">
+<!-- Soft-focus Editorial Background Image -->
+<div class="absolute inset-0 bg-cover bg-center filter blur-md scale-110 shimmer-effect" data-alt="A soft-focus, high-fashion editorial photograph of a minimalist linen garment draped elegantly over a chair in a sun-drenched Parisian apartment. The lighting is warm and natural, casting long, soft shadows. The color palette features creamy whites, sandy beiges, and deep espresso accents, creating a luxurious and serene atmosphere that feels sophisticated and timeless." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRpSwev8lq1-LK7JIC1Qqtwi_3ANuIlh9AIaQHfPdPo4krqLwTkrSG29-4hiawyQPWkXotN9tWitg_pzdK4dyVxn0uPdgf_yBzOIiogKs-qtbYca_vZ0ZVLKMRaEE7lwS6x8QnxJ4Qe9jKtZKK5Yuq7sj7ogSNg7i40O7CqgbY_leEXSAvQORZC17aVXjcYbnN2nHb3pNW1nbU1pxLPpXIwaHzRgHBhKBd27LQzxEIq9FCuVcNDebImS8Mefjok-I0qAaYgMeUs0o')">
+</div>
+<!-- Overlay for Contrast -->
+<div class="absolute inset-0 bg-background/30 backdrop-blur-sm"></div>
+<!-- Scanning Line Animation -->
+<div class="absolute left-0 right-0 h-[1px] bg-primary/40 shadow-[0_0_15px_rgba(0,0,0,0.2)] z-10 top-0" id="scanner-line"></div>
+<!-- Center Spinner -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="relative flex items-center justify-center">
+<div class="w-16 h-16 rounded-full border-t-2 border-primary animate-spin"></div>
+<div class="absolute font-label-sm text-label-sm text-primary">AI</div>
+</div>
+</div>
+<!-- Data Stream Effect (Minimalist) -->
+<div class="absolute bottom-6 left-6 right-6 text-left opacity-60">
+<div class="h-1 w-1/2 bg-primary/20 mb-2 rounded-full overflow-hidden">
+<div class="h-full bg-primary/60 w-3/4 shimmer-effect"></div>
+</div>
+<div class="h-1 w-2/3 bg-primary/20 mb-2 rounded-full overflow-hidden">
+<div class="h-full bg-primary/60 w-1/2 shimmer-effect"></div>
+</div>
+<p class="font-label-sm text-[10px] uppercase tracking-widest text-primary/50" style="opacity: 0.5;">Matching color palettes...</p>
+</div>
+</div>
+</div>
+<!-- Tip Section -->
+<div class="mt-auto pb-stack-lg max-w-xs mx-auto">
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-container/30 rounded-full border border-secondary-container/50">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="lightbulb">lightbulb</span>
+<p class="font-label-sm text-label-sm text-on-secondary-container">Mẹo: Tủ đồ càng đa dạng, gợi ý càng chính xác.</p>
+</div>
+</div>
+<!-- Animated Status Indicators -->
+<div class="flex gap-1.5 mt-4">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.1s"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.3s"></div>
+</div>
+</main>
+<script>
+    // Micro-interaction for the scanner line
+    const scannerLine = document.getElementById('scanner-line');
+    let pos = 0;
+    let direction = 1;
+
+    function animateScanner() {
+      pos += 0.8 * direction;
+      if (pos >= 100 || pos <= 0) {
+        direction *= -1;
+      }
+      scannerLine.style.top = pos + '%';
+      requestAnimationFrame(animateScanner);
+    }
+    
+    animateScanner();
+
+    // Atmosphere: Simulating text changes for AI processing
+    const statusText = document.querySelector('.font-label-sm.text-primary\\/50');
+    const steps = [
+      "Analyzing silhouettes...",
+      "Matching color palettes...",
+      "Checking event context...",
+      "Curating textures...",
+      "Optimizing layers...",
+      "Finalizing outfit..."
+    ];
+    let stepIndex = 0;
+
+    setInterval(() => {
+      stepIndex = (stepIndex + 1) % steps.length;
+      statusText.style.opacity = 0;
+      setTimeout(() => {
+        statusText.textContent = steps[stepIndex];
+        statusText.style.opacity = 0.5;
+      }, 300);
+    }, 2500);
+  </script>
+</body></html>

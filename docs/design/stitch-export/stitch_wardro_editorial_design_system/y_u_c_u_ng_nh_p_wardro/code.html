@@ -1,0 +1,234 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Đăng nhập</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&amp;family=DM+Serif+Display:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1a1c1c",
+                        "surface": "#f9f9f9",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-secondary-fixed-variant": "#574329",
+                        "on-primary-fixed": "#231a0f",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#858480",
+                        "surface-variant": "#e2e2e2",
+                        "on-secondary-fixed": "#281903",
+                        "tertiary-fixed": "#e5e2de",
+                        "on-secondary-container": "#755f42",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-container": "#eeeeee",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "surface-bright": "#f9f9f9",
+                        "on-primary-fixed-variant": "#504538",
+                        "inverse-surface": "#2f3131",
+                        "surface-dim": "#dadada",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#cfc5bb",
+                        "error": "#ba1a1a",
+                        "primary": "#000000",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "tertiary": "#000000",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "secondary-fixed": "#fcdeba",
+                        "inverse-primary": "#d4c4b3",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3f4",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#f9dbb7",
+                        "outline": "#7e766d",
+                        "surface-tint": "#695c4f",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface-variant": "#4d463e",
+                        "secondary": "#705b3e",
+                        "background": "#f9f9f9",
+                        "tertiary-container": "#1c1c1a",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#f1e0ce",
+                        "surface-container-high": "#e8e8e8",
+                        "on-primary-container": "#908273",
+                        "primary-container": "#231a0f",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1a1c1c",
+                        "espresso": "#1A1208",
+                        "linen": "#F7F4F0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "margin-mobile": "20px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "unit": "4px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["DM Sans"],
+                        "headline-md": ["DM Serif Display"],
+                        "headline-sm": ["DM Serif Display"],
+                        "label-sm": ["DM Sans"],
+                        "body-md": ["DM Sans"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .bottom-sheet-transition {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .linen-texture {
+            background-color: #F7F4F0;
+            background-image: url("https://www.transparenttextures.com/patterns/linen-design.png");
+        }
+        .backdrop-blur-custom {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface overflow-hidden">
+<!-- Background Mockup Content (Blurred) -->
+<main class="h-screen w-full relative flex flex-col p-margin-mobile">
+<header class="flex justify-between items-center h-16">
+<span class="font-headline-md text-headline-md text-primary tracking-tight">Wardro</span>
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</header>
+<div class="mt-stack-lg grid grid-cols-2 gap-gutter">
+<div class="space-y-unit">
+<div class="aspect-[3/4] bg-surface-variant rounded-lg" data-alt="An editorial fashion photograph of a minimalist linen beige blazer hung against a warm off-white gallery wall. The lighting is soft and natural, creating a premium slow-fashion aesthetic. High-quality fabric texture is visible, emphasizing luxury quality."></div>
+<p class="font-label-sm text-label-sm text-on-surface uppercase">AESTHETIC BLAZER</p>
+<p class="font-body-md text-body-md text-on-surface-variant">2.400.000đ</p>
+</div>
+<div class="space-y-unit">
+<div class="aspect-[3/4] bg-surface-variant rounded-lg" data-alt="A professional studio shot of a pair of tailored espresso-colored trousers displayed on a high-end wooden hanger. The background is a clean linen texture. The mood is sophisticated and modern, reflecting the Wardro personal fashion operating system aesthetic."></div>
+<p class="font-label-sm text-label-sm text-on-surface uppercase">ESPRESSO TROUSERS</p>
+<p class="font-body-md text-body-md text-on-surface-variant">1.850.000đ</p>
+</div>
+</div>
+<!-- Dimmed Overlay -->
+<div class="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-40 transition-opacity duration-500"></div>
+<!-- Bottom Sheet Modal -->
+<div class="fixed inset-x-0 bottom-0 z-50 flex items-end justify-center pointer-events-none">
+<div class="w-full max-w-lg linen-texture rounded-t-[32px] p-margin-mobile pt-8 pb-12 shadow-2xl pointer-events-auto transform translate-y-0 bottom-sheet-transition relative border-t border-outline-variant/20 h-[618px] flex flex-col items-center">
+<!-- Dismissal 'X' -->
+<button class="absolute top-6 right-6 p-2 rounded-full hover:bg-black/5 transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-on-surface opacity-60">close</span>
+</button>
+<!-- Top Center Illustration/Icon -->
+<div class="mb-stack-md flex justify-center">
+<div class="w-16 h-16 flex items-center justify-center border border-espresso/10 rounded-full bg-white/50">
+<span class="text-3xl font-headline-md text-espresso select-none">W</span>
+</div>
+</div>
+<!-- Content -->
+<div class="text-center max-w-sm mx-auto flex-1">
+<h2 class="font-headline-sm text-headline-sm text-espresso mb-4">Đăng nhập để tiếp tục</h2>
+<!-- Contextual Variations Stack (Editorial Style) -->
+<div class="space-y-4 px-4 opacity-70">
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+                            “Đăng nhập để nhắn tin với người bán”
+                        </p>
+<div class="h-px w-8 bg-espresso/10 mx-auto"></div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+                            “Đăng nhập để lưu món đồ này vào tủ đồ”
+                        </p>
+<div class="h-px w-8 bg-espresso/10 mx-auto"></div>
+<p class="font-body-md text-body-md text-on-surface-variant italic">
+                            “Đăng nhập để thử đồ ảo AI”
+                        </p>
+</div>
+</div>
+<!-- Buttons Action Area -->
+<div class="w-full space-y-4 mt-stack-lg max-w-sm">
+<!-- Primary Button: Phone -->
+<button class="w-full h-[54px] bg-espresso text-white rounded-full flex items-center justify-center gap-3 font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-espresso/10">
+<span class="material-symbols-outlined text-[20px]">phone_iphone</span>
+                        Đăng nhập với số điện thoại
+                    </button>
+<!-- Secondary Button: Google -->
+<button class="w-full h-[54px] bg-white border border-espresso/20 text-espresso rounded-full flex items-center justify-center gap-3 font-label-md text-label-md hover:bg-espresso/5 active:scale-[0.98] transition-all">
+<svg class="w-5 h-5" viewBox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                        Đăng nhập với Google
+                    </button>
+<!-- Secondary Button: Facebook -->
+<button class="w-full h-[54px] bg-white border border-espresso/20 text-espresso rounded-full flex items-center justify-center gap-3 font-label-md text-label-md hover:bg-espresso/5 active:scale-[0.98] transition-all">
+<svg class="w-6 h-6" fill="#1877F2" viewBox="0 0 24 24">
+<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path>
+</svg>
+                        Đăng nhập với Facebook
+                    </button>
+<button class="w-full py-4 text-center">
+<span class="font-label-sm text-label-sm text-espresso/40 hover:text-espresso transition-colors uppercase tracking-widest cursor-pointer">Để sau</span>
+</button>
+</div>
+<!-- Home Indicator (Mobile Look) -->
+<div class="w-12 h-1 bg-espresso/10 rounded-full mt-6 shrink-0"></div>
+</div>
+</div>
+</main>
+<script>
+        // Simple logic for drag-down interaction or dismissal
+        const sheet = document.querySelector('.bottom-sheet-transition');
+        const dismissBtn = document.querySelector('button .material-symbols-outlined[textContent="close"]')?.parentElement || document.querySelector('.absolute.top-6.right-6');
+        const overlay = document.querySelector('.absolute.inset-0.bg-black\\/40');
+        const deferBtn = document.querySelector('span[textContent="Để sau"]')?.parentElement || document.querySelector('.py-4.text-center');
+
+        function dismissModal() {
+            sheet.style.transform = 'translateY(100%)';
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                // In a real app, this would route back or close the component
+                alert('Trình đóng modal được kích hoạt.');
+            }, 400);
+        }
+
+        if (dismissBtn) dismissBtn.addEventListener('click', dismissModal);
+        if (deferBtn) deferBtn.addEventListener('click', dismissModal);
+        if (overlay) overlay.addEventListener('click', dismissModal);
+
+        // Prevent click propagation inside the sheet from closing it
+        sheet.addEventListener('click', (e) => e.stopPropagation());
+    </script>
+</body></html>
