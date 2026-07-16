@@ -152,6 +152,49 @@ describe("callWithFallback — fallback on primary failure", () => {
   });
 });
 
+describe("P-14 — ai_logs written on every callWithFallback call", () => {
+  test("successful call writes one ai_logs entry with required fields", async () => {
+    const caller = jest.fn().mockResolvedValue("ok");
+    let loggedEntry: Record<string, unknown> | null = null;
+    (adminDb.collection as jest.Mock).mockImplementation((colName: string) => {
+      if (colName === "ai_logs") {
+        return { add: jest.fn().mockImplementation((entry) => { loggedEntry = entry; return Promise.resolve({}); }) };
+      }
+      return { doc: jest.fn().mockReturnValue({ get: jest.fn().mockResolvedValue({ exists: true, data: () => MOCK_CONFIG }) }), add: jest.fn().mockResolvedValue({}) };
+    });
+    await callWithFallback("outfit_recommend", "pro", "user-p14", caller);
+    // fire-and-forget: wait a tick for the log promise to settle
+    await new Promise((r) => setTimeout(r, 10));
+    expect(loggedEntry).not.toBeNull();
+    expect(loggedEntry!["feature"]).toBe("outfit_recommend");
+    expect(loggedEntry!["tier"]).toBe("pro");
+    expect(loggedEntry!["userId"]).toBe("user-p14");
+    expect(loggedEntry!["fallbackUsed"]).toBe(false);
+    expect(loggedEntry!["success"]).toBe(true);
+    expect(typeof loggedEntry!["timestamp"]).toBe("string");
+    expect(typeof loggedEntry!["costEstimate"]).toBe("number");
+  });
+
+  test("fallback call writes ai_logs with fallbackUsed=true and fallback modelId", async () => {
+    let loggedEntry: Record<string, unknown> | null = null;
+    let callCount = 0;
+    const caller = jest.fn().mockImplementation(() => {
+      if (++callCount === 1) throw new Error("primary fail");
+      return Promise.resolve("fallback-result");
+    });
+    (adminDb.collection as jest.Mock).mockImplementation((colName: string) => {
+      if (colName === "ai_logs") {
+        return { add: jest.fn().mockImplementation((entry) => { loggedEntry = entry; return Promise.resolve({}); }) };
+      }
+      return { doc: jest.fn().mockReturnValue({ get: jest.fn().mockResolvedValue({ exists: true, data: () => MOCK_CONFIG }) }), add: jest.fn().mockResolvedValue({}) };
+    });
+    await callWithFallback("outfit_recommend", "free", "user-p14-fallback", caller);
+    await new Promise((r) => setTimeout(r, 10));
+    expect(loggedEntry!["fallbackUsed"]).toBe(true);
+    expect(loggedEntry!["modelUsed"]).toBe(MOCK_CONFIG.outfit_recommend.fallback);
+  });
+});
+
 describe("resolveModel — reads from admin_settings, no hardcoded values", () => {
   test("changing admin_settings config changes resolveModel output", async () => {
     const altConfig = {
