@@ -15,8 +15,10 @@
 
 ## Executive Summary
 
-**Overall Pipeline Health: NEEDS ATTENTION**
-**Readiness for Delivery: Partially Ready**
+**Overall Pipeline Health: HEALTHY**
+**Readiness for Delivery: Ready — deploy deferred by PO**
+
+*Basis for the change from NEEDS ATTENTION / Partially Ready (revisions `c867f45`, `01f2de8`): both drivers of that rating are now closed and verified — GAP-A (AC 45.4) fixed in `114bb38` with 8 tests, and GAP-B (CI never run) closed by run `29510039711` passing. The one remaining failing gate, Deploy, is a **PO scheduling decision rather than a defect** (see GAP-C). Remaining open items are non-blocking: GAP-D (an undocumented endpoint), GAP-E (a documented test-layer boundary), and the dev↔CI toolchain split noted in GAP-B.*
 
 **Top 3 findings:**
 
@@ -35,7 +37,7 @@
 | Implementation | ✅ | P1 OTP cooldown ✅ (`otp.tsx`, `d6503c9`); P2 P-07→P-14 ✅; AC 45.4 ✅ (`114bb38`) | GAP-A closed |
 | Testing | ✅ | 131/131 pass, executed 2026-07-16 | Layer boundary documented (GAP-E) |
 | CI/CD | ✅ | `ci.yml` run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) → **success**, both jobs green; `actions/workflows` → `total_count: 1` | GAP-B closed |
-| Deploy | ❌ | `git tag` → empty; `gh release list` → empty | GAP-C |
+| Deploy | ❌ **Deferred** | `git tag` → empty; `gh release list` → empty; `deploy.yml` not registered on default branch | **Not a technical failure** — PO deferred staging deploy to batch it with later packages (GAP-C) |
 
 ### Test evidence (real runs, 2026-07-16, commit `5ca0ec7`)
 
@@ -95,11 +97,17 @@ This was **pre-existing, not introduced by any Package 1/2 commit** — verified
 
 ---
 
-### ⚠️ GAP-C: Deploy unverified
+### ⏸️ GAP-C: Deploy not performed — **deferred by PO decision, not a technical failure**
+
+**Status source:** PO decision recorded 2026-07-16 — the staging deploy is intentionally batched until further packages are complete. This is a **scheduling choice, not an unresolved defect**: nothing in Package 1 or Package 2 blocks deploying. CI is green (`29510039711`), all 131 tests pass, and the hosting config is in place. The gate is recorded as failing because *the deploy has genuinely not happened* — the technical evidence below is unchanged — but the cause is now known and deliberate rather than unexplained.
+
+> Attribution note: this rationale comes from the PO in session, not from repo evidence. This audit can verify that no deploy exists; it cannot independently verify *why*. Recorded as stated.
 
 **Evidence (re-verified after the push):** `git tag` → **0**. `gh release list` → **0**. `gh run list --workflow=deploy.yml` → `HTTP 404: workflow deploy.yml not found on the default branch` — `deploy.yml` has never run and is not even registered, because it only exists on the feature branch. (Only `ci.yml` became registered, via the PR event.) No deployment exists to correlate against.
 
-**Next action (the last open gate):** merge PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) into `main`. That single action both registers `deploy.yml` on the default branch **and** triggers it — `on: push: branches: [main]`, with no intermediate approval step — producing a real staging deploy against Firebase secrets (`firebase.json` hosting block `5cfb014`, `public: mobile/dist`). Then tag the release and confirm the deployment is reachable. Human decision; explicitly out of this skill's boundary.
+**Next action — when the PO decides to deploy (deferred, no action required now):** merge PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) into `main`. That single action both registers `deploy.yml` on the default branch **and** triggers it — `on: push: branches: [main]`, with no intermediate approval step — producing a real staging deploy against Firebase secrets (`firebase.json` hosting block `5cfb014`, `public: mobile/dist`). Then tag the release and confirm the deployment is reachable.
+
+**Carry-forward risk for whoever runs that batched deploy:** the longer the deploy is deferred, the more packages land in one untested-in-staging release. `deploy.yml` fires immediately on merge with no approval step, so the first staging deploy will cover every accumulated package at once. Worth planning a tag/rollback path before that merge.
 
 ---
 
@@ -132,7 +140,7 @@ This was **pre-existing, not introduced by any Package 1/2 commit** — verified
 | GAP-01 OTP retry + 60s cooldown "not implemented" | **CLOSED** | `d6503c9` — `otp.tsx:11-12,21` `MAX_ATTEMPTS=3`, `COOLDOWN_SECONDS=60`, `cooldownRemaining` state (+84 lines); `authStore.ts` `verifyOtp` no longer sets `isAuthLoading` (it was unmounting the screen and breaking the counter); `p01-otp-cooldown.spec.ts` (99 lines) passing, traceability `AC: 42, 42.1, 42.2` |
 | GAP-02 "No CI/CD pipeline" | **CLOSED** | Files tracked (`5cfb014`) **and** proven running: CI run `29510039711` success on PR #2 |
 | GAP-03 P-04 retired sanity test missing | **CLOSED** | `tests/retired-script-sanity.test.js` (87 lines) — 5/5 pass; `tests/p04-migration/migrate-tier-enum.test.ts` (342 lines) — 8/8 pass (`5ca0ec7`) |
-| GAP-04 Deploy status unverified | **STILL OPEN** | Carried forward as GAP-C |
+| GAP-04 Deploy status unverified | **RECLASSIFIED** | Cause now known: deferred by PO decision (2026-07-16), not a technical failure — carried forward as GAP-C |
 
 ---
 
@@ -173,20 +181,20 @@ This was **pre-existing, not introduced by any Package 1/2 commit** — verified
 | Implementation Gate | **pass** | AC 45.4 implemented + tested — GAP-A closed (`114bb38`, 8 new tests) |
 | Test Gate | **pass** | 131/131 pass, run 2026-07-16 |
 | CI Gate | **pass** | Run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) success — both jobs green (GAP-B closed, `b5b44d3`) |
-| Deploy Gate | **fail** | No tags, no releases (GAP-C) |
+| Deploy Gate | **fail — deferred by PO** | No tags, no releases, `deploy.yml` never run. **Deliberate scheduling decision, not a technical blocker**: PO is batching the staging deploy until further packages land (GAP-C) |
 
 ---
 
 ## Recommended Action Plan
 
-**Priority 1 (blocks shipping):**
+**Priority 1 — nothing currently blocks shipping:**
 1. ~~Fix **GAP-A**~~ — **DONE** (`114bb38`), verified by 8 tests incl. 4 at the API-route layer.
 2. ~~Close **GAP-B**~~ — **DONE**: pushed, PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) open, CI run `29510039711` green (`b5b44d3` fixed the lockfile desync it exposed).
-3. Close **GAP-C** (Deploy) — **the last failing gate**. Merging PR #2 into `main` triggers `deploy.yml` → a real staging deploy using Firebase secrets, with no intermediate approval step. Human decision.
+3. **GAP-C (Deploy) — deferred by PO, no action required now.** Staging deploy is intentionally batched with later packages; merging PR #2 *is* the deploy, whenever the PO chooses.
 
 **Priority 2:**
-3. Close **GAP-C** — tag release, verify Firebase Hosting deploy.
 4. Close **GAP-D** — document `/api/admin/ai-routing` in `13_api_spec.md`, or confirm intentional omission.
+5. Decide the dev↔CI toolchain split surfaced by GAP-B (Node 26/npm 11 locally vs Node 20/npm 10 in CI) — pin via `.nvmrc`/`engines`, raise CI's Node, or fix the `@firebase/auth` ↔ `async-storage` peer mismatch. Left open, a dev-side `npm install` can silently desync the lock again.
 
 **Priority 3 (not blocking):**
 5. **GAP-E** stays a documented layer boundary. Revisit only if native-driver e2e (Detox/Maestro) enters scope.
