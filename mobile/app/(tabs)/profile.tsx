@@ -10,7 +10,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { SafeImage } from '@/components/ui/SafeImage';
 import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
 
 function MenuRow({
@@ -36,7 +36,7 @@ function MenuRow({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { colors, gradients, spacing, radius } = useTheme();
+  const { colors, gradients, spacing } = useTheme();
   const user = useAppStore((s) => s.user);
   const planInfo = useAppStore((s) => s.planLimits[s.user.plan]);
   const styleXp = useAppStore((s) => s.clothing.length * 20 + s.outfits.length * 40 + s.savedOutfitIds.length * 30);
@@ -55,7 +55,7 @@ export default function ProfileScreen() {
   if (isPublicViewer) {
     return (
       <Screen bottomOffset={96}>
-        <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+        <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
           <View style={styles.coverIcon}><Ionicons name="person-circle-outline" size={20} color={colors.accentDark} /></View>
           <AppText variant="caption" color={colors.accentLight}>CHẾ ĐỘ TRẢI NGHIỆM</AppText>
           <AppText variant="h1" color={colors.textInverse}>Khám phá trước, lưu sau</AppText>
@@ -82,14 +82,14 @@ export default function ProfileScreen() {
 
   return (
     <Screen bottomOffset={96}>
-      <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+      <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
         <View style={styles.coverIcon}><Ionicons name="sparkles-outline" size={20} color={colors.accentDark} /></View>
         <AppText variant="caption" color={colors.accentLight}>HỒ SƠ PHONG CÁCH</AppText>
         <AppText variant="h1" color={colors.textInverse}>Nhật ký phong cách của bạn</AppText>
         <View style={styles.profileHeader}>
         <SafeImage
           source={{ uri: profile.avatarUrl }}
-          style={[styles.avatar, { borderRadius: radius.full, borderColor: colors.background }]}
+          style={[styles.avatar, { borderRadius: rounded.full, borderColor: colors.background }]}
         />
         <View style={{ marginLeft: spacing.md, flex: 1 }}>
           <AppText variant="h1" color={colors.textInverse}>{profile.name ?? profile.username}</AppText>
@@ -97,17 +97,17 @@ export default function ProfileScreen() {
         </View>
       </LinearGradient>
 
-      <View style={[styles.level, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>
+      <View style={[styles.level, { backgroundColor: colors.surface, borderRadius: rounded.DEFAULT }]}>
         <View style={styles.levelTop}><AppText variant="caption" muted>CẤP {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h3">Nhà khám phá phong cách</AppText><AppText variant="label" color={colors.accentDark}>{levelProgress} / 200 XP</AppText></View>
         <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.accent, width: `${(levelProgress / 200) * 100}%` }]} /></View>
         <AppText variant="bodySmall" muted style={{ marginTop: 7 }}>Còn {200 - levelProgress} XP nữa là lên cấp!</AppText>
       </View>
 
       <View style={styles.achievements}>
-        {[['ribbon-outline', 'BẮT NHỊP XU HƯỚNG'], ['heart-outline', 'YÊU TỦ ĐỒ'], ['sparkles-outline', 'NÀNG THƠ AI']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: radius.xl }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.accentDark} /><AppText variant="caption">{label}</AppText></View>)}
+        {[['ribbon-outline', 'BẮT NHỊP XU HƯỚNG'], ['heart-outline', 'YÊU TỦ ĐỒ'], ['sparkles-outline', 'NÀNG THƠ AI']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: rounded.DEFAULT }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.accentDark} /><AppText variant="caption">{label}</AppText></View>)}
       </View>
 
-      <LinearGradient colors={gradients.premium} style={[styles.membership, { borderRadius: radius.xl, shadowColor: colors.shadow }]}>
+      <LinearGradient colors={gradients.premium} style={[styles.membership, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
         <AppText variant="caption" color={colors.accentLight}>
           Gói hiện tại
         </AppText>
@@ -139,9 +139,9 @@ export default function ProfileScreen() {
         </View>
         <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.accent, width: `${completion}%` }]} /></View>
         <View style={styles.prefWrap}>
-          {(stylePreferences?.preferredStyles ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.lavender, borderRadius: radius.full }]}>{item}</AppText>)}
-          {(stylePreferences?.favoriteColors ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.beige, borderRadius: radius.full }]}>{item}</AppText>)}
-          {(stylePreferences?.lifestyleOccasions ?? []).slice(0, 4).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.surface, borderRadius: radius.full }]}>{item}</AppText>)}
+          {(stylePreferences?.preferredStyles ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.lavender, borderRadius: rounded.full }]}>{item}</AppText>)}
+          {(stylePreferences?.favoriteColors ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.beige, borderRadius: rounded.full }]}>{item}</AppText>)}
+          {(stylePreferences?.lifestyleOccasions ?? []).slice(0, 4).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.surface, borderRadius: rounded.full }]}>{item}</AppText>)}
           {!stylePreferences?.preferredStyles?.length && !stylePreferences?.favoriteColors?.length ? <AppText variant="bodySmall" muted>Bạn có thể bỏ qua và cập nhật sau.</AppText> : null}
         </View>
         <AppText variant="bodySmall" muted style={{ marginTop: 10 }}>+5 lượt AI gợi ý khi hoàn thành hồ sơ nâng cao.</AppText>
@@ -179,7 +179,7 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   cover: { minHeight: 228, padding: 22, gap: 5, marginBottom: 36, justifyContent: 'flex-start', shadowOpacity: 0.18, shadowRadius: 20, shadowOffset: { width: 0, height: 12 }, elevation: 5 },
-  coverIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,249,241,0.92)', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  coverIcon: { width: 40, height: 40, borderRadius: rounded.full, backgroundColor: 'rgba(255,249,241,0.92)', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
   profileHeader: { position: 'absolute', left: 16, right: 16, bottom: -32, flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 76, height: 76, borderWidth: 3 },
   membership: { padding: 18, marginBottom: 16, overflow: 'hidden', shadowOpacity: 0.16, shadowRadius: 18, shadowOffset: { width: 0, height: 10 }, elevation: 4 },
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   divider: { height: 1 },
   level: { padding: 16, marginBottom: 16 },
   levelTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 6 },
-  progress: { height: 6, borderRadius: 99, overflow: 'hidden', marginTop: 12 },
+  progress: { height: 6, borderRadius: rounded.full, overflow: 'hidden', marginTop: 12 },
   progressFill: { height: '100%' },
   achievements: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   achievement: { flex: 1, padding: 10, gap: 6, minHeight: 76, justifyContent: 'space-between' },

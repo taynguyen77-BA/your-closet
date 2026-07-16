@@ -6,7 +6,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 export default function DeleteAccountScreen() {
   const router = useRouter();
@@ -115,7 +115,7 @@ export default function DeleteAccountScreen() {
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: 42,
-          borderRadius: 999,
+          borderRadius: rounded.full,
           backgroundColor: colors.error,
           opacity: !acknowledged || !reauthenticated || deleting ? 0.5 : pressed ? 0.85 : 1,
         })}

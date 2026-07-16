@@ -25,33 +25,32 @@ export function Button({
   disabled,
   style,
   small,
-  pill = true,
+  pill = false,
 }: ButtonProps) {
-  const { colors, radius } = useTheme();
+  const { colors, rounded } = useTheme();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
+  // Button styling per DESIGN.md ("Components"): primary is Espresso on White,
+  // secondary is a bare Espresso outline, accent is Sand carrying Espresso text.
+  // ai/community keep their category colours, which DESIGN.md does not cover.
   const bg =
     variant === 'primary'
       ? colors.primary
       : variant === 'accent'
-        ? colors.accent
+        ? colors.sand
         : variant === 'ai' || variant === 'community'
           ? variant === 'ai' ? colors.ai : colors.community
-          : variant === 'secondary'
-          ? colors.surface
           : 'transparent';
 
   const textColor =
-    variant === 'primary' || variant === 'accent' || variant === 'ai' || variant === 'community'
+    variant === 'primary' || variant === 'ai' || variant === 'community'
       ? colors.textInverse
-      : variant === 'secondary'
-        ? colors.accentDark
-        : colors.text;
+      : colors.text;
 
   const borderColor =
     variant === 'secondary'
-      ? colors.accentDark
+      ? colors.primary
       : variant === 'ghost'
         ? colors.border
         : 'transparent';
@@ -71,17 +70,12 @@ export function Button({
         styles.base,
         {
           backgroundColor: bg,
-          borderRadius: pill ? radius.full : radius.md,
+          borderRadius: pill ? rounded.full : rounded.DEFAULT,
           opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
           paddingVertical: small ? 8 : 12,
           paddingHorizontal: small ? 12 : 16,
-          borderWidth: variant === 'secondary' || variant === 'ghost' ? 1.2 : 0,
+          borderWidth: variant === 'secondary' || variant === 'ghost' ? 1 : 0,
           borderColor,
-          shadowColor: colors.shadow,
-          shadowOpacity: variant === 'ghost' ? 0 : 0.14,
-          shadowRadius: 9,
-          shadowOffset: { width: 0, height: 5 },
-          elevation: variant === 'ghost' ? 0 : 2,
         },
       ]}
     >

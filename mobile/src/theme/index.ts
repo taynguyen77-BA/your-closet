@@ -24,6 +24,7 @@ export function useTheme() {
   return {
     brand,
     colors,
+    fontFamily,
     gradients,
     isDark,
     layout,

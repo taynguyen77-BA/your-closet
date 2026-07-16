@@ -6,7 +6,7 @@ import type { StylePreferences, User } from '@/models';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 export const STYLE_OPTIONS = ['Minimalist', 'Korean', 'Streetwear', 'Casual', 'Smart Casual', 'Office', 'Luxury', 'Vintage', 'Sporty', 'Y2K', 'Elegant', 'Feminine', 'Neutral', 'Trendy'];
 export const COLOR_OPTIONS = ['Black', 'White', 'Beige', 'Brown', 'Grey', 'Navy', 'Blue', 'Green', 'Red', 'Pink', 'Purple', 'Yellow', 'Orange', 'Pastel'];
@@ -44,9 +44,9 @@ function toggle(list: string[], item: string, max?: number) {
 }
 
 function Chip({ label, selected, onPress, swatch }: { label: string; selected: boolean; onPress: () => void; swatch?: string }) {
-  const { colors, radius } = useTheme();
+  const { colors } = useTheme();
   return (
-    <Pressable onPress={onPress} style={[styles.chip, { borderRadius: radius.full, borderColor: selected ? colors.accentDark : colors.border, backgroundColor: selected ? colors.lavender : colors.surface }]}>
+    <Pressable onPress={onPress} style={[styles.chip, { borderRadius: rounded.full, borderColor: selected ? colors.accentDark : colors.border, backgroundColor: selected ? colors.lavender : colors.surface }]}>
       {swatch ? <View style={[styles.swatch, { backgroundColor: swatch, borderColor: colors.border }]} /> : null}
       <AppText variant="label" color={selected ? colors.accentDark : colors.text}>{label}</AppText>
     </Pressable>
@@ -64,7 +64,7 @@ export function StyleSurveyForm({
   onSave: (patch: Partial<User>) => Promise<void>;
   onSkip?: () => Promise<void>;
 }) {
-  const { colors, spacing, radius } = useTheme();
+  const { colors, spacing } = useTheme();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [prefs, setPrefs] = useState<StylePreferences>({ ...emptyPreferences, ...(user?.stylePreferences ?? {}) });
@@ -109,13 +109,13 @@ export function StyleSurveyForm({
         </View>
         <View style={[styles.progress, { backgroundColor: colors.surface }]}><View style={[styles.progressFill, { width: `${((step + 1) / steps.length) * 100}%`, backgroundColor: colors.accent }]} /></View>
         <GlassCard style={{ marginTop: spacing.lg }}>
-          <View style={[styles.iconBubble, { backgroundColor: colors.lavender, borderRadius: radius.full }]}><Ionicons name="sparkles-outline" size={26} color={colors.accentDark} /></View>
+          <View style={[styles.iconBubble, { backgroundColor: colors.lavender, borderRadius: rounded.full }]}><Ionicons name="sparkles-outline" size={26} color={colors.accentDark} /></View>
           <AppText variant="h1">{steps[step].title}</AppText>
           <AppText muted style={{ marginTop: 6 }}>{steps[step].helper}</AppText>
           {step === 0 ? <View style={styles.grid}>{STYLE_OPTIONS.map((item) => <Chip key={item} label={item} selected={prefs.preferredStyles.includes(item)} onPress={() => setPrefs((p) => ({ ...p, preferredStyles: toggle(p.preferredStyles, item) }))} />)}</View> : null}
           {step === 1 ? <View style={styles.grid}>{COLOR_OPTIONS.map((item) => <Chip key={item} label={item} swatch={COLOR_SWATCHES[item]} selected={prefs.favoriteColors.includes(item)} onPress={() => setPrefs((p) => ({ ...p, favoriteColors: toggle(p.favoriteColors, item, 5) }))} />)}</View> : null}
           {step === 2 ? <View style={styles.grid}>{OCCASION_OPTIONS.map((item) => <Chip key={item} label={item} selected={prefs.lifestyleOccasions.includes(item)} onPress={() => setPrefs((p) => ({ ...p, lifestyleOccasions: toggle(p.lifestyleOccasions, item) }))} />)}</View> : null}
-          {step === 3 ? <View style={{ gap: 10, marginTop: spacing.lg }}>{CONFIDENCE_OPTIONS.map(([value, label]) => <Pressable key={value} onPress={() => setPrefs((p) => ({ ...p, fashionConfidence: value }))} style={[styles.option, { borderRadius: radius.lg, borderColor: prefs.fashionConfidence === value ? colors.accentDark : colors.border, backgroundColor: prefs.fashionConfidence === value ? colors.lavender : colors.surface }]}><AppText variant="body">{label}</AppText></Pressable>)}</View> : null}
+          {step === 3 ? <View style={{ gap: 10, marginTop: spacing.lg }}>{CONFIDENCE_OPTIONS.map(([value, label]) => <Pressable key={value} onPress={() => setPrefs((p) => ({ ...p, fashionConfidence: value }))} style={[styles.option, { borderRadius: rounded.DEFAULT, borderColor: prefs.fashionConfidence === value ? colors.accentDark : colors.border, backgroundColor: prefs.fashionConfidence === value ? colors.lavender : colors.surface }]}><AppText variant="body">{label}</AppText></Pressable>)}</View> : null}
           {step === 4 ? <View style={{ gap: 14, marginTop: spacing.lg }}><AppText variant="h3">Giới tính</AppText><View style={styles.grid}>{GENDER_OPTIONS.map((item) => <Chip key={item} label={item} selected={prefs.gender === item} onPress={() => setPrefs((p) => ({ ...p, gender: item }))} />)}</View><AppText variant="h3">Nhóm tuổi</AppText><View style={styles.grid}>{AGE_OPTIONS.map((item) => <Chip key={item} label={item} selected={prefs.ageGroup === item} onPress={() => setPrefs((p) => ({ ...p, ageGroup: item }))} />)}</View></View> : null}
         </GlassCard>
         <GlassCard style={{ marginTop: spacing.md, backgroundColor: colors.beige }}>
@@ -136,12 +136,12 @@ export const calculateStyleProfileCompletion = percentFor;
 const styles = StyleSheet.create({
   root: { flex: 1 },
   topRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  progress: { height: 7, borderRadius: 99, overflow: 'hidden', marginTop: 18 },
+  progress: { height: 7, borderRadius: rounded.full, overflow: 'hidden', marginTop: 18 },
   progressFill: { height: '100%' },
   iconBubble: { width: 52, height: 52, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 9, marginTop: 16 },
   chip: { minHeight: 38, borderWidth: 1, paddingHorizontal: 13, paddingVertical: 9, flexDirection: 'row', alignItems: 'center', gap: 7 },
-  swatch: { width: 16, height: 16, borderRadius: 8, borderWidth: 1 },
+  swatch: { width: 16, height: 16, borderRadius: rounded.full, borderWidth: 1 },
   option: { borderWidth: 1, padding: 14 },
   percentRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
   actions: { flexDirection: 'row', gap: 10, marginTop: 18 },

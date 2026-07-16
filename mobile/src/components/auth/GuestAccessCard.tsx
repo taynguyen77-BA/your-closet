@@ -4,7 +4,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 interface GuestAccessCardProps {
   title?: string;
@@ -18,10 +18,10 @@ export function GuestAccessCard({
   icon = 'lock-closed-outline',
 }: GuestAccessCardProps) {
   const requireAccount = useAuthStore((s) => s.requireAccount);
-  const { colors, radius, spacing } = useTheme();
+  const { colors, spacing } = useTheme();
   return (
     <GlassCard style={{ marginBottom: spacing.lg, borderColor: colors.pink }}>
-      <View style={[styles.icon, { backgroundColor: colors.pink, borderRadius: radius.full }]}>
+      <View style={[styles.icon, { backgroundColor: colors.pink, borderRadius: rounded.full }]}>
         <Ionicons name={icon} size={26} color={colors.accentDark} />
       </View>
       <AppText variant="h2" style={styles.title}>{title}</AppText>

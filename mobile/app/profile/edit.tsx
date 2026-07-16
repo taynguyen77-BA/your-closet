@@ -8,11 +8,11 @@ import { Button } from '@/components/ui/Button';
 import { SafeImage } from '@/components/ui/SafeImage';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 export default function EditProfileScreen() {
   const router = useRouter();
-  const { colors, spacing, radius } = useTheme();
+  const { colors, spacing } = useTheme();
   const { currentUser, updateProfile, uploadAvatar, authError } = useAuthStore();
   const [name, setName] = useState(currentUser?.name ?? currentUser?.displayName ?? '');
   const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatarUrl ?? '');
@@ -43,7 +43,7 @@ export default function EditProfileScreen() {
     <ScrollView style={{ flex: 1, backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg }}>
       <GlassCard>
         <View style={{ alignItems: 'center', marginBottom: spacing.lg }}>
-          <SafeImage source={{ uri: avatarUrl }} style={{ width: 104, height: 104, borderRadius: radius.full, backgroundColor: colors.lavender }} />
+          <SafeImage source={{ uri: avatarUrl }} style={{ width: 104, height: 104, borderRadius: rounded.full, backgroundColor: colors.lavender }} />
           <Button label={saving ? 'Đang tải ảnh...' : 'Đổi avatar'} variant="secondary" onPress={() => { void pickAvatar(); }} style={{ marginTop: spacing.md }} />
         </View>
         <AuthInput placeholder="Tên hiển thị" value={name} onChangeText={setName} />

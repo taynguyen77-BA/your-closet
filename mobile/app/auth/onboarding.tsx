@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 const pages = [
   ['shirt-outline', 'Quản lý tủ đồ', 'Lưu áo quần, giày túi và phụ kiện vào một nơi thật gọn, dễ tìm khi cần phối.'],
@@ -43,4 +43,4 @@ export default function Onboarding() {
   );
 }
 
-const styles = StyleSheet.create({ root: { flex: 1, padding: 24, justifyContent: 'center' }, skip: { position: 'absolute', top: 58, right: 24 }, art: { width: 190, height: 190, borderRadius: 95, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: 34 }, copy: { minHeight: 170, justifyContent: 'center' }, dots: { flexDirection: 'row', alignSelf: 'center', gap: 8, marginBottom: 24 }, dot: { width: 9, height: 9, borderRadius: 9 }, guestButton: { marginTop: 8 } });
+const styles = StyleSheet.create({ root: { flex: 1, padding: 24, justifyContent: 'center' }, skip: { position: 'absolute', top: 58, right: 24 }, art: { width: 190, height: 190, borderRadius: rounded.full, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: 34 }, copy: { minHeight: 170, justifyContent: 'center' }, dots: { flexDirection: 'row', alignSelf: 'center', gap: 8, marginBottom: 24 }, dot: { width: 9, height: 9, borderRadius: rounded.full }, guestButton: { marginTop: 8 } });

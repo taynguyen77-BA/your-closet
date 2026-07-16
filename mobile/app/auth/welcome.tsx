@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
 import { getMissingGoogleClientConfig } from '@/services/auth/authService';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { rounded, useTheme } from '@/theme';
 
 function SocialButton({ icon, label, disabled, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; disabled?: boolean; onPress: () => void }) {
-  const { colors, radius } = useTheme();
+  const { colors } = useTheme();
   return (
-    <Pressable disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.social, { borderColor: colors.border, borderRadius: radius.lg, opacity: disabled ? 0.48 : pressed ? 0.78 : 1 }]}>
+    <Pressable disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.social, { borderColor: colors.border, borderRadius: rounded.DEFAULT, opacity: disabled ? 0.48 : pressed ? 0.78 : 1 }]}>
       <View style={[styles.socialIcon, { backgroundColor: colors.backgroundTint }]}>
         <Ionicons name={icon} size={20} color={colors.text} />
       </View>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   helper: { marginTop: 6, fontSize: 14, lineHeight: 21 },
   stack: { gap: 12 },
   social: { minHeight: 54, borderWidth: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, backgroundColor: '#fff' },
-  socialIcon: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  socialIcon: { width: 34, height: 34, borderRadius: rounded.full, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   socialLabel: { flex: 1, textAlign: 'center', marginRight: 46 },
   message: { textAlign: 'center', marginTop: 2 },
 });
