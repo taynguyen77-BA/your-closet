@@ -7,11 +7,23 @@
  *  demo-auth  → static dist-preview (baked DEMO_MODE=true AUTH_BYPASS=true)
  *               so the app is immediately authenticated as mockUser. Used for P-06.
  *
- * To rebuild unauth SPA: create .env.local with DEMO_MODE=false, run
- *   npx expo export -p web --output-dir dist-preview-unauth
- * then delete .env.local.
- * To rebuild auth SPA:
- *   npx expo export -p web --output-dir dist-preview
+ * Rebuild the SPAs with the SAME env the pipeline uses (.github/workflows/deploy.yml
+ * "Build mobile SPA"). Setting only DEMO_MODE is not enough: authStore reads
+ * EXPO_PUBLIC_DEMO_AUTH_BYPASS independently, so leaving it at the .env default of
+ * true yields an "unauth" build that silently logs in as mockUser. --clear is
+ * required too — EXPO_PUBLIC_* values are inlined at build time and a cached bundle
+ * keeps the previous ones.
+ *
+ * Unauth SPA:
+ *   EXPO_PUBLIC_DEMO_MODE=false EXPO_PUBLIC_DEMO_AUTH_BYPASS=false \
+ *   EXPO_PUBLIC_FIREBASE_API_KEY= EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN= \
+ *   EXPO_PUBLIC_FIREBASE_PROJECT_ID= EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET= \
+ *   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID= EXPO_PUBLIC_FIREBASE_APP_ID= \
+ *   npx expo export -p web --output-dir dist-preview-unauth --clear
+ *
+ * Auth SPA:
+ *   EXPO_PUBLIC_DEMO_MODE=true EXPO_PUBLIC_DEMO_AUTH_BYPASS=true \
+ *   npx expo export -p web --output-dir dist-preview --clear
  */
 import { defineConfig, devices } from '@playwright/test';
 
