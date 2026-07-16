@@ -10,12 +10,18 @@ import { useAuthStore } from '@/stores/authStore';
 import { GuestAuthModal } from '@/components/auth/GuestAuthModal';
 import { AppText } from '@/components/ui/AppText';
 import { useTheme } from '@/theme';
-import { DMSans_400Regular } from '@expo-google-fonts/dm-sans';
+import {
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold,
+} from '@expo-google-fonts/dm-sans';
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     'DM Sans': DMSans_400Regular,
+    'DM Sans Medium': DMSans_500Medium,
+    'DM Sans Bold': DMSans_700Bold,
     'DM Serif Display': DMSerifDisplay_400Regular,
   });
   const scheme = useColorScheme();

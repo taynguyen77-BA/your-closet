@@ -1,10 +1,29 @@
+/**
+ * Brand palette per DESIGN.md ("Colors"): Espresso / Sand / Linen / White.
+ * DESIGN.md's YAML frontmatter carries a conflicting auto-generated Material-3
+ * palette (primary #000000, background #f9f9f9); the prose palette is the brand.
+ * Source: docs/design/stitch-export/.../wardro/DESIGN.md
+ */
+const ESPRESSO = '#1A1208';
+const SAND = '#D4B896';
+const LINEN = '#F7F4F0';
+const WHITE = '#FFFFFF';
+
+export const brand = {
+  espresso: ESPRESSO,
+  sand: SAND,
+  linen: LINEN,
+  white: WHITE,
+} as const;
+
 export const lightColors = {
-  primary: '#151310',
+  primary: ESPRESSO,
   secondary: '#6D8C7D',
-  background: '#F8F5F0',
+  background: LINEN,
   backgroundTint: '#EEF4F1',
-  surface: '#FFFFFF',
+  surface: WHITE,
   surfaceGlass: '#FFFFFF',
+  sand: SAND,
   beige: '#EFE5D7',
   warmGray: '#82786D',
   warmLight: '#F3E8D8',
@@ -27,27 +46,27 @@ export const lightColors = {
   error: '#B94B54',
   ai: '#2E2347',
   community: '#2F6F73',
-  marketplace: '#151310',
+  marketplace: ESPRESSO,
   border: '#E2D8CC',
-  shadow: '#151310',
-  text: '#171411',
+  shadow: ESPRESSO,
+  text: ESPRESSO,
   textMuted: '#746A60',
   textSecondary: '#4D463F',
-  textInverse: '#FFF9F1',
-  overlay: '#151310',
+  textInverse: WHITE,
+  overlay: ESPRESSO,
 } as const;
 
 export const gradients = {
-  hero: ['#151310', '#2E2347', '#8F395A'] as const,
-  primary: ['#151310', '#151310'] as const,
-  ai: ['#2E2347', '#151310', '#8F395A'] as const,
-  closet: ['#151310', '#263F3B', '#6D8C7D'] as const,
-  community: ['#2F6F73', '#263F3B', '#151310'] as const,
-  marketplace: ['#151310', '#263F3B'] as const,
-  premium: ['#151310', '#8F395A', '#D85D84'] as const,
-  dark: ['#151310', '#151310'] as const,
+  hero: [ESPRESSO, '#2E2347', '#8F395A'] as const,
+  primary: [ESPRESSO, ESPRESSO] as const,
+  ai: ['#2E2347', ESPRESSO, '#8F395A'] as const,
+  closet: [ESPRESSO, '#263F3B', '#6D8C7D'] as const,
+  community: ['#2F6F73', '#263F3B', ESPRESSO] as const,
+  marketplace: [ESPRESSO, '#263F3B'] as const,
+  premium: [ESPRESSO, '#8F395A', '#D85D84'] as const,
+  dark: [ESPRESSO, ESPRESSO] as const,
   sunshine: ['#FFF9F1', '#EEF4F1'] as const,
-  deep: ['#151310', '#2E2347'] as const,
+  deep: [ESPRESSO, '#2E2347'] as const,
 } as const;
 
 export const darkColors = lightColors;

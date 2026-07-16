@@ -1,8 +1,20 @@
-import { darkColors, gradients, lightColors, type AppColors } from './colors';
-import { radius, spacing } from './spacing';
-import { typography } from './typography';
+import { brand, darkColors, gradients, lightColors, type AppColors } from './colors';
+import { layout, radius, rounded, spacing } from './spacing';
+import { fontFamily, typeScale, typography } from './typography';
 
-export { darkColors, gradients, lightColors, radius, spacing, typography };
+export {
+  brand,
+  darkColors,
+  fontFamily,
+  gradients,
+  layout,
+  lightColors,
+  radius,
+  rounded,
+  spacing,
+  typeScale,
+  typography,
+};
 export type { AppColors };
 
 export function useTheme() {
@@ -10,11 +22,15 @@ export function useTheme() {
   const colors = lightColors;
 
   return {
+    brand,
     colors,
     gradients,
     isDark,
+    layout,
     spacing,
     radius,
+    rounded,
+    typeScale,
     typography,
   };
 }
