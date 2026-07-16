@@ -3,12 +3,13 @@
 **Date:** 2026-07-16
 **Auditor:** pipeline-audit-bridge
 **Repo:** your-closet · branch `codex/community-genz-refresh`
-**Commit at audit:** `114bb38` — `fix(ai): surface fallbackUsed through API response, skip quota charge on fallback — closes GAP-A (AC 45.4)`
-**Previous revision of this report:** `c867f45` (audited `5ca0ec7`, before GAP-A was fixed)
+**Commit at audit:** `b5b44d3` — `fix(ci): resync mobile package-lock so npm ci works on CI's npm 10`
+**Pushed:** branch `codex/community-genz-refresh` is on `origin`; **PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2)** open → `main`
+**Previous revisions of this report:** `c867f45` (audited `5ca0ec7`, GAP-A open), `01f2de8` (audited `114bb38`, GAP-A closed / CI unrun)
 **Scope:** Package 1 (P-01→P-06, BRD 3.1.x / 3.16.x) + Package 2 (P-07→P-14, BRD 3.2.x, 1.3.4, 1.3.6, §9)
 **Business source:** `docs/02_brd_v2_3.md` (540 lines), `docs/04_user_stories_v2_1.md` (1577), `docs/05_acceptance_criteria_v2_1.md` (201), `docs/11_solution_architecture.md` (522), `docs/13_api_spec.md` (171) — all committed `6d3292d`, all non-trivial. `PROJECT_STATE.json` — **absent**; requirement→story traceability is file-derived, not state-derived.
 
-> Supersedes the 2026-07-14 report entirely. That report audited commit `5a591ee`; the repo is now **16 commits ahead of `origin`**. Every verdict below was re-derived from the current tree — no content carried forward.
+> Supersedes the 2026-07-14 report entirely. That report audited commit `5a591ee`; the branch has since been pushed and is open as PR #2 against `main`, which is **32 commits behind it**. Every verdict below was re-derived from the current tree and from real CI output — no content carried forward.
 
 ---
 
@@ -21,7 +22,7 @@
 
 1. **✅ All 131 automated tests pass — executed for real on 2026-07-16.** Playwright 39/39 (`npx playwright test`, 42.8s, both projects), admin jest 29/29, mobile jest 4/4, Firestore rules 46/46, p04-migration 8/8, retired-script-sanity 5/5.
 2. **✅ GAP-A CLOSED — AC 45.4 now implemented (Package 2), commit `114bb38`.** Both AI routes now return `{ ...result.result, modelUsed, fallbackUsed }`; `aiService.ts:37` sets `quotaChargeEligible: !fallbackUsed`, so a fallback-served result no longer charges quota; `FALLBACK_QUALITY_NOTICE` is shown in the AI Review Draft for both the detect and enhance flows. Backed by **8 new tests** — including 4 at the **API-route layer** (`admin/src/__tests__/ai-routes-fallback.test.ts`), the layer where the defect actually lived. Those 4 were verified to fail against the pre-fix routes with `Expected: true, Received: undefined`; the 25 resolver tests could not detect it.
-3. **⚠️ CI pipeline exists but has never executed.** `.github/workflows/ci.yml` + `deploy.yml` are tracked (`5cfb014`), yet `gh api repos/taynguyen77-BA/your-closet/actions/workflows` → `{"total_count":0,"workflows":[]}`. The branch is unpushed, so zero runs exist. A workflow file is not a working pipeline.
+3. **✅ GAP-B CLOSED — CI has now executed and passes.** Branch pushed and PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) opened, which triggered `ci.yml` for the first time. Run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) → **completed success** (Admin lint & typecheck ✅ 40s, Mobile typecheck ✅ 44s). The first run (`29509670958`) failed at `npm ci` and exposed a **pre-existing** lockfile desync — see GAP-B below. **Deploy remains the only failing gate.**
 
 ---
 
@@ -33,7 +34,7 @@
 | Architecture | ⚠️ | 2/5 spec'd AI endpoints implemented; 1 undocumented endpoint found | See GAP-D |
 | Implementation | ✅ | P1 OTP cooldown ✅ (`otp.tsx`, `d6503c9`); P2 P-07→P-14 ✅; AC 45.4 ✅ (`114bb38`) | GAP-A closed |
 | Testing | ✅ | 131/131 pass, executed 2026-07-16 | Layer boundary documented (GAP-E) |
-| CI/CD | ⚠️ | `ci.yml`, `deploy.yml` tracked (`5cfb014`); `actions/workflows` → `total_count: 0` | Files exist, never ran — GAP-B |
+| CI/CD | ✅ | `ci.yml` run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) → **success**, both jobs green; `actions/workflows` → `total_count: 1` | GAP-B closed |
 | Deploy | ❌ | `git tag` → empty; `gh release list` → empty | GAP-C |
 
 ### Test evidence (real runs, 2026-07-16, commit `5ca0ec7`)
@@ -73,19 +74,32 @@ Mobile lint gate: `cd mobile && npm run lint` (`tsc --noEmit`) → **exit 0**. J
 
 ---
 
-### ⚠️ GAP-B: CI pipeline has never executed
+### ✅ GAP-B: CI pipeline now executes and passes — **CLOSED (run `29510039711`)**
 
-**Evidence:** `gh api repos/taynguyen77-BA/your-closet/actions/workflows` → `{"total_count":0,"workflows":[]}`; `gh run list --limit 5` → empty. `gh auth status` confirms authentication as `taynguyen77-BA` against remote `https://github.com/taynguyen77-BA/your-closet.git`, so the empty result is real, not an auth artifact. Branch is 16 commits ahead of `origin`, unpushed.
+**As found:** `actions/workflows` → `{"total_count":0,"workflows":[]}`; `gh run list` → empty. Workflows were tracked (`5cfb014`) but had never run, because the branch was unpushed and both workflows are scoped to `main` (`ci.yml` on `pull_request` → `main`; `deploy.yml` on `push` → `main`). GitHub also only registers workflows once they exist on the default branch, which is why the count was 0 rather than 1-with-no-runs.
 
-**Next action:** Push the branch (explicit human decision — outside this skill's boundary), then confirm the first run passes. Until a run exists, the CI Gate cannot pass.
+**Closed by:** pushing `codex/community-genz-refresh` and opening PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) → `main`, which triggered `ci.yml`.
+
+**Result:** run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) — **completed success**. Admin lint & typecheck ✅ (40s), Mobile typecheck ✅ (44s). `actions/workflows` → `total_count: 1`.
+
+**What the first run caught (the point of having CI):** run `29509670958` failed at `npm ci`:
+
+```
+npm error `npm ci` can only install packages when your package.json and package-lock.json are in sync.
+npm error Missing: @react-native-async-storage/async-storage@1.24.0 from lock file
+```
+
+This was **pre-existing, not introduced by any Package 1/2 commit** — verified by running npm 10 against the lock at `114bb38~1`, which fails identically. Cause: `mobile/package-lock.json` was generated by npm 11 (local Node 26) while CI runs Node 20 / npm 10. `@firebase/auth` peer-requires `async-storage@^1.18.1` while the app pins `2.2.0`; npm 11 leaves that unsatisfied peer hoisted ("deduped invalid"), npm 10 wants nested `1.24.0` copies the lock never recorded. Fixed in `b5b44d3` by regenerating with `npm@10 install --package-lock-only`; `npm ci --dry-run` now passes under **both** npm 10 and npm 11.
+
+**Residual risk (not blocking, worth a decision):** dev (Node 26 / npm 11) and CI (Node 20 / npm 10) still disagree on peer resolution, so a future `npm install` from a dev machine can silently desync the lock again. Options: pin CI's Node to match dev, pin dev via `.nvmrc`/`engines`, or resolve the underlying `@firebase/auth` ↔ `async-storage` peer mismatch.
 
 ---
 
 ### ⚠️ GAP-C: Deploy unverified
 
-**Evidence:** `git tag --sort=-creatordate` → empty. `gh release list --limit 5` → empty. No deployment exists to correlate against.
+**Evidence (re-verified after the push):** `git tag` → **0**. `gh release list` → **0**. `gh run list --workflow=deploy.yml` → `HTTP 404: workflow deploy.yml not found on the default branch` — `deploy.yml` has never run and is not even registered, because it only exists on the feature branch. (Only `ci.yml` became registered, via the PR event.) No deployment exists to correlate against.
 
-**Next action:** After GAP-B, tag a release and confirm Firebase Hosting deploy (`firebase.json` hosting block committed `5cfb014`, `public: mobile/dist`).
+**Next action (the last open gate):** merge PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) into `main`. That single action both registers `deploy.yml` on the default branch **and** triggers it — `on: push: branches: [main]`, with no intermediate approval step — producing a real staging deploy against Firebase secrets (`firebase.json` hosting block `5cfb014`, `public: mobile/dist`). Then tag the release and confirm the deployment is reachable. Human decision; explicitly out of this skill's boundary.
 
 ---
 
@@ -116,7 +130,7 @@ Mobile lint gate: `cd mobile && npm run lint` (`tsc --noEmit`) → **exit 0**. J
 | Old gap | Status now | Evidence |
 |---|---|---|
 | GAP-01 OTP retry + 60s cooldown "not implemented" | **CLOSED** | `d6503c9` — `otp.tsx:11-12,21` `MAX_ATTEMPTS=3`, `COOLDOWN_SECONDS=60`, `cooldownRemaining` state (+84 lines); `authStore.ts` `verifyOtp` no longer sets `isAuthLoading` (it was unmounting the screen and breaking the counter); `p01-otp-cooldown.spec.ts` (99 lines) passing, traceability `AC: 42, 42.1, 42.2` |
-| GAP-02 "No CI/CD pipeline" | **PARTIAL** | Files now exist + tracked (`5cfb014`), but 0 runs — reopened as GAP-B |
+| GAP-02 "No CI/CD pipeline" | **CLOSED** | Files tracked (`5cfb014`) **and** proven running: CI run `29510039711` success on PR #2 |
 | GAP-03 P-04 retired sanity test missing | **CLOSED** | `tests/retired-script-sanity.test.js` (87 lines) — 5/5 pass; `tests/p04-migration/migrate-tier-enum.test.ts` (342 lines) — 8/8 pass (`5ca0ec7`) |
 | GAP-04 Deploy status unverified | **STILL OPEN** | Carried forward as GAP-C |
 
@@ -158,7 +172,7 @@ Mobile lint gate: `cd mobile && npm run lint` (`tsc --noEmit`) → **exit 0**. J
 | Requirements Gate | **pass** | 5 business docs, all non-trivial, committed `6d3292d` |
 | Implementation Gate | **pass** | AC 45.4 implemented + tested — GAP-A closed (`114bb38`, 8 new tests) |
 | Test Gate | **pass** | 131/131 pass, run 2026-07-16 |
-| CI Gate | **fail** | `total_count: 0` — workflows never executed (GAP-B) |
+| CI Gate | **pass** | Run [`29510039711`](https://github.com/taynguyen77-BA/your-closet/actions/runs/29510039711) success — both jobs green (GAP-B closed, `b5b44d3`) |
 | Deploy Gate | **fail** | No tags, no releases (GAP-C) |
 
 ---
@@ -167,7 +181,8 @@ Mobile lint gate: `cd mobile && npm run lint` (`tsc --noEmit`) → **exit 0**. J
 
 **Priority 1 (blocks shipping):**
 1. ~~Fix **GAP-A**~~ — **DONE** (`114bb38`), verified by 8 tests incl. 4 at the API-route layer.
-2. Close **GAP-B** — push the branch (human decision), confirm the first CI run passes. **This is now the only thing between the repo and a green Implementation→CI→Deploy chain.**
+2. ~~Close **GAP-B**~~ — **DONE**: pushed, PR [#2](https://github.com/taynguyen77-BA/your-closet/pull/2) open, CI run `29510039711` green (`b5b44d3` fixed the lockfile desync it exposed).
+3. Close **GAP-C** (Deploy) — **the last failing gate**. Merging PR #2 into `main` triggers `deploy.yml` → a real staging deploy using Firebase secrets, with no intermediate approval step. Human decision.
 
 **Priority 2:**
 3. Close **GAP-C** — tag release, verify Firebase Hosting deploy.
