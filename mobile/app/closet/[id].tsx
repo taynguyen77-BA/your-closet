@@ -22,7 +22,7 @@ function normalizeType(value: string): ClothingType {
 export default function ClosetDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { colors, gradients, spacing, radius } = useTheme();
+  const { colors, spacing, rounded } = useTheme();
   const item = useAppStore((s) => s.clothing.find((value) => value.id === id));
   const outfits = useAppStore((s) => s.outfits);
   const updateClothing = useAppStore((s) => s.updateClothing);
@@ -68,7 +68,7 @@ export default function ClosetDetailScreen() {
   if (!item) {
     return (
       <View style={[styles.fallback, { backgroundColor: colors.background }]}>
-        <Ionicons name="shirt-outline" size={58} color={colors.accentDark} />
+        <Ionicons name="shirt-outline" size={58} color={colors.primary} />
         <AppText variant="h2">Không tìm thấy món đồ</AppText>
         <AppText muted>Món đồ có thể đã được xóa khỏi tủ.</AppText>
         <Button label="Về tủ đồ" onPress={() => router.replace('/(tabs)/closet')} />
@@ -80,7 +80,7 @@ export default function ClosetDetailScreen() {
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ paddingBottom: spacing.xxxl }}>
       <View style={styles.imageWrap}>
         <SafeImage source={{ uri: item.imageUrl }} style={styles.hero} contentFit="cover" fallbackLabel="ẢNH MÓN ĐỒ" />
-        <LinearGradient colors={['transparent', 'rgba(23,10,38,0.82)']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={['transparent', 'rgba(26,18,8,0.82)']} style={StyleSheet.absoluteFill} />
         <View style={styles.heroCopy}>
           <VibeBadge label={item.type} color="rgba(255,255,255,0.88)" />
           <AppText variant="display" color="#fff">{item.name}</AppText>
@@ -91,19 +91,19 @@ export default function ClosetDetailScreen() {
       <Animated.View entering={FadeInDown.duration(420)} style={{ padding: spacing.lg }}>
         <View style={styles.chips}>
           {[item.type, item.color, item.material, ...item.tags].filter(Boolean).map((tag) => (
-            <VibeBadge key={tag} label={tag!} color={colors.lavender} />
+            <VibeBadge key={tag} label={tag!} color={colors.sand} />
           ))}
         </View>
 
-        <LinearGradient colors={gradients.ai} style={[styles.insight, { borderRadius: radius.xl }]}>
-          <AppText variant="caption" color="#fff">PHÂN TÍCH TỦ ĐỒ</AppText>
+        <View style={[styles.insight, { borderRadius: rounded.lg, backgroundColor: colors.primary }]}>
+          <AppText variant="caption" color={colors.sand}>PHÂN TÍCH TỦ ĐỒ</AppText>
           <AppText variant="h2" color="#fff">Đã mặc {item.timesWorn} lần</AppText>
           <AppText variant="bodySmall" color="#fff">
             {item.timesWorn < 3
               ? 'Hãy tạo một diện mạo mới cho món đồ này hoặc chuyển lại cho cộng đồng.'
               : 'Đây là món đồ đáng tin cậy. Hãy để AI phối lại thành một bộ đồ mới.'}
           </AppText>
-        </LinearGradient>
+        </View>
 
         <View style={styles.actions}>
           <Button label="Chỉnh sửa" variant="secondary" icon="create-outline" onPress={openEdit} style={styles.action} />
@@ -129,18 +129,18 @@ export default function ClosetDetailScreen() {
       {/* Edit Modal — all fields */}
       <Modal visible={editing} transparent animationType="slide">
         <View style={styles.overlay}>
-          <View style={[styles.modal, { backgroundColor: colors.surface, borderRadius: radius.xxl }]}>
+          <View style={[styles.modal, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}>
             <View style={styles.modalHandle} />
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
               <AppText variant="h1">Cập nhật thông tin</AppText>
               <AppText muted>Giữ thông tin tủ đồ luôn chính xác.</AppText>
-              <Field label="Tên món đồ" value={name} onChangeText={setName} colors={colors} radius={radius} />
-              <Field label="Màu sắc" value={color} onChangeText={setColor} colors={colors} radius={radius} />
-              <Field label="Chất liệu" value={material} onChangeText={setMaterial} colors={colors} radius={radius} />
-              <Field label="Phong cách" value={style} onChangeText={setStyle} colors={colors} radius={radius} />
-              <Field label="Loại (top/bottom/dress/…)" value={typeRaw} onChangeText={setTypeRaw} colors={colors} radius={radius} />
-              <Field label="Mùa, cách nhau bằng dấu phẩy" value={seasonRaw} onChangeText={setSeasonRaw} colors={colors} radius={radius} />
-              <Field label="Tags, cách nhau bằng dấu phẩy" value={tagsRaw} onChangeText={setTagsRaw} colors={colors} radius={radius} />
+              <Field label="Tên món đồ" value={name} onChangeText={setName} colors={colors} />
+              <Field label="Màu sắc" value={color} onChangeText={setColor} colors={colors} />
+              <Field label="Chất liệu" value={material} onChangeText={setMaterial} colors={colors} />
+              <Field label="Phong cách" value={style} onChangeText={setStyle} colors={colors} />
+              <Field label="Loại (top/bottom/dress/…)" value={typeRaw} onChangeText={setTypeRaw} colors={colors} />
+              <Field label="Mùa, cách nhau bằng dấu phẩy" value={seasonRaw} onChangeText={setSeasonRaw} colors={colors} />
+              <Field label="Tags, cách nhau bằng dấu phẩy" value={tagsRaw} onChangeText={setTagsRaw} colors={colors} />
               <Button label="Lưu thay đổi" onPress={() => void saveEdit()} />
               <Button label="Hủy" variant="ghost" onPress={() => setEditing(false)} style={{ marginTop: 4 }} />
             </ScrollView>
@@ -151,7 +151,7 @@ export default function ClosetDetailScreen() {
       {/* Outfit picker */}
       <Modal visible={choosingOutfit} transparent animationType="slide">
         <View style={styles.overlay}>
-          <View style={[styles.modal, { backgroundColor: colors.surface, borderRadius: radius.xxl }]}>
+          <View style={[styles.modal, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}>
             <View style={styles.modalHandle} />
             <AppText variant="h1">Chọn bộ đồ</AppText>
             {outfits.map((outfit) => (
@@ -161,7 +161,7 @@ export default function ClosetDetailScreen() {
                 style={[styles.option, { borderBottomColor: colors.border }]}
               >
                 <AppText variant="label">{outfit.name}</AppText>
-                <Ionicons name="add-circle" size={22} color={colors.accentDark} />
+                <Ionicons name="add-circle" size={22} color={colors.primary} />
               </Pressable>
             ))}
             {outfits.length === 0 ? <AppText muted style={{ marginVertical: 14 }}>Chưa có bộ đồ để thêm món đồ.</AppText> : null}
@@ -173,14 +173,14 @@ export default function ClosetDetailScreen() {
   );
 }
 
-function Field({ label, value, onChangeText, colors, radius }: { label: string; value: string; onChangeText: (v: string) => void; colors: { beige: string; text: string; textMuted: string }; radius: { md: number } }) {
+function Field({ label, value, onChangeText, colors }: { label: string; value: string; onChangeText: (v: string) => void; colors: { surface: string; sand: string; text: string; textMuted: string } }) {
   return (
     <TextInput
       value={value}
       onChangeText={onChangeText}
       placeholder={label}
       placeholderTextColor={colors.textMuted}
-      style={{ backgroundColor: colors.beige, color: colors.text, borderRadius: radius.md, padding: 12, fontSize: 14 }}
+      style={{ backgroundColor: colors.surface, borderColor: colors.sand, borderWidth: 1, color: colors.text, borderRadius: 4, padding: 12, fontSize: 14, fontFamily: 'DM Sans' }}
     />
   );
 }
