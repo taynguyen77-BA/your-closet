@@ -20,15 +20,20 @@ and aspect ratio are already correct.
 | Style Survey — b1 (styles) | `mobile/src/components/profile/StyleSurveyForm.tsx` | Each of the 14 style option cards (2-col grid) | 3:4 per card | Sand thumb + label |
 | Style Survey — b2 (colours) | `mobile/src/components/profile/StyleSurveyForm.tsx` | Hero above the swatch grid | 16:9 | Sand block |
 | Style Survey — b4 (confidence) | `mobile/src/components/profile/StyleSurveyForm.tsx` | Hero above the options | 4:5 | Sand block |
+| Settings | `mobile/app/settings.tsx` | Hero above the sections | 16:9 | Sand block + overlay caption |
 
-## Anticipated (later Bước 2b screens, not yet placed)
+## Resolved without a placeholder
 
-| Screen | Stitch folder | Image slot | Aspect |
-|---|---|---|---|
-| Skip confirm | `x_c_nh_n_b_qua_wardro` | 2-col image grid | 3:4 grid — see note |
-| Profile | `trang_c_nh_n_wardro_updated` | Framed avatar portrait (the app already binds `avatarUrl`, so likely no placeholder needed) | ~4:5 |
-| Account info | `th_ng_tin_t_i_kho_n_wardro` | Avatar / header imagery | TBD — see note |
-| Settings | `c_i_t_wardro` | Header imagery (1) | TBD |
+| Screen | Why |
+|---|---|
+| Profile | The framed avatar binds the real `avatarUrl` (with the app's existing fallback), so no placeholder is needed. |
+
+## Not implemented — no clean code equivalent
+
+| Screen | Stitch folder | Note |
+|---|---|---|
+| Skip confirm | `x_c_nh_n_b_qua_wardro` | No skip-confirmation screen exists; "Bỏ qua" skips immediately. Adding a confirm gate is a behaviour change, not a restyle. Its 2-col image grid (3:4) is noted only for completeness. |
+| Account info | `th_ng_tin_t_i_kho_n_wardro` | No account-info screen exists (only `profile/delete-account.tsx`). Creating one is an IA change (R2, pending PO), so it is not built and no placeholder is placed. |
 
 ## Notes on screens without a clean code equivalent
 
