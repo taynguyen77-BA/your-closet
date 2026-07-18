@@ -10,7 +10,7 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { SafeImage } from '@/components/ui/SafeImage';
 import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
-import { rounded, useTheme } from '@/theme';
+import { layout, rounded, useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
 
 function MenuRow({
@@ -25,7 +25,7 @@ function MenuRow({
   const { colors, spacing } = useTheme();
   return (
     <Pressable onPress={onPress} style={[styles.menuRow, { paddingVertical: spacing.md }]}>
-      <Ionicons name={icon} size={22} color={colors.accentDark} />
+      <Ionicons name={icon} size={22} color={colors.primary} />
       <AppText variant="body" style={{ flex: 1, marginLeft: 12 }}>
         {label}
       </AppText>
@@ -47,6 +47,15 @@ export default function ProfileScreen() {
   const profile = appUser ?? user;
   const stylePreferences = profile.stylePreferences;
   const completion = profile.styleProfileCompletionPercent ?? 0;
+  const memberSince = (() => {
+    const y = profile.createdAt ? new Date(profile.createdAt).getFullYear() : NaN;
+    return Number.isFinite(y) ? y : null;
+  })();
+  const planExpiry = (() => {
+    if (!user.planExpiresAt) return null;
+    const d = new Date(user.planExpiresAt);
+    return Number.isNaN(d.getTime()) ? null : `${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+  })();
   const requireSignedIn = (next?: () => void) => {
     if (!requireAccount()) return;
     next?.();
@@ -55,9 +64,9 @@ export default function ProfileScreen() {
   if (isPublicViewer) {
     return (
       <Screen bottomOffset={96}>
-        <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
-          <View style={styles.coverIcon}><Ionicons name="person-circle-outline" size={20} color={colors.accentDark} /></View>
-          <AppText variant="caption" color={colors.accentLight}>CHẾ ĐỘ TRẢI NGHIỆM</AppText>
+        <LinearGradient colors={gradients.dark} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
+          <View style={styles.coverIcon}><Ionicons name="person-circle-outline" size={20} color={colors.primary} /></View>
+          <AppText variant="caption" color={colors.sand}>CHẾ ĐỘ TRẢI NGHIỆM</AppText>
           <AppText variant="h1" color={colors.textInverse}>Khám phá trước, lưu sau</AppText>
           <AppText variant="bodySmall" color={colors.warmLight} style={{ marginTop: 6, lineHeight: 20 }}>
             Bạn đang xem app chưa đăng nhập. Các dữ liệu cá nhân, tủ đồ, AI stylist và hồ sơ phong cách sẽ mở sau khi tạo tài khoản.
@@ -82,9 +91,9 @@ export default function ProfileScreen() {
 
   return (
     <Screen bottomOffset={96}>
-      <LinearGradient colors={gradients.premium} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
-        <View style={styles.coverIcon}><Ionicons name="sparkles-outline" size={20} color={colors.accentDark} /></View>
-        <AppText variant="caption" color={colors.accentLight}>HỒ SƠ PHONG CÁCH</AppText>
+      <LinearGradient colors={gradients.dark} style={[styles.cover, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
+        <View style={styles.coverIcon}><Ionicons name="sparkles-outline" size={20} color={colors.primary} /></View>
+        <AppText variant="caption" color={colors.sand}>HỒ SƠ PHONG CÁCH</AppText>
         <AppText variant="h1" color={colors.textInverse}>Nhật ký phong cách của bạn</AppText>
         <View style={styles.profileHeader}>
         <SafeImage
@@ -93,25 +102,27 @@ export default function ProfileScreen() {
         />
         <View style={{ marginLeft: spacing.md, flex: 1 }}>
           <AppText variant="h1" color={colors.textInverse}>{profile.name ?? profile.username}</AppText>
+          {memberSince ? <AppText variant="bodySmall" color={colors.sand}>Thành viên từ {memberSince}</AppText> : null}
         </View>
         </View>
       </LinearGradient>
 
       <View style={[styles.level, { backgroundColor: colors.surface, borderRadius: rounded.DEFAULT }]}>
-        <View style={styles.levelTop}><AppText variant="caption" muted>CẤP {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h3">Nhà khám phá phong cách</AppText><AppText variant="label" color={colors.accentDark}>{levelProgress} / 200 XP</AppText></View>
-        <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.accent, width: `${(levelProgress / 200) * 100}%` }]} /></View>
+        <View style={styles.levelTop}><AppText variant="caption" muted>CẤP {String(styleLevel).padStart(2, '0')}</AppText><AppText variant="h3">Nhà khám phá phong cách</AppText><AppText variant="label" color={colors.primary}>{levelProgress} / 200 XP</AppText></View>
+        <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${(levelProgress / 200) * 100}%` }]} /></View>
         <AppText variant="bodySmall" muted style={{ marginTop: 7 }}>Còn {200 - levelProgress} XP nữa là lên cấp!</AppText>
       </View>
 
       <View style={styles.achievements}>
-        {[['ribbon-outline', 'BẮT NHỊP XU HƯỚNG'], ['heart-outline', 'YÊU TỦ ĐỒ'], ['sparkles-outline', 'NÀNG THƠ AI']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: rounded.DEFAULT }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.accentDark} /><AppText variant="caption">{label}</AppText></View>)}
+        {[['ribbon-outline', 'BẮT NHỊP XU HƯỚNG'], ['heart-outline', 'YÊU TỦ ĐỒ'], ['sparkles-outline', 'NÀNG THƠ AI']].map(([icon, label]) => <View key={label} style={[styles.achievement, { backgroundColor: colors.surface, borderRadius: rounded.DEFAULT }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={20} color={colors.primary} /><AppText variant="caption">{label}</AppText></View>)}
       </View>
 
-      <LinearGradient colors={gradients.premium} style={[styles.membership, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
-        <AppText variant="caption" color={colors.accentLight}>
+      <LinearGradient colors={gradients.dark} style={[styles.membership, { borderRadius: rounded.lg, shadowColor: colors.shadow }]}>
+        <AppText variant="caption" color={colors.sand}>
           Gói hiện tại
         </AppText>
         <AppText variant="h2" color={colors.textInverse}>{planInfo.label}</AppText>
+        {planExpiry ? <AppText variant="bodySmall" color={colors.sand}>Hạn dùng: {planExpiry}</AppText> : null}
         <AppText variant="bodySmall" color={colors.warmLight} style={{ marginTop: 4 }}>
           AI: <AppText variant="bodySmall" color={colors.textInverse}>{user.plan === 'free' ? `${user.aiUsageRemaining}/${user.aiUsageMonthlyLimit}` : 'Không giới hạn'}</AppText>
           {' · '}
@@ -135,12 +146,12 @@ export default function ProfileScreen() {
             <AppText variant="h2">Gu thời trang của bạn</AppText>
             <AppText variant="bodySmall" muted style={{ marginTop: 4 }}>AI sẽ dùng thông tin này để phối đồ hợp gu hơn.</AppText>
           </View>
-          <AppText variant="h2" color={colors.accentDark}>{completion}%</AppText>
+          <AppText variant="h2" color={colors.primary}>{completion}%</AppText>
         </View>
-        <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.accent, width: `${completion}%` }]} /></View>
+        <View style={[styles.progress, { backgroundColor: colors.background }]}><View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${completion}%` }]} /></View>
         <View style={styles.prefWrap}>
-          {(stylePreferences?.preferredStyles ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.lavender, borderRadius: rounded.full }]}>{item}</AppText>)}
-          {(stylePreferences?.favoriteColors ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.beige, borderRadius: rounded.full }]}>{item}</AppText>)}
+          {(stylePreferences?.preferredStyles ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.sand, borderRadius: rounded.full }]}>{item}</AppText>)}
+          {(stylePreferences?.favoriteColors ?? []).slice(0, 5).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.sand, borderRadius: rounded.full }]}>{item}</AppText>)}
           {(stylePreferences?.lifestyleOccasions ?? []).slice(0, 4).map((item) => <AppText key={item} variant="caption" style={[styles.prefChip, { backgroundColor: colors.surface, borderRadius: rounded.full }]}>{item}</AppText>)}
           {!stylePreferences?.preferredStyles?.length && !stylePreferences?.favoriteColors?.length ? <AppText variant="bodySmall" muted>Bạn có thể bỏ qua và cập nhật sau.</AppText> : null}
         </View>
