@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -31,6 +31,7 @@ export default function ClosetDetailScreen() {
 
   const [editing, setEditing] = useState(false);
   const [choosingOutfit, setChoosingOutfit] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [name, setName] = useState(item?.name ?? '');
   const [color, setColor] = useState(item?.color ?? '');
   const [material, setMaterial] = useState(item?.material ?? '');
@@ -116,12 +117,7 @@ export default function ClosetDetailScreen() {
           label="Xóa món đồ"
           variant="ghost"
           icon="trash-outline"
-          onPress={() =>
-            Alert.alert('Xóa món đồ?', 'Thao tác này không thể hoàn tác.', [
-              { text: 'Hủy', style: 'cancel' },
-              { text: 'Xóa', style: 'destructive', onPress: () => void deleteClothing(item.id).then(() => router.replace('/(tabs)/closet')) },
-            ])
-          }
+          onPress={() => setConfirmDelete(true)}
           style={{ marginTop: 10 }}
         />
       </Animated.View>
@@ -169,7 +165,78 @@ export default function ClosetDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Delete confirmation — custom modal replacing the native Alert (Stitch x_a_m_n_wardro). */}
+      <DeleteConfirmModal
+        visible={confirmDelete}
+        onCancel={() => setConfirmDelete(false)}
+        onConfirm={() => { setConfirmDelete(false); void deleteClothing(item.id).then(() => router.replace('/(tabs)/closet')); }}
+      />
     </ScrollView>
+  );
+}
+
+/**
+ * Delete-confirm dialog. Replaces Alert.alert, so it re-creates the affordances the
+ * native alert gave for free: Android hardware back cancels (onRequestClose), Escape
+ * cancels, focus is trapped between the two actions on web, and dialog/action a11y
+ * roles + labels are declared explicitly.
+ */
+function DeleteConfirmModal({ visible, onCancel, onConfirm }: { visible: boolean; onCancel: () => void; onConfirm: () => void }) {
+  const { colors, rounded } = useTheme();
+  const confirmRef = useRef<any>(null);
+  const cancelRef = useRef<any>(null);
+
+  // Re-create the web keyboard affordances the native Alert gave for free (the
+  // Android hardware back button is handled natively via onRequestClose). On web:
+  // safe initial focus on Cancel, Escape cancels, and Tab/Shift+Tab is trapped
+  // between the two actions so focus never leaves the dialog.
+  useEffect(() => {
+    if (Platform.OS !== 'web' || !visible) return;
+    const doc = (globalThis as { document?: Document }).document;
+    const focusTimer = setTimeout(() => { try { cancelRef.current?.focus?.(); } catch { /* noop */ } }, 0);
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.preventDefault(); onCancel(); return; }
+      if (e.key !== 'Tab') return;
+      const nodes = [confirmRef.current, cancelRef.current].filter(Boolean);
+      if (nodes.length < 2) return;
+      e.preventDefault();
+      const idx = nodes.indexOf(doc?.activeElement);
+      const nextIdx = e.shiftKey
+        ? (idx <= 0 ? nodes.length - 1 : idx - 1)
+        : (idx === -1 || idx === nodes.length - 1 ? 0 : idx + 1);
+      nodes[nextIdx]?.focus?.();
+    };
+    doc?.addEventListener('keydown', onKeyDown, true);
+    return () => { clearTimeout(focusTimer); doc?.removeEventListener('keydown', onKeyDown, true); };
+  }, [visible, onCancel]);
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent onRequestClose={onCancel}>
+      {/* Scrim is a plain View (no tap-to-dismiss) to match a native modal alert; the
+          dialog is dismissed via the Hủy action, the Android back button, or Escape. */}
+      <View style={styles.deleteBackdrop}>
+        <View
+          style={[styles.deleteCard, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}
+          accessibilityViewIsModal
+          accessibilityRole="alert"
+          accessibilityLabel="Xóa món đồ?"
+        >
+          <View style={styles.deleteBody}>
+            <AppText variant="h1" style={styles.deleteCentered}>Xóa món đồ?</AppText>
+            <AppText variant="body" muted style={styles.deleteCentered}>Thao tác này không thể hoàn tác.</AppText>
+          </View>
+          <View style={[styles.deleteDivider, { backgroundColor: colors.border }]} />
+          <Pressable ref={confirmRef} onPress={onConfirm} accessibilityRole="button" accessibilityLabel="Xóa" style={styles.deleteAction}>
+            <AppText variant="label" color={colors.error}>Xóa</AppText>
+          </Pressable>
+          <View style={[styles.deleteDivider, { backgroundColor: colors.border }]} />
+          <Pressable ref={cancelRef} onPress={onCancel} accessibilityRole="button" accessibilityLabel="Hủy" style={styles.deleteAction}>
+            <AppText variant="label" color={colors.primary}>Hủy</AppText>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
   );
 }
 
@@ -198,4 +265,10 @@ const styles = StyleSheet.create({
   modal: { maxHeight: '88%', padding: 20, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
   modalHandle: { alignSelf: 'center', width: 42, height: 4, borderRadius: 4, backgroundColor: '#D4B896', marginBottom: 16 },
   option: { paddingVertical: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1 },
+  deleteBackdrop: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(26,18,8,0.5)', padding: 32 },
+  deleteCard: { width: '100%', maxWidth: 340, overflow: 'hidden' },
+  deleteBody: { padding: 24, alignItems: 'center', gap: 8 },
+  deleteCentered: { textAlign: 'center' },
+  deleteDivider: { height: 1 },
+  deleteAction: { paddingVertical: 16, alignItems: 'center' },
 });

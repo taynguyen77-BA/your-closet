@@ -99,4 +99,61 @@ test.describe('Package 2 — Closet (authenticated demo)', () => {
     // Modal closes, hero/title reflects edited name
     await expect(page.getByText('Áo linen beige EDITED').first()).toBeVisible();
   });
+
+  // ── Delete confirm (BRD 3.2.5) — custom modal replacing native Alert (Bước 3b) ──
+  // This flow was previously uncoverable: the native Alert.alert cannot be driven in
+  // the RN-web Playwright harness. The custom modal now makes it testable.
+
+  test('AC-P2-9: Delete action opens a confirmation dialog (not a native alert)', async ({ page }) => {
+    // Traceability: BRD 3.2.5 — deletion is confirmed before it happens
+    await page.goto('/closet/c2');
+    await page.getByText('Xóa món đồ').click();
+    await expect(page.getByText('Xóa món đồ?')).toBeVisible();
+    await expect(page.getByText('Thao tác này không thể hoàn tác.')).toBeVisible();
+    await expect(page.getByText('Hủy', { exact: true })).toBeVisible();
+  });
+
+  test('AC-P2-10: Cancelling the dialog keeps the item and stays on detail', async ({ page }) => {
+    // Traceability: BRD 3.2.5 — cancel must not delete
+    await page.goto('/closet/c2');
+    await page.getByText('Xóa món đồ').click();
+    await page.getByText('Hủy', { exact: true }).click();
+    // Dialog dismissed, still on the item detail (title still shown, not deleted)
+    await expect(page.getByText('Thao tác này không thể hoàn tác.')).toHaveCount(0);
+    await expect(page.getByText('Quần wide-leg trắng').first()).toBeVisible();
+    // And the item still exists in the closet list
+    await page.goto('/closet');
+    await expect(page.getByText('Quần wide-leg trắng')).toBeVisible();
+  });
+
+  test('AC-P2-11: Confirming runs the delete and leaves the item detail for the list', async ({ page }) => {
+    // Traceability: BRD 3.2.5 — confirm executes the deletion.
+    // NOTE: the demo build re-seeds mockClothing from initialize() on every route change
+    // (appStore.ts), so a deleted item reappears after the post-delete navigation and
+    // "gone from the list" is not assertable end-to-end here. We assert the observable
+    // confirm side-effect — it runs deleteClothing + navigates from the detail to the
+    // closet list, whereas cancel (AC-P2-10) stays on the detail. Store-level removal is
+    // the deleteClothing filter in appStore. This same re-seed masked the flow under the
+    // old native Alert too; it was simply never testable there.
+    await page.goto('/closet/c2');
+    await expect(page.getByText('PHÂN TÍCH TỦ ĐỒ')).toBeVisible(); // detail-only marker
+    await page.getByText('Xóa món đồ').click();
+    await page.getByText('Xóa', { exact: true }).click();
+    // Left the detail for the closet list (confirm ran deleteClothing + router.replace)
+    await expect(page.getByText('SỨC KHỎE TỦ ĐỒ')).toBeVisible(); // list-only marker
+    await expect(page.getByText('PHÂN TÍCH TỦ ĐỒ')).toHaveCount(0);
+  });
+
+  test('AC-P2-12: Escape key cancels the dialog (native-Alert parity)', async ({ page }) => {
+    // Traceability: BRD 3.2.5 — the custom dialog restores the keyboard dismissal the
+    // native Alert provided. (Android hardware back → onRequestClose is native and not
+    // exercisable in web Playwright; Escape is the web-observable equivalent.)
+    await page.goto('/closet/c2');
+    await page.getByText('Xóa món đồ').click();
+    await expect(page.getByText('Thao tác này không thể hoàn tác.')).toBeVisible();
+    await page.keyboard.press('Escape');
+    // Dialog dismissed without deleting; still on the item detail
+    await expect(page.getByText('Thao tác này không thể hoàn tác.')).toHaveCount(0);
+    await expect(page.getByText('PHÂN TÍCH TỦ ĐỒ')).toBeVisible();
+  });
 });
