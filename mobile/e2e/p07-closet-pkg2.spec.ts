@@ -95,7 +95,8 @@ test.describe('Package 2 — Closet (authenticated demo)', () => {
     await page.getByText('Chỉnh sửa').click();
     const nameInput = page.getByPlaceholder('Tên món đồ');
     await nameInput.fill('Áo linen beige EDITED');
-    await page.getByText('Lưu thay đổi').click();
+    // Save moved to the "XONG" header action in the Stitch edit layout (Bước 3b).
+    await page.getByText('XONG').click();
     // Modal closes, hero/title reflects edited name
     await expect(page.getByText('Áo linen beige EDITED').first()).toBeVisible();
   });

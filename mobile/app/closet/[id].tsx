@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View, type ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -122,25 +122,35 @@ export default function ClosetDetailScreen() {
         />
       </Animated.View>
 
-      {/* Edit Modal — all fields */}
-      <Modal visible={editing} transparent animationType="slide">
-        <View style={styles.overlay}>
-          <View style={[styles.modal, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}>
-            <View style={styles.modalHandle} />
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
-              <AppText variant="h1">Cập nhật thông tin</AppText>
-              <AppText muted>Giữ thông tin tủ đồ luôn chính xác.</AppText>
-              <Field label="Tên món đồ" value={name} onChangeText={setName} colors={colors} />
-              <Field label="Màu sắc" value={color} onChangeText={setColor} colors={colors} />
-              <Field label="Chất liệu" value={material} onChangeText={setMaterial} colors={colors} />
-              <Field label="Phong cách" value={style} onChangeText={setStyle} colors={colors} />
-              <Field label="Loại (top/bottom/dress/…)" value={typeRaw} onChangeText={setTypeRaw} colors={colors} />
-              <Field label="Mùa, cách nhau bằng dấu phẩy" value={seasonRaw} onChangeText={setSeasonRaw} colors={colors} />
-              <Field label="Tags, cách nhau bằng dấu phẩy" value={tagsRaw} onChangeText={setTagsRaw} colors={colors} />
-              <Button label="Lưu thay đổi" onPress={() => void saveEdit()} />
-              <Button label="Hủy" variant="ghost" onPress={() => setEditing(false)} style={{ marginTop: 4 }} />
-            </ScrollView>
+      {/* Edit — full-screen editorial layout (Stitch ch_nh_s_a_m_n_wardro). */}
+      <Modal visible={editing} animationType="slide" onRequestClose={() => setEditing(false)}>
+        <View style={[styles.editScreen, { backgroundColor: colors.background }]}>
+          <View style={[styles.editHeader, { borderBottomColor: colors.border }]}>
+            <Pressable onPress={() => setEditing(false)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Đóng">
+              <Ionicons name="close" size={26} color={colors.primary} />
+            </Pressable>
+            <AppText variant="h2" color={colors.primary}>Chỉnh sửa món đồ</AppText>
+            <Pressable onPress={() => void saveEdit()} hitSlop={8} accessibilityRole="button" accessibilityLabel="Xong">
+              <AppText variant="label" color={colors.primary}>XONG</AppText>
+            </Pressable>
           </View>
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.editContent}>
+            <View style={styles.editPreview}>
+              <SafeImage source={{ uri: item.imageUrl }} style={[styles.editImage, { borderRadius: rounded.DEFAULT, backgroundColor: colors.surface }]} contentFit="cover" fallbackLabel="ẢNH MÓN ĐỒ" />
+              <AppText variant="caption" color={colors.warmGray} style={styles.editPreviewCaption}>XEM TRƯỚC HÌNH ẢNH SẢN PHẨM</AppText>
+            </View>
+            <EditField label="TÊN MÓN ĐỒ" placeholder="Tên món đồ" value={name} onChangeText={setName} colors={colors} />
+            <View style={styles.editRow}>
+              <EditField label="MÀU SẮC" placeholder="Màu sắc" value={color} onChangeText={setColor} colors={colors} style={styles.editCol} />
+              <EditField label="CHẤT LIỆU" placeholder="Chất liệu" value={material} onChangeText={setMaterial} colors={colors} style={styles.editCol} />
+            </View>
+            <View style={styles.editRow}>
+              <EditField label="LOẠI" placeholder="Loại (top/bottom/dress/…)" value={typeRaw} onChangeText={setTypeRaw} colors={colors} style={styles.editCol} />
+              <EditField label="PHONG CÁCH" placeholder="Phong cách" value={style} onChangeText={setStyle} colors={colors} style={styles.editCol} />
+            </View>
+            <EditField label="MÙA" placeholder="Mùa, cách nhau bằng dấu phẩy" value={seasonRaw} onChangeText={setSeasonRaw} colors={colors} />
+            <EditField label="TAGS" placeholder="Tags, cách nhau bằng dấu phẩy" value={tagsRaw} onChangeText={setTagsRaw} colors={colors} />
+          </ScrollView>
         </View>
       </Modal>
 
@@ -240,15 +250,19 @@ function DeleteConfirmModal({ visible, onCancel, onConfirm }: { visible: boolean
   );
 }
 
-function Field({ label, value, onChangeText, colors }: { label: string; value: string; onChangeText: (v: string) => void; colors: { surface: string; sand: string; text: string; textMuted: string } }) {
+/** Editorial field per Stitch: an uppercase caption above an underline-only input. */
+function EditField({ label, placeholder, value, onChangeText, colors, style }: { label: string; placeholder: string; value: string; onChangeText: (v: string) => void; colors: { text: string; textMuted: string; warmGray: string; sand: string }; style?: ViewStyle }) {
   return (
-    <TextInput
-      value={value}
-      onChangeText={onChangeText}
-      placeholder={label}
-      placeholderTextColor={colors.textMuted}
-      style={{ backgroundColor: colors.surface, borderColor: colors.sand, borderWidth: 1, color: colors.text, borderRadius: 4, padding: 12, fontSize: 14, fontFamily: 'DM Sans' }}
-    />
+    <View style={[styles.editField, style]}>
+      <AppText variant="caption" color={colors.warmGray} style={styles.editLabel}>{label}</AppText>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.textMuted}
+        style={[styles.editInput, { color: colors.text, borderBottomColor: colors.sand }]}
+      />
+    </View>
   );
 }
 
@@ -265,6 +279,17 @@ const styles = StyleSheet.create({
   modal: { maxHeight: '88%', padding: 20, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
   modalHandle: { alignSelf: 'center', width: 42, height: 4, borderRadius: 4, backgroundColor: '#D4B896', marginBottom: 16 },
   option: { paddingVertical: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1 },
+  editScreen: { flex: 1 },
+  editHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 52, paddingBottom: 16, borderBottomWidth: 1 },
+  editContent: { padding: 20, paddingBottom: 48, gap: 20 },
+  editPreview: { alignItems: 'center', gap: 10 },
+  editImage: { width: '62%', aspectRatio: 3 / 4 },
+  editPreviewCaption: { letterSpacing: 1 },
+  editField: { gap: 6 },
+  editLabel: {},
+  editInput: { borderBottomWidth: 1, paddingVertical: 8, fontSize: 16, fontFamily: 'DM Sans' },
+  editRow: { flexDirection: 'row', gap: 16 },
+  editCol: { flex: 1 },
   deleteBackdrop: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(26,18,8,0.5)', padding: 32 },
   deleteCard: { width: '100%', maxWidth: 340, overflow: 'hidden' },
   deleteBody: { padding: 24, alignItems: 'center', gap: 8 },
