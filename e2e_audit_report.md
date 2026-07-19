@@ -18,7 +18,7 @@
 **Overall Pipeline Health: HEALTHY**
 **Readiness for Delivery: Ready — deploy deferred by PO**
 
-*Basis for the change from NEEDS ATTENTION / Partially Ready (revisions `c867f45`, `01f2de8`): both drivers of that rating are now closed and verified — GAP-A (AC 45.4) fixed in `114bb38` with 8 tests, and GAP-B (CI never run) closed by run `29510039711` passing. The one remaining failing gate, Deploy, is a **PO scheduling decision rather than a defect** (see GAP-C). Remaining open items are non-blocking: GAP-D (an undocumented endpoint), GAP-E (a documented test-layer boundary), and the dev↔CI toolchain split noted in GAP-B.*
+*Basis for the change from NEEDS ATTENTION / Partially Ready (revisions `c867f45`, `01f2de8`): both drivers of that rating are now closed and verified — GAP-A (AC 45.4) fixed in `114bb38` with 8 tests, and GAP-B (CI never run) closed by run `29510039711` passing. The one remaining failing gate, Deploy, is a **PO scheduling decision rather than a defect** (see GAP-C). Remaining open items are non-blocking: GAP-D (an undocumented endpoint), GAP-E (a documented test-layer boundary), GAP-F (delete-confirm list-removal not assertable under the demo mock, deferred to live-Firestore QA), and the dev↔CI toolchain split noted in GAP-B.*
 
 **Top 3 findings:**
 
@@ -124,6 +124,18 @@ This was **pre-existing, not introduced by any Package 1/2 commit** — verified
 **Evidence:** `mobile/e2e/p07-closet-pkg2.spec.ts` covers 8 Closet flows. Not covered: image-pick → `clothing_detection` → review draft → enhance → candidate pick, and bulk-upload ≤5 enforcement — all gated behind native `expo-image-picker`, not drivable in RN-web Playwright. API routes `/api/ai/clothing/*` and `/api/admin/ai-routing` require a live Next.js server + Firebase token + `GOOGLE_AI_API_KEY`.
 
 **Assessment:** Covered at the correct layer instead — 25 admin unit tests assert per-tier resolution, fallback, Batch-vs-Standard routing, and `ai_logs` writes. This is a **documented layer boundary**, not an untested behavior. Not a shipping blocker.
+
+---
+
+### ⚠️ GAP-F: delete-confirm test cannot assert list removal under the demo mock
+
+> Labelled **GAP-F** because GAP-A…GAP-E are already assigned in this report; the
+> originating request called it "GAP-B", but GAP-B here is the (closed) CI-never-run
+> gap. Same file/section as requested, next free label.
+
+**Evidence:** `mobile/e2e/p07-closet-pkg2.spec.ts` AC-P2-11 (the Bước 3b delete-confirm modal test) cannot assert that the item disappears from the Closet List after deletion, because `appStore.initialize()` re-seeds `mockClothing` on every route change (keyed on `routeKey` in `_layout.tsx`). The post-delete `router.replace` re-runs `initialize()`, which re-adds the deleted item. This is a **demo-mock limitation, not a product bug** — `deleteClothing`'s filter removes the item from the store correctly; it is the demo re-seed that masks it. The same re-seed masked this flow under the old native `Alert.alert` too (which additionally could not be driven in the web harness at all).
+
+**Assessment:** The test asserts the observable side-effect instead — on **confirm** it navigates away from the item detail to the Closet List, and on **cancel** it stays on the detail (AC-P2-10) — plus Escape-to-cancel (AC-P2-12). Store-level removal (`deleteClothing` filter) has no direct assertion across the route transition. **Deferred to:** manual QA / verification on a live Firestore build before production ship — same group as the known P-02/P-03 coverage gaps (`p02-session-routing.spec.ts`, "COVERAGE GAP"), which likewise need a real environment, not the demo mock, to verify fully. Not a shipping blocker.
 
 ---
 
