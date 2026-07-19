@@ -10,7 +10,7 @@ import { SafeImage } from '@/components/ui/SafeImage';
 import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { useAppStore } from '@/stores/appStore';
 import { useAuthStore } from '@/stores/authStore';
-import { useTheme } from '@/theme';
+import { fontFamily, lightColors, rounded, useTheme } from '@/theme';
 
 const quickActions = [
   { label: 'Thêm đồ', icon: 'add-circle-outline' as const, route: '/(tabs)/closet' },
@@ -180,7 +180,7 @@ function SectionTitle({ title, action, onPress }: { title: string; action?: stri
   return (
     <View style={styles.sectionHeader}>
       <AppText variant="h3" style={styles.sectionTitle}>{title}</AppText>
-      {action && onPress ? <Pressable onPress={onPress}><AppText variant="bodySmall" color="#1E1712">{action}</AppText></Pressable> : null}
+      {action && onPress ? <Pressable onPress={onPress}><AppText variant="bodySmall" color={lightColors.primary}>{action}</AppText></Pressable> : null}
     </View>
   );
 }
@@ -188,42 +188,42 @@ function SectionTitle({ title, action, onPress }: { title: string; action?: stri
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
   name: { marginTop: 2 },
-  avatar: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1E1712' },
-  card: { overflow: 'hidden', backgroundColor: '#FFFFFF', shadowOpacity: 0.08, shadowRadius: 16, shadowOffset: { width: 0, height: 9 }, elevation: 3 },
-  hero: { minHeight: 258, borderRadius: 22, padding: 22, justifyContent: 'flex-end', backgroundColor: '#1E1712', shadowOpacity: 0.2, shadowRadius: 22, shadowOffset: { width: 0, height: 13 }, elevation: 5 },
+  avatar: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: lightColors.primary },
+  card: { overflow: 'hidden', backgroundColor: lightColors.surface, shadowColor: lightColors.shadow, shadowOpacity: 0.08, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: 1 },
+  hero: { minHeight: 258, borderRadius: rounded.lg, padding: 22, justifyContent: 'flex-end', backgroundColor: lightColors.primary, shadowColor: lightColors.shadow, shadowOpacity: 0.1, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }, elevation: 2 },
   heroIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,249,241,0.92)', alignItems: 'center', justifyContent: 'center', marginBottom: 16 },
   heroTitle: { fontSize: 25, lineHeight: 29, marginTop: 14 },
   heroAccent: { fontStyle: 'italic' },
   heroCopy: { maxWidth: 315, marginTop: 8, lineHeight: 20 },
-  primaryButton: { alignSelf: 'flex-start', borderRadius: 100, paddingHorizontal: 18, paddingVertical: 11, marginTop: 18, flexDirection: 'row', alignItems: 'center', gap: 7 },
+  primaryButton: { alignSelf: 'flex-start', borderRadius: rounded.full, paddingHorizontal: 18, paddingVertical: 11, marginTop: 18, flexDirection: 'row', alignItems: 'center', gap: 7 },
   miniRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
-  miniCard: { flex: 1, minHeight: 126, borderRadius: 16, padding: 14, justifyContent: 'space-between' },
-  weather: { minHeight: 88, borderRadius: 16, padding: 14, marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  miniCard: { flex: 1, minHeight: 126, borderRadius: rounded.lg, padding: 14, justifyContent: 'space-between' },
+  weather: { minHeight: 88, borderRadius: rounded.lg, padding: 14, marginTop: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   temperature: { fontSize: 20, lineHeight: 26, marginVertical: 2 },
   sun: { fontSize: 28 },
-  streak: { minHeight: 76, borderRadius: 16, backgroundColor: '#D4B896', padding: 16, marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  streak: { minHeight: 76, borderRadius: rounded.lg, backgroundColor: lightColors.sand, padding: 16, marginTop: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   streakText: { marginTop: 5 },
-  xp: { borderRadius: 100, backgroundColor: '#1E1712', paddingHorizontal: 12, paddingVertical: 7 },
+  xp: { borderRadius: rounded.full, backgroundColor: lightColors.primary, paddingHorizontal: 12, paddingVertical: 7 },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, marginTop: 24 },
-  sectionTitle: { fontFamily: 'DM Sans', fontSize: 16, fontWeight: '500', letterSpacing: 0 },
-  event: { width: 190, gap: 5, borderRadius: 16, padding: 14, marginRight: 10 },
-  outfitCard: { borderRadius: 18 },
+  sectionTitle: { fontFamily: fontFamily.medium, fontSize: 16, letterSpacing: 0 },
+  event: { width: 190, gap: 5, borderRadius: rounded.lg, padding: 14, marginRight: 10 },
+  outfitCard: { borderRadius: rounded.lg },
   outfitImage: { width: '100%', height: 220 },
   outfitBody: { padding: 16 },
   outfitMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-  darkPill: { borderRadius: 100, backgroundColor: '#1E1712', paddingHorizontal: 11, paddingVertical: 7 },
-  sandPill: { borderRadius: 100, backgroundColor: '#D4B896', paddingHorizontal: 12, paddingVertical: 7 },
+  darkPill: { borderRadius: rounded.full, backgroundColor: lightColors.primary, paddingHorizontal: 11, paddingVertical: 7 },
+  sandPill: { borderRadius: rounded.full, backgroundColor: lightColors.sand, paddingHorizontal: 12, paddingVertical: 7 },
   outfitName: { marginTop: 4, marginBottom: 5 },
   actionRow: { flexDirection: 'row', gap: 8, marginTop: 14 },
   actionButton: { flex: 1 },
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  quick: { width: '48.5%', borderRadius: 16, padding: 14, marginBottom: 10 },
-  quickIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#D4B896', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  insight: { borderRadius: 16, padding: 16, marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  quick: { width: '48.5%', borderRadius: rounded.lg, padding: 14, marginBottom: 10 },
+  quickIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: lightColors.sand, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+  insight: { borderRadius: rounded.lg, padding: 16, marginTop: 8, flexDirection: 'row', alignItems: 'center', gap: 12 },
   insightTitle: { marginVertical: 4 },
-  mission: { borderRadius: 16, flexDirection: 'row', alignItems: 'center', padding: 12, marginBottom: 8 },
-  missionIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#D4B896', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  trend: { width: 210, height: 250, marginRight: 12, borderRadius: 16, overflow: 'hidden', justifyContent: 'flex-end' },
-  trendOverlay: { ...StyleSheet.absoluteFill, backgroundColor: '#1E1712', opacity: 0.58 },
+  mission: { borderRadius: rounded.lg, flexDirection: 'row', alignItems: 'center', padding: 12, marginBottom: 8 },
+  missionIcon: { width: 38, height: 38, borderRadius: 19, backgroundColor: lightColors.sand, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  trend: { width: 210, height: 250, marginRight: 12, borderRadius: rounded.lg, overflow: 'hidden', justifyContent: 'flex-end' },
+  trendOverlay: { ...StyleSheet.absoluteFill, backgroundColor: lightColors.primary, opacity: 0.58 },
   trendText: { padding: 14 },
 });
