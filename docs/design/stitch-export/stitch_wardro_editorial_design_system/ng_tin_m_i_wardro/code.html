@@ -1,0 +1,338 @@
+<!DOCTYPE html><html class="light" lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<title>Wardro — Đăng tin mới</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#4d463e",
+                    "on-background": "#1a1c1c",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-secondary-fixed-variant": "#574329",
+                    "background": "#f9f9f9",
+                    "secondary-container": "#f9dbb7",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "surface-dim": "#dadada",
+                    "surface-container-low": "#f3f3f4",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-container-high": "#e8e8e8",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#fcdeba",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#908273",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "surface-bright": "#f9f9f9",
+                    "primary-fixed": "#f1e0ce",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "outline": "#7e766d",
+                    "on-tertiary": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "tertiary-fixed": "#e5e2de",
+                    "secondary": "#705b3e",
+                    "outline-variant": "#cfc5bb",
+                    "on-secondary-container": "#755f42",
+                    "surface": "#f9f9f9",
+                    "inverse-surface": "#2f3131",
+                    "on-secondary-fixed": "#281903",
+                    "inverse-primary": "#d4c4b3",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#1c1c1a",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "tertiary": "#000000",
+                    "surface-container": "#eeeeee",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-primary-fixed": "#231a0f",
+                    "surface-variant": "#e2e2e2",
+                    "primary": "#000000",
+                    "on-tertiary-container": "#858480",
+                    "on-surface": "#1a1c1c",
+                    "surface-tint": "#695c4f",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "container-max": "1200px",
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-md": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "display-lg": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "label-sm": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "body-md": ["DM Sans"]
+            },
+            "fontSize": {
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen / Background Base */
+            color: #1a1c1c; /* Espresso / On Background */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cfc5bb; border-radius: 10px; }
+        
+        /* Modal Success Micro-interaction */
+        #success-overlay {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #success-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-background border-b border-outline-variant/10 flex items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
+<button class="active:scale-95 duration-200 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">close</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm text-primary tracking-tight">Đăng tin mới</h1>
+<button class="active:scale-95 duration-200 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary">help_outline</span>
+</button>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-md pb-32">
+<!-- Closet Picker Section -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-end mb-stack-sm">
+<h2 class="font-headline-sm text-headline-sm-mobile">Chọn từ tủ đồ</h2>
+<button class="text-label-md font-label-md text-secondary border-b border-secondary">Xem tất cả</button>
+</div>
+<div class="flex overflow-x-auto gap-gutter pb-4 custom-scrollbar snap-x">
+<!-- Closet Card 1 -->
+<div class="min-w-[140px] md:min-w-[180px] snap-start group cursor-pointer" onclick="selectItem(this)">
+<div class="relative aspect-[3/4] mb-2 overflow-hidden rounded-lg border border-outline-variant/20 group-hover:border-primary transition-colors">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A professional studio photograph of a premium charcoal grey wool blazer hanging against a minimalist off-white background. The lighting is soft and directional, highlighting the fine texture of the fabric and the sharp tailoring. The overall aesthetic is editorial and high-end, fitting a luxury fashion operating system." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDM-gJUo0GbVwwtiv9lQ_lc_h3e4CeiYIr9qQWDp_qO0wCZVy9nm-E9Wr2ye6gmZogGxOiSRv-_1NRZueXtnt7nase4a8qJBIwtkROYfO9Tg_ULSSrQG3e0gwrzprgtrRfaQCgvkAX1YOnNXMEIlmekcliCFJT9B07fxCkLveCqHtpoUVnetoKj4s8PNh3Z2v4PzS0c96U2J_i6IharuOQ-V_ZSCOKvsQnN6oZ98QkYCaxIYx_HOTD2jyLksbP4WF2vmZL1utpOGU4')"></div>
+<div class="absolute top-2 right-2 opacity-0 group-data-[selected=true]:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary bg-white rounded-full" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<p class="font-label-md text-label-md truncate">Charcoal Wool Blazer</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Lụa Cao Cấp</p>
+</div>
+<!-- Closet Card 2 -->
+<div class="min-w-[140px] md:min-w-[180px] snap-start group cursor-pointer" onclick="selectItem(this)">
+<div class="relative aspect-[3/4] mb-2 overflow-hidden rounded-lg border border-outline-variant/20 group-hover:border-primary transition-colors">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Close-up editorial shot of a pair of high-waisted linen trousers in a warm sand color. The garment is laid flat on a textured linen surface, showcasing its natural creases and organic quality. Bright, airy daylight fills the frame, creating a serene and premium lifestyle atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqAUJX_Jxg3H5U_AJFFCV_1byZUAmqdVhF_RIxtq1MqVghvCofF7wKes2suHZCZL83gDdDPj2k7N4DlevCkd0XpH_czwTdxNeWTjVtAfLy_4u7VCELpYS5BcB-nmbpFAIp0jJQR5dWA9MGZy0HAB_ii7cPecaJgdJZhEYaXnII9wGRNNE8VIWQyDUx38EsHN0AujpRhbX1zbRulYm7ztbAich1dOBdkKuo0sxuje7F1yzBluXtfZ0fZGXJlCJMCw5CiUwok5p5cuk')"></div>
+<div class="absolute top-2 right-2 opacity-0 group-data-[selected=true]:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary bg-white rounded-full" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<p class="font-label-md text-label-md truncate">Sand Linen Trousers</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Linen</p>
+</div>
+<!-- Closet Card 3 -->
+<div class="min-w-[140px] md:min-w-[180px] snap-start group cursor-pointer" onclick="selectItem(this)">
+<div class="relative aspect-[3/4] mb-2 overflow-hidden rounded-lg border border-outline-variant/20 group-hover:border-primary transition-colors">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="High-fashion photograph of a white structured silk shirt with oversized cuffs, presented in a crisp, minimalist setting. Shadows are soft and minimal, emphasizing the pure white tones and luxury fabric sheen. The shot is clean and focused, reflecting a sophisticated fashion curation." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCCjsVtPzBVLr0L9V560z1LvXwcalotvB5vEyjXGJnPUFP-8J-1mf3lnP-rv-pe1uJjKM4p3UgCu2CY6HWDHyAtF2cMRQhTF4xEfRm8X5tB3xbVFsqVjxS5If4U9poHWXb63KnILkKBmxx-ay8pg7_aNPKAg3i1FasIXU_dNoDUenUg8d8XZ7eI67SS9n0SYDQWAZ3qp9c3u9Ce5cBLeNRbkEB3dIsZCpKZ_-I-AuJYcxeS4QYW7Gq2Z642OsRx-5hYcJjESQzWM6M')"></div>
+<div class="absolute top-2 right-2 opacity-0 group-data-[selected=true]:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-primary bg-white rounded-full" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<p class="font-label-md text-label-md truncate">Silk Classic Shirt</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Silk</p>
+</div>
+<!-- Closet Card 4: New Upload -->
+<div class="min-w-[140px] md:min-w-[180px] snap-start">
+<div class="aspect-[3/4] mb-2 flex flex-col items-center justify-center bg-surface-container-low rounded-lg border-2 border-dashed border-outline-variant/40 hover:bg-surface-container transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-outline group-hover:scale-110 transition-transform">add_a_photo</span>
+<p class="font-label-sm text-label-sm mt-2 text-on-surface-variant">Thêm mới</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Form Section -->
+<form class="space-y-stack-md" onsubmit="event.preventDefault(); showSuccess();">
+<!-- Loại tin: Segmented Control -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Loại tin</label>
+<div class="flex bg-surface-container-low p-1 rounded-lg">
+<button class="flex-1 py-2 text-label-md font-label-md rounded-md transition-all bg-white shadow-sm" id="btn-ban" onclick="toggleType('Bán')" type="button">Bán</button>
+<button class="flex-1 py-2 text-label-md font-label-md rounded-md transition-all text-on-surface-variant" id="btn-traodoi" onclick="toggleType('Trao đổi')" type="button">Trao đổi</button>
+<button class="flex-1 py-2 text-label-md font-label-md rounded-md transition-all text-on-surface-variant" id="btn-tang" onclick="toggleType('Tặng')" type="button">Tặng</button>
+</div>
+</div>
+<!-- Giá (Conditional) -->
+<div class="space-y-unit" id="price-field">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Giá (VNĐ)</label>
+<input class="w-full border-b border-outline-variant bg-transparent py-2 focus:border-primary outline-none font-body-lg text-body-lg transition-colors" placeholder="0" type="number">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Tình trạng -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Tình trạng</label>
+<div class="relative">
+<select class="w-full appearance-none border-b border-outline-variant bg-transparent py-2 focus:border-primary outline-none font-body-md text-body-md cursor-pointer transition-colors pr-8">
+<option>Mới (nguyên tag)</option>
+<option>Như mới (đã giặt)</option>
+<option>Đã sử dụng</option>
+<option>Cũ</option>
+</select>
+<span class="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Khu vực -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Khu vực</label>
+<div class="relative">
+<input class="w-full border-b border-outline-variant bg-transparent py-2 focus:border-primary outline-none font-body-md text-body-md transition-colors pr-8" placeholder="Thành phố, Quận..." type="text">
+<span class="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-outline">location_on</span>
+</div>
+</div>
+</div>
+<!-- Mô tả -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Mô tả chi tiết</label>
+<textarea class="w-full border border-outline-variant/30 rounded-lg bg-surface-container-lowest p-4 focus:border-primary outline-none font-body-md text-body-md transition-colors resize-none" placeholder="Chia sẻ về chất liệu, kiểu dáng, lý do bạn pass lại..." rows="4"></textarea>
+</div>
+<!-- Kích cỡ: Chip Selector -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Kích cỡ</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:border-primary transition-colors" type="button">XS</button>
+<button class="px-4 py-2 rounded-full border border-primary bg-primary text-on-primary text-label-md font-label-md" type="button">S</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:border-primary transition-colors" type="button">M</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:border-primary transition-colors" type="button">L</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:border-primary transition-colors" type="button">XL</button>
+<button class="px-4 py-2 rounded-full border border-outline-variant text-label-md font-label-md hover:border-primary transition-colors" type="button">Free Size</button>
+</div>
+</div>
+<!-- Thẻ (Tag Input) -->
+<div class="space-y-unit">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Thẻ (Tag)</label>
+<div class="flex flex-wrap items-center gap-2 border-b border-outline-variant pb-1">
+<span class="bg-secondary-fixed/30 text-secondary px-3 py-1 rounded-full text-label-sm flex items-center gap-1">
+                        #minimalist <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</span>
+<span class="bg-secondary-fixed/30 text-secondary px-3 py-1 rounded-full text-label-sm flex items-center gap-1">
+                        #office <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</span>
+<input class="flex-1 bg-transparent py-2 outline-none font-label-md text-label-md min-w-[120px]" placeholder="Thêm thẻ..." type="text">
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-stack-md">
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-label-md text-label-md active:scale-[0.98] transition-transform duration-150 flex items-center justify-center gap-2 shadow-sm" type="submit">
+                    Đăng tin ngay
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</form>
+</main>
+<!-- Success Modal Overlay -->
+<div class="fixed inset-0 z-[100] items-center justify-center bg-black/40 backdrop-blur-sm p-4" id="success-overlay">
+<div class="bg-white rounded-xl max-w-md w-full p-8 text-center animate-in fade-in zoom-in duration-300">
+<div class="w-24 h-24 mx-auto mb-6 relative">
+
+</div>
+<h3 class="font-headline-md text-headline-md mb-2">Đã gửi tin đăng</h3>
+<p class="text-on-surface-variant font-body-md mb-8">Tin của bạn đang chờ duyệt. Đội ngũ Wardro sẽ phản hồi lại cho bạn trong vòng 24h tới.</p>
+<div class="space-y-3">
+<button class="w-full py-3 bg-primary text-on-primary rounded-full font-label-md" onclick="closeSuccess()">Về trang chủ</button>
+<button class="w-full py-3 border border-outline-variant rounded-full font-label-md" onclick="closeSuccess()">Xem tin đã đăng</button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Shell (Consistent with Layout Rule) -->
+
+<script>
+        function selectItem(element) {
+            // Toggle selection for visual picker
+            const allItems = document.querySelectorAll('[onclick="selectItem(this)"]');
+            allItems.forEach(item => {
+                item.removeAttribute('data-selected');
+                item.querySelector('.border').classList.remove('border-primary');
+                item.querySelector('.border').classList.add('border-outline-variant/20');
+            });
+            element.setAttribute('data-selected', 'true');
+            element.querySelector('.border').classList.add('border-primary');
+            element.querySelector('.border').classList.remove('border-outline-variant/20');
+        }
+
+        function toggleType(type) {
+            const btnBan = document.getElementById('btn-ban');
+            const btnTraoDoi = document.getElementById('btn-traodoi');
+            const btnTang = document.getElementById('btn-tang');
+            const priceField = document.getElementById('price-field');
+
+            const btns = [btnBan, btnTraoDoi, btnTang];
+            btns.forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow-sm');
+                btn.classList.add('text-on-surface-variant');
+            });
+
+            if(type === 'Bán') {
+                btnBan.classList.add('bg-white', 'shadow-sm');
+                btnBan.classList.remove('text-on-surface-variant');
+                priceField.style.display = 'block';
+            } else if(type === 'Trao đổi') {
+                btnTraoDoi.classList.add('bg-white', 'shadow-sm');
+                btnTraoDoi.classList.remove('text-on-surface-variant');
+                priceField.style.display = 'none';
+            } else {
+                btnTang.classList.add('bg-white', 'shadow-sm');
+                btnTang.classList.remove('text-on-surface-variant');
+                priceField.style.display = 'none';
+            }
+        }
+
+        function showSuccess() {
+            const overlay = document.getElementById('success-overlay');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSuccess() {
+            const overlay = document.getElementById('success-overlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+
+
+
+</body></html>

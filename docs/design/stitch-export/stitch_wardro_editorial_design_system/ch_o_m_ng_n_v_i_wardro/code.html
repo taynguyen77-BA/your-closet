@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="vi" class="light"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#fcdeba",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#695c4f",
+                        "primary": "#000000",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "tertiary-container": "#1c1c1a",
+                        "surface-container-high": "#e8e8e8",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "surface-variant": "#e2e2e2",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-surface": "#1a1c1c",
+                        "background": "#f9f9f9",
+                        "on-secondary-fixed-variant": "#574329",
+                        "on-surface-variant": "#4d463e",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "surface-bright": "#f9f9f9",
+                        "on-background": "#1a1c1c",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#281903",
+                        "tertiary-fixed": "#e5e2de",
+                        "tertiary": "#000000",
+                        "surface-container-low": "#f3f3f4",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "surface-container": "#eeeeee",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#231a0f",
+                        "on-secondary-container": "#755f42",
+                        "secondary-container": "#f9dbb7",
+                        "on-primary-container": "#908273",
+                        "surface-dim": "#dadada",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface": "#f9f9f9",
+                        "outline": "#7e766d",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "primary-fixed": "#f1e0ce",
+                        "inverse-primary": "#d4c4b3",
+                        "on-tertiary-container": "#858480",
+                        "secondary": "#705b3e",
+                        "outline-variant": "#cfc5bb",
+                        "on-primary-fixed-variant": "#504538",
+                        "inverse-surface": "#2f3131",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#231a0f",
+                        "espresso": "#1A1208",
+                        "sand": "#F7F4F0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-sm": "12px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px",
+                        "stack-lg": "48px",
+                        "gutter": "24px",
+                        "stack-md": "24px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "display-lg": ["DM Serif Display"],
+                        "headline-md": ["DM Serif Display"],
+                        "headline-sm": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "display-lg-mobile": ["DM Serif Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["36px", { "lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .bottom-sheet {
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased overflow-hidden">
+<!-- Editorial Full-Bleed Background -->
+<div class="fixed inset-0 z-0">
+<img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA066lAXfK8nHaX9oPZGJxFoEXiJAEO8KYAYelZ7YQT9hL_WDVPI8kwDyDcvbTWWMQ1na0e9srO8kLS96c3VqweAehpqoZNxhUXq6QMiFPhltI5BveOsNNsjqfmh-9zfWP4_4Gmj8spCt8ert6x6aS4egUt5GLOJUEawbVUOOUjTEqoPbWKOV1Kopj2KLbMi3qjkSbZb1lPh1l2AntT4tMuivQ_-n9vIF0atvVneC0NFhtmLDWwYNzuJP9JApKhpre8Gn2k0gn-O4s" alt="" class="w-full h-full object-cover">
+<!-- Subtle Overlay for Branding Readability -->
+<div class="absolute inset-0 bg-espresso/5"></div>
+</div>
+<!-- Branding Header -->
+<header class="fixed top-0 left-0 w-full z-20 pt-stack-lg flex justify-center">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-espresso tracking-tighter">Wardro</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex flex-col h-screen justify-end">
+<!-- Bottom Sheet Auth Container -->
+<div class="bottom-sheet bg-white rounded-t-[32px] px-margin-mobile pt-10 pb-12 flex flex-col items-center max-w-[500px] mx-auto w-full shadow-2xl">
+<!-- Headline & Subtext -->
+<div class="text-center mb-stack-lg space-y-unit">
+<h2 class="font-headline-sm text-headline-sm text-espresso">Tủ đồ của bạn, thông minh hơn</h2>
+<p class="font-body-md text-body-md text-on-surface-variant/80 px-4">
+                    AI gợi ý trang phục mỗi ngày, thử đồ ảo, và kết nối cộng đồng thời trang
+                </p>
+</div>
+<!-- Action Buttons Group -->
+<div class="w-full space-y-4 mb-stack-md">
+<!-- Primary Action: Phone -->
+<button class="w-full flex items-center justify-center gap-3 bg-espresso text-white py-4 rounded-xl font-label-md transition-transform active:scale-95">
+<span class="material-symbols-outlined">call</span>
+                    Tiếp tục với số điện thoại
+                </button>
+<!-- Secondary Action: Google -->
+<button class="w-full flex items-center justify-center gap-3 bg-transparent border border-outline-variant/50 text-espresso py-4 rounded-xl font-label-md transition-all hover:bg-sand/30 active:scale-95">
+<span class="material-symbols-outlined text-secondary">google</span>
+                    Tiếp tục với Google
+                </button>
+<!-- Secondary Action: Facebook -->
+<button class="w-full flex items-center justify-center gap-3 bg-transparent border border-outline-variant/50 text-espresso py-4 rounded-xl font-label-md transition-all hover:bg-sand/30 active:scale-95">
+<span class="material-symbols-outlined text-secondary">face_nod</span>
+                    Tiếp tục với Facebook
+                </button>
+</div>
+<!-- Ghost Action: Guest -->
+<button class="font-label-md text-on-surface-variant underline underline-offset-4 mb-stack-lg transition-opacity hover:opacity-70">
+                Xem trước không cần đăng nhập
+            </button>
+<!-- Terms Footer -->
+<footer class="text-center">
+<p class="font-label-sm text-[11px] leading-relaxed text-outline px-6">
+                    Bằng việc tiếp tục, bạn đồng ý với 
+                    <a href="#" class="underline">Điều khoản</a> &amp; 
+                    <a href="#" class="underline">Chính sách bảo mật</a>
+</p>
+</footer>
+<!-- Safe Area Spacer for Mobile -->
+<div class="h-4"></div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple touch feedback or additional micro-animations could go here
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('touchstart', () => {
+                btn.style.opacity = '0.8';
+            });
+            btn.addEventListener('touchend', () => {
+                btn.style.opacity = '1';
+            });
+        });
+    </script>
+</body></html>

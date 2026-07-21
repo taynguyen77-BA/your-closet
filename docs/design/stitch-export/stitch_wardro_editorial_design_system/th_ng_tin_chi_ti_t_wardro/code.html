@@ -1,0 +1,372 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Thông tin chi tiết</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&amp;family=DM+Serif+Display:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f9f9f9",
+                    "surface-tint": "#695c4f",
+                    "on-background": "#1a1c1c",
+                    "surface-container-low": "#f3f3f4",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#755f42",
+                    "primary": "#000000",
+                    "surface-dim": "#dadada",
+                    "on-secondary-fixed": "#281903",
+                    "tertiary-container": "#1c1c1a",
+                    "on-error": "#ffffff",
+                    "outline": "#7e766d",
+                    "background": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#000000",
+                    "outline-variant": "#cfc5bb",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-tertiary-container": "#858480",
+                    "secondary-container": "#f9dbb7",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3131",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-surface-variant": "#4d463e",
+                    "tertiary-fixed": "#e5e2de",
+                    "surface-container-high": "#e8e8e8",
+                    "inverse-primary": "#d4c4b3",
+                    "on-primary-fixed": "#231a0f",
+                    "inverse-on-surface": "#f0f1f1",
+                    "primary-fixed": "#f1e0ce",
+                    "secondary": "#705b3e",
+                    "on-secondary-fixed-variant": "#574329",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-primary-container": "#908273",
+                    "surface-bright": "#f9f9f9",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#eeeeee",
+                    "on-surface": "#1a1c1c",
+                    "secondary-fixed": "#fcdeba",
+                    "surface-variant": "#e2e2e2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px",
+                    "margin-mobile": "20px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen Background */
+            color: #1a1c1c;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(247, 244, 240, 0.8);
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a1c1c !important;
+            ring: 0 !important;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F7F4F0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cfc5bb;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="w-full top-0 sticky z-50 glass-header">
+<div class="flex justify-between items-center px-margin-mobile py-stack-md w-full max-w-container-max mx-auto">
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary tracking-tight">Thông tin chi tiết</h1>
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">more_horiz</span>
+</button>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-margin-mobile pb-32">
+<!-- Completion Indicator -->
+<div class="mt-stack-sm mb-stack-lg">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Tiến độ hồ sơ</span>
+<span class="font-label-sm text-label-sm text-primary">70% hoàn thành</span>
+</div>
+<div class="h-[2px] w-full bg-outline-variant/30 overflow-hidden">
+<div class="h-full bg-primary transition-all duration-1000 ease-out" style="width: 70%"></div>
+</div>
+</div>
+<!-- Explainer Note -->
+<section class="mb-stack-lg">
+<div class="bg-surface-container-lowest border border-secondary-fixed p-stack-md rounded-lg flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-[20px]">info</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">
+                    Thông tin này giúp AI gợi ý trang phục và tạo ảnh thử đồ chính xác hơn cho bạn. Mọi dữ liệu đều được bảo mật tuyệt đối.
+                </p>
+</div>
+</section>
+<!-- Section: Vóc dáng -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md mb-stack-md">Vóc dáng</h2>
+<div class="bg-surface-container-lowest rounded-xl p-stack-md shadow-sm space-y-stack-md">
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block">KIỂU CƠ THỂ</label>
+<div class="grid grid-cols-5 gap-2">
+<!-- Shape Options -->
+<button class="flex flex-col items-center p-2 rounded-lg border border-outline-variant/30 hover:border-primary transition-all group active:scale-95">
+<span class="material-symbols-outlined text-[32px] text-outline group-hover:text-primary mb-1">change_history</span>
+<span class="font-label-sm text-[10px] text-outline group-hover:text-primary">Triangle</span>
+</button>
+<button class="flex flex-col items-center p-2 rounded-lg border border-primary bg-primary/5 transition-all group active:scale-95">
+<span class="material-symbols-outlined text-[32px] text-primary mb-1" style="transform: rotate(180deg);">change_history</span>
+<span class="font-label-sm text-[10px] text-primary font-bold">Inverted</span>
+</button>
+<button class="flex flex-col items-center p-2 rounded-lg border border-outline-variant/30 hover:border-primary transition-all group active:scale-95">
+<span class="material-symbols-outlined text-[32px] text-outline group-hover:text-primary mb-1">check_box_outline_blank</span>
+<span class="font-label-sm text-[10px] text-outline group-hover:text-primary">Rect</span>
+</button>
+<button class="flex flex-col items-center p-2 rounded-lg border border-outline-variant/30 hover:border-primary transition-all group active:scale-95">
+<span class="material-symbols-outlined text-[32px] text-outline group-hover:text-primary mb-1">hourglass_empty</span>
+<span class="font-label-sm text-[10px] text-outline group-hover:text-primary">Hourglass</span>
+</button>
+<button class="flex flex-col items-center p-2 rounded-lg border border-outline-variant/30 hover:border-primary transition-all group active:scale-95">
+<span class="material-symbols-outlined text-[32px] text-outline group-hover:text-primary mb-1">fiber_manual_record</span>
+<span class="font-label-sm text-[10px] text-outline group-hover:text-primary">Apple</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-stack-md">
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-outline block">CHIỀU CAO</label>
+<div class="relative flex items-center">
+<input class="w-full bg-transparent border-b border-outline-variant/50 font-body-lg text-body-lg py-2 pr-10 focus:border-primary transition-colors appearance-none" placeholder="170" type="number">
+<span class="absolute right-0 font-label-md text-outline">cm</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-outline block">CÂN NẶNG</label>
+<div class="relative flex items-center">
+<input class="w-full bg-transparent border-b border-outline-variant/50 font-body-lg text-body-lg py-2 pr-10 focus:border-primary transition-colors appearance-none" placeholder="65" type="number">
+<span class="absolute right-0 font-label-md text-outline">kg</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Kích cỡ -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md mb-stack-md">Kích cỡ</h2>
+<div class="bg-surface-container-lowest rounded-xl p-stack-md shadow-sm space-y-stack-md">
+<div class="grid grid-cols-1 gap-stack-sm">
+<!-- Top Size -->
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/20">
+<label class="font-label-md text-label-md text-on-surface">Áo (Top)</label>
+<select class="bg-transparent border-none text-right font-body-md text-primary focus:ring-0">
+<option>Size S</option>
+<option selected="">Size M</option>
+<option>Size L</option>
+<option>Size XL</option>
+</select>
+</div>
+<!-- Bottom Size -->
+<div class="flex items-center justify-between py-2 border-b border-outline-variant/20">
+<label class="font-label-md text-label-md text-on-surface">Quần/Váy (Bottom)</label>
+<select class="bg-transparent border-none text-right font-body-md text-primary focus:ring-0">
+<option>28</option>
+<option>29</option>
+<option selected="">30</option>
+<option>31</option>
+<option>32</option>
+</select>
+</div>
+<!-- Shoe Size -->
+<div class="flex items-center justify-between py-2">
+<label class="font-label-md text-label-md text-on-surface">Giày (Shoes)</label>
+<select class="bg-transparent border-none text-right font-body-md text-primary focus:ring-0">
+<option>38</option>
+<option>39</option>
+<option selected="">40</option>
+<option>41</option>
+<option>42</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Sở thích -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md mb-stack-md">Sở thích</h2>
+<div class="bg-surface-container-lowest rounded-xl p-stack-md shadow-sm space-y-stack-lg">
+<!-- Favorite Brands -->
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block uppercase">Thương hiệu yêu thích</label>
+<div class="flex flex-wrap gap-2 p-3 min-h-[48px] border border-outline-variant/30 rounded-lg">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-high rounded-full font-label-sm text-label-sm">
+                            Uniqlo <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</span>
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-high rounded-full font-label-sm text-label-sm">
+                            Zara <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+</span>
+<input class="flex-1 bg-transparent border-none p-0 text-label-sm focus:ring-0 min-w-[80px]" placeholder="+ Thêm..." type="text">
+</div>
+</div>
+<!-- Budget Level -->
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block uppercase">Mức ngân sách</label>
+<div class="flex bg-surface-container p-1 rounded-lg">
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md hover:bg-surface-container-low transition-all">Tiết kiệm</button>
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md bg-surface-container-lowest shadow-sm text-primary font-bold">Vừa phải</button>
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md hover:bg-surface-container-low transition-all">Cao cấp</button>
+</div>
+</div>
+<!-- Fit Preference -->
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block uppercase">Độ rộng ưu tiên</label>
+<div class="flex bg-surface-container p-1 rounded-lg">
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md hover:bg-surface-container-low transition-all">Ôm</button>
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md hover:bg-surface-container-low transition-all">Vừa</button>
+<button class="flex-1 py-2 font-label-md text-label-md rounded-md bg-surface-container-lowest shadow-sm text-primary font-bold">Rộng rãi</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Tránh -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md mb-stack-md">Tránh</h2>
+<div class="bg-surface-container-lowest rounded-xl p-stack-md shadow-sm space-y-stack-lg">
+<!-- Styles to Avoid -->
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block uppercase">Phong cách không hợp</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 border border-outline-variant/30 rounded-full font-label-sm text-label-sm hover:border-primary transition-all">Hầm hố (Streetwear)</button>
+<button class="px-4 py-2 border border-primary bg-primary text-on-primary rounded-full font-label-sm text-label-sm transition-all">Thể thao (Athleisure)</button>
+<button class="px-4 py-2 border border-outline-variant/30 rounded-full font-label-sm text-label-sm hover:border-primary transition-all">Cổ điển (Classic)</button>
+<button class="px-4 py-2 border border-outline-variant/30 rounded-full font-label-sm text-label-sm hover:border-primary transition-all">Tối giản</button>
+<button class="px-4 py-2 border border-primary bg-primary text-on-primary rounded-full font-label-sm text-label-sm transition-all">Rực rỡ (Color block)</button>
+</div>
+</div>
+<!-- Disliked Colors -->
+<div class="space-y-stack-sm">
+<label class="font-label-sm text-label-sm text-outline block uppercase">Màu sắc muốn tránh</label>
+<div class="flex gap-4">
+<div class="group relative cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-primary ring-2 ring-offset-2 ring-primary bg-[#ff0000]"></div>
+<div class="absolute -top-1 -right-1 bg-primary text-on-primary rounded-full w-4 h-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] font-bold">close</span>
+</div>
+</div>
+<div class="group relative cursor-pointer">
+<div class="w-10 h-10 rounded-full border border-outline-variant/30 bg-[#ffff00]"></div>
+</div>
+<div class="group relative cursor-pointer">
+<div class="w-10 h-10 rounded-full border-2 border-primary ring-2 ring-offset-2 ring-primary bg-[#00ff00]"></div>
+<div class="absolute -top-1 -right-1 bg-primary text-on-primary rounded-full w-4 h-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] font-bold">close</span>
+</div>
+</div>
+<div class="group relative cursor-pointer">
+<div class="w-10 h-10 rounded-full border border-outline-variant/30 bg-[#ff00ff]"></div>
+</div>
+<div class="group relative cursor-pointer">
+<div class="w-10 h-10 rounded-full border border-outline-variant/30 bg-[#00ffff]"></div>
+</div>
+</div>
+<p class="font-label-sm text-[11px] text-outline italic">AI sẽ hạn chế đề xuất các trang phục có màu này.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Sticky Action -->
+<div class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-outline-variant/10 px-margin-mobile py-stack-md z-50">
+<div class="max-w-xl mx-auto">
+<button class="w-full bg-[#1A1208] text-white py-4 rounded-lg font-label-md text-label-md uppercase tracking-[0.1em] hover:opacity-90 active:scale-[0.98] transition-all shadow-xl">
+                Lưu thông tin
+            </button>
+</div>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple ripple effect or interaction feedback
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            button.addEventListener('mouseup', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Horizontal scroll animation for horizontal lists if any
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.glass-header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

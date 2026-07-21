@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#F5F0EB",
+        "backgroundColor": "#F7F4F0",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -46,7 +46,8 @@
           "photosPermission": "Cho phép truy cập thư viện để tải ảnh thử đồ về máy.",
           "savePhotosPermission": "Cho phép lưu ảnh thử đồ vào thư viện."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

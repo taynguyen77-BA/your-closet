@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<title>Wardro - Listing Detail</title>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "surface": "#f9f9f9",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-background": "#1a1c1c",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary-fixed": "#fcdeba",
+                    "on-error": "#ffffff",
+                    "background": "#f9f9f9",
+                    "error": "#ba1a1a",
+                    "outline": "#7e766d",
+                    "surface-dim": "#dadada",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-primary-fixed": "#231a0f",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#1a1c1c",
+                    "on-surface-variant": "#4d463e",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#000000",
+                    "secondary": "#705b3e",
+                    "surface-tint": "#695c4f",
+                    "surface-container-low": "#f3f3f4",
+                    "on-primary-container": "#908273",
+                    "inverse-surface": "#2f3131",
+                    "tertiary-fixed": "#e5e2de",
+                    "primary": "#000000",
+                    "on-secondary-fixed": "#281903",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "secondary-container": "#f9dbb7",
+                    "surface-container-high": "#e8e8e8",
+                    "on-tertiary-container": "#858480",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-primary": "#d4c4b3",
+                    "on-secondary-container": "#755f42",
+                    "outline-variant": "#cfc5bb",
+                    "surface-variant": "#e2e2e2",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "tertiary-container": "#1c1c1a",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "surface-container-lowest": "#ffffff",
+                    "espresso": "#1A1208",
+                    "linen": "#F7F4F0",
+                    "sand": "#E5D9C8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "stack-lg": "48px",
+                    "margin-mobile": "20px",
+                    "container-max": "1200px",
+                    "stack-sm": "12px"
+            },
+            "fontFamily": {
+                    "body-lg": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-md": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "display-lg": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F7F4F0; /* Linen background */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-sheet {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            transform: translateY(100%);
+        }
+        .bottom-sheet.active {
+            transform: translateY(0);
+        }
+        .overlay {
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .editorial-shadow {
+            box-shadow: 0 4px 20px -2px rgba(26, 18, 8, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-background selection:bg-sand overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-40 bg-linen/80 backdrop-blur-md">
+<div class="flex justify-between items-center px-margin-mobile py-4 w-full">
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform" onclick="window.history.back()">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-[24px] text-primary tracking-tighter">Wardro</h1>
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+</div>
+</header>
+<main class="pb-32">
+<!-- Hero Listing Image -->
+<section class="px-margin-mobile pt-unit">
+<div class="aspect-[3/4] w-full overflow-hidden rounded-lg bg-surface-container mb-stack-md">
+<img class="w-full h-full object-cover" data-alt="A high-end editorial fashion photograph of a vintage silk blazer in deep charcoal grey. The garment is draped elegantly over a minimalist white pedestal against a warm Linen-colored background. Lighting is soft and natural, coming from the side to highlight the luxurious texture of the fabric. The aesthetic is clean, sophisticated, and premium, reflecting a modern boutique vibe with high contrast and precise focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT49zpdt2Lo44KtgIhxsGWJgh4SgbxK9H-mOLDLRfYnua8X32_aAIE651Tn0Q-FYlnhzJ8RlawWXWLpkpIIsa9hAUUZc959B655Fl2dVFhZb77FJPbR8EHD_wH13JVWPVoVFfD5KeHrSizdZPaYnEH4__Nuis9YUjwTxVZNEQWepHH-l5JUbxt_RCaHW_4EBmq6IIH5iIUx7UNQqBio-_QTujJp0VJtbG8FDWJhzdax4m6-Aa5gtXnPZeLjPpPeR8EzBYPLF222PE"/>
+</div>
+</section>
+<!-- Product Info -->
+<section class="px-margin-mobile space-y-unit">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-sm text-primary flex-1">Áo blazer lụa Vintage 1990s</h2>
+<p class="font-headline-sm text-primary">1.200.000đ</p>
+</div>
+<div class="flex gap-2 py-2">
+<span class="bg-sand text-espresso px-3 py-1 rounded-full font-label-sm">Lụa Tự Nhiên</span>
+<span class="bg-sand text-espresso px-3 py-1 rounded-full font-label-sm">Size M</span>
+</div>
+<p class="text-on-surface-variant font-body-md mt-4 leading-relaxed">
+                Một món đồ hiếm từ thập niên 90 với chất liệu lụa cao cấp, độ rủ tự nhiên và phom dáng chuẩn. Thích hợp cho các dịp trang trọng hoặc phối layering hàng ngày.
+            </p>
+</section>
+<hr class="mx-margin-mobile my-stack-lg border-outline-variant/30"/>
+<!-- Safety Card (Persistent) -->
+<section class="px-margin-mobile mb-stack-lg">
+<div class="bg-white p-6 rounded-xl border border-outline-variant/20 editorial-shadow">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h3 class="font-label-md text-espresso uppercase tracking-wider">Giao dịch an toàn</h3>
+</div>
+<div class="space-y-3">
+<p class="font-body-md text-on-surface-variant">Giữ trao đổi trong ứng dụng. Không chuyển tiền ngoài luồng hoặc chia sẻ mã xác thực. Gặp trực tiếp ở nơi công cộng khi trao đổi.</p>
+</div>
+</div>
+</section>
+<!-- Seller Profile -->
+<section class="px-margin-mobile">
+<div class="flex items-center gap-4 py-4 border-t border-b border-outline-variant/10">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-sand">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a stylish young Vietnamese woman with a minimalist aesthetic. She is wearing a simple white linen shirt, smiling gently. The background is a soft beige tone with artistic, out-of-focus indoor lighting. The overall style is high-end lifestyle photography, conveying trust and sophistication." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXXp-ikyZXk13Bm3SoXP3ux0QD_dBY8UD1sTxsIQfYgTKwfPiKs-fnI8P41vH8fN-fLfH_YQ41fBEGTPVGhL3bSVlh__XVGEH1Jpu2hx-E9ZlC5TfwzH0OauIFimZaugUXdK7FuQ_I4iieSHx7ALhKGPQFGO9OjijsYxu8JxSsMbMC-ybMflF6Qu60Jydq5BP3g0U33cyAJflXChfJiDukH6mIWV4zMNaMtGXMmWd8pn1gODIE49FXB3foUoAgHdmdJ9TRdcJ4P50"/>
+</div>
+<div class="flex-1">
+<h4 class="font-label-md text-primary">Minh Anh Boutique</h4>
+<p class="font-label-sm text-outline">Đã xác thực • 4.9 ★ (120 đánh giá)</p>
+</div>
+<button class="border border-espresso px-4 py-2 rounded-lg font-label-sm hover:bg-espresso hover:text-white transition-colors">Theo dõi</button>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-linen/95 backdrop-blur-md px-margin-mobile py-6 flex items-center gap-4 z-30">
+<button class="w-12 h-12 flex items-center justify-center border border-espresso rounded-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-espresso">chat_bubble</span>
+</button>
+<button class="flex-1 bg-espresso text-white py-4 rounded-lg font-label-md uppercase tracking-widest active:scale-95 transition-all editorial-shadow" onclick="toggleModal(true)">
+            Mua ngay
+        </button>
+</div>
+<!-- Bottom Sheet Modal Overlay -->
+<div class="overlay fixed inset-0 bg-black/40 opacity-0 z-50 transition-opacity duration-300" id="modal-overlay" onclick="toggleModal(false)"></div>
+<!-- Bottom Sheet Modal -->
+<div class="bottom-sheet fixed bottom-0 left-0 w-full bg-white z-[60] rounded-t-[32px] px-6 pt-2 pb-10 editorial-shadow" id="bottom-sheet">
+<!-- Handle -->
+<div class="w-12 h-1.5 bg-surface-container rounded-full mx-auto my-4"></div>
+<div class="mt-4 space-y-6">
+<h2 class="font-headline-sm text-espresso text-center">Xác nhận mua</h2>
+<div class="bg-linen p-6 rounded-2xl space-y-4">
+<div class="flex justify-between items-center text-on-surface-variant font-body-md">
+<span>Giá sản phẩm</span>
+<span>1.200.000đ</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-md">
+<span>Phí nền tảng (10%)</span>
+<span>120.000đ</span>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-label-md text-espresso">TỔNG DỰ KIẾN</span>
+<span class="font-headline-sm text-espresso">1.320.000đ</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-body-md text-center px-4 leading-relaxed">
+                Thanh toán sẽ được xác nhận với người bán. Tiền sẽ được giữ bởi Wardro cho đến khi bạn nhận được hàng.
+            </p>
+<div class="space-y-3 pt-4">
+<button class="w-full bg-espresso text-white py-5 rounded-xl font-label-md uppercase tracking-widest active:scale-[0.98] transition-all">
+                    Tạo đơn hàng
+                </button>
+<button class="w-full py-4 text-outline font-label-md uppercase tracking-widest hover:text-espresso transition-colors" onclick="toggleModal(false)">
+                    Hủy
+                </button>
+</div>
+</div>
+</div>
+<script>
+        function toggleModal(show) {
+            const modal = document.getElementById('bottom-sheet');
+            const overlay = document.getElementById('modal-overlay');
+            if (show) {
+                modal.classList.add('active');
+                overlay.classList.add('active');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+    </script>
+</body></html>

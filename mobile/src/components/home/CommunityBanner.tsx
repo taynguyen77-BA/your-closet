@@ -11,7 +11,7 @@ export function CommunityBanner() {
   return (
     <Pressable onPress={() => router.push('/community')}>
       <LinearGradient
-        colors={['#E8E0F4', '#F4D4DC']}
+        colors={['#1E1712', '#1E1712']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={[styles.banner, { borderRadius: radius.lg }]}

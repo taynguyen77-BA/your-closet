@@ -16,6 +16,8 @@ export interface AuthAdmin {
 interface AuthState {
   admin: AuthAdmin | null;
   isAuthenticated: boolean;
+  isCheckingSession: boolean;
+  initializeSession: () => void;
   login: (email: string, password: string, role?: AdminRole) => Promise<boolean>;
   logout: () => void;
   switchRole: (role: AdminRole) => void;
@@ -57,25 +59,37 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       admin: null,
       isAuthenticated: false,
+      isCheckingSession: true,
+      initializeSession: () => {
+        if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") return set({ isCheckingSession: false });
+        const token = localStorage.getItem("tuado-admin-token");
+        if (!token) return set({ admin: null, isAuthenticated: false, isCheckingSession: false });
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1])) as { exp?: number; admin?: boolean; adminRole?: AdminRole; user_id?: string; email?: string; name?: string };
+          if (!payload.exp || payload.exp * 1000 <= Date.now() || payload.admin !== true || !payload.adminRole) throw new Error("expired");
+          set({ admin: { id: payload.user_id ?? "", email: payload.email ?? "", name: payload.name ?? payload.email ?? "Admin", role: payload.adminRole }, isAuthenticated: true, isCheckingSession: false });
+        } catch { localStorage.removeItem("tuado-admin-token"); set({ admin: null, isAuthenticated: false, isCheckingSession: false }); }
+      },
       login: async (email, password, role) => {
         if (process.env.NEXT_PUBLIC_DEMO_MODE !== "true") {
           const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
           if (!apiKey) return false;
           const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password, returnSecureToken: true }) });
           if (!response.ok) return false;
-          const session = await response.json() as { idToken: string; localId: string; email: string; displayName?: string };
-          const payload = JSON.parse(atob(session.idToken.split(".")[1])) as { adminRole?: AdminRole };
-          if (!payload.adminRole) return false;
-          const admin = { id: session.localId, email: session.email, name: session.displayName || session.email, role: payload.adminRole };
+          const session = await response.json() as { idToken: string };
+          const sessionResponse = await fetch("/api/admin/session", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ idToken: session.idToken }) });
+          if (!sessionResponse.ok) return false;
+          const payload = await sessionResponse.json() as { data: AuthAdmin };
+          const admin = payload.data;
           localStorage.setItem("tuado-admin-token", session.idToken); localStorage.setItem("tuado-admin-role", admin.role);
-          set({ admin, isAuthenticated: true }); return true;
+          set({ admin, isAuthenticated: true, isCheckingSession: false }); return true;
         }
         const entry = DEMO_ADMINS[email.toLowerCase()];
         if (!entry || entry.password !== password) return false;
         const admin = role
           ? { ...entry.admin, role, name: ROLE_LABELS[role] }
           : entry.admin;
-        set({ admin, isAuthenticated: true });
+        set({ admin, isAuthenticated: true, isCheckingSession: false });
         localStorage.setItem("tuado-admin-role", admin.role);
         return true;
       },

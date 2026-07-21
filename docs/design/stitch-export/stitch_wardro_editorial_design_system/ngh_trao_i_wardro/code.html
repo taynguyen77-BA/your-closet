@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Listing Detail - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&amp;family=DM+Serif+Display:wght@100..900&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "surface": "#f9f9f9",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-background": "#1a1c1c",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary-fixed": "#fcdeba",
+                    "on-error": "#ffffff",
+                    "background": "#f9f9f9",
+                    "error": "#ba1a1a",
+                    "outline": "#7e766d",
+                    "surface-dim": "#dadada",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-primary-fixed": "#231a0f",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#1a1c1c",
+                    "on-surface-variant": "#4d463e",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#000000",
+                    "secondary": "#705b3e",
+                    "surface-tint": "#695c4f",
+                    "surface-container-low": "#f3f3f4",
+                    "on-primary-container": "#908273",
+                    "inverse-surface": "#2f3131",
+                    "tertiary-fixed": "#e5e2de",
+                    "primary": "#000000",
+                    "on-secondary-fixed": "#281903",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "secondary-container": "#f9dbb7",
+                    "surface-container-high": "#e8e8e8",
+                    "on-tertiary-container": "#858480",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-primary": "#d4c4b3",
+                    "on-secondary-container": "#755f42",
+                    "outline-variant": "#cfc5bb",
+                    "surface-variant": "#e2e2e2",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#f1e0ce",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "tertiary-container": "#1c1c1a",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "unit": "4px",
+                    "stack-lg": "48px",
+                    "margin-mobile": "20px",
+                    "container-max": "1200px",
+                    "stack-sm": "12px"
+            },
+            "fontFamily": {
+                    "body-lg": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-md": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "display-lg": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        body {
+            background-color: #F7F4F0; /* Custom Linen Background as per guide */
+            color: #1A1208; /* Espresso variant */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .modal-transition {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .linen-bg { background-color: #F7F4F0; }
+        .espresso-bg { background-color: #1A1208; }
+        .espresso-text { color: #1A1208; }
+        .espresso-border { border-color: #1A1208; }
+        
+        /* Smooth interactions */
+        .tap-scale { transition: transform 0.1s ease; }
+        .tap-scale:active { transform: scale(0.97); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-40 flex justify-between items-center px-margin-mobile py-4 bg-background/80 backdrop-blur-md">
+<button class="tap-scale active:scale-95 transition-transform" onclick="window.history.back()">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md tracking-tighter">Wardro</h1>
+<div class="flex gap-4">
+<span class="material-symbols-outlined tap-scale">favorite</span>
+<span class="material-symbols-outlined tap-scale">share</span>
+</div>
+</header>
+<main class="pb-32">
+<!-- Editorial Image Gallery -->
+<section class="relative w-full aspect-[3/4] overflow-hidden mb-stack-lg">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A high-end editorial fashion photograph of a vintage silk trench coat hanging against a minimalist cream-colored plaster wall. The lighting is soft and natural, coming from a large window to the side, creating delicate shadows. The scene embodies a quiet luxury aesthetic with neutral tones and rich textures, highlighting the craftsmanship of the garment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBnDIsHxpUqwT6kr2vfN1XmPP-bwPEVpnqWbKaAfjozTRDHDF8kQLKxaX1s9uU2zuWZgSo4fLMTAmdomI6KEvLFkNWRuY7DJc_0q2zjDUEJMN-n-EwT2dc33HXZhkjA3WAvkStWXRbst7DvOOZrBBpluvLUUdUGfHdP6Wo_sgoEaquO9eEz8KnXNw8kaTdiroTOwqwR6EtLTDpBdmCZm4eiTHfXDAehiDifDDv7Pn57_GyWNAfwX0tRi6wQmtAnJkoQNVHR0wSOT2A')"></div>
+<div class="absolute bottom-4 right-4 bg-white/60 backdrop-blur px-3 py-1 rounded-full text-label-sm">1/5</div>
+</section>
+<!-- Product Information -->
+<section class="px-margin-mobile space-y-stack-md">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-sm text-headline-sm espresso-text mb-1">Silk Trench Coat</h2>
+<p class="font-label-md text-outline">Vintage • Size M</p>
+</div>
+<div class="bg-secondary-container px-3 py-1 rounded-full text-on-secondary-container font-label-sm">
+                    Đã sử dụng
+                </div>
+</div>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+                Một món đồ vượt thời gian được làm từ lụa tơ tằm cao cấp. Cảm giác mềm mại trên da, phù hợp cho những buổi chiều dạo phố Hà Nội.
+            </p>
+<!-- Attributes Chips -->
+<div class="flex flex-wrap gap-2">
+<span class="bg-[#f0ece6] espresso-text px-4 py-2 rounded-full font-label-sm">Lụa tơ tằm</span>
+<span class="bg-[#f0ece6] espresso-text px-4 py-2 rounded-full font-label-sm">Mùa thu</span>
+<span class="bg-[#f0ece6] espresso-text px-4 py-2 rounded-full font-label-sm">Beige</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30 my-stack-lg"></div>
+<!-- Safety Card (Persistent) -->
+<div class="bg-white p-6 rounded-xl border border-outline-variant/20 space-y-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h3 class="font-label-sm espresso-text uppercase tracking-wider">Giao dịch an toàn</h3>
+</div>
+<p class="font-body-md text-on-surface-variant text-[14px]">
+                    Giữ trao đổi trong ứng dụng. Không chuyển tiền ngoài luồng hoặc chia sẻ mã xác thực. Gặp trực tiếp ở nơi công cộng khi trao đổi.
+                </p>
+</div>
+</section>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-0 left-0 w-full bg-white p-margin-mobile flex gap-stack-sm items-center z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+<button class="flex-1 espresso-bg text-white py-4 rounded-full font-label-md tap-scale" onclick="openTradeModal()">
+            Đề nghị trao đổi
+        </button>
+<button class="w-14 h-14 border espresso-border flex items-center justify-center rounded-full tap-scale">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+</div>
+<!-- Bottom Sheet Modal Overlay -->
+<div class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity duration-300 opacity-0" id="modalOverlay" onclick="closeTradeModal()">
+<!-- Bottom Sheet -->
+<div class="absolute bottom-0 left-0 w-full bg-white rounded-t-[32px] p-8 modal-transition translate-y-full" id="tradeModal" onclick="event.stopPropagation()">
+<!-- Handle -->
+<div class="w-12 h-1.5 bg-surface-container rounded-full mx-auto mb-8"></div>
+<div class="mb-stack-lg">
+<h3 class="font-headline-sm text-headline-sm espresso-text mb-2 text-center">Đề nghị trao đổi</h3>
+<p class="font-body-md text-on-surface-variant text-center">Nhập nội dung để gửi yêu cầu.</p>
+</div>
+<div class="space-y-stack-md">
+<div class="group">
+<textarea class="w-full bg-[#F7F4F0] border-none rounded-2xl p-5 font-body-md espresso-text focus:ring-1 focus:ring-secondary placeholder:text-outline/50 transition-all resize-none" placeholder="Nội dung" rows="4"></textarea>
+</div>
+<div class="pt-4 flex flex-col gap-3">
+<button class="w-full espresso-bg text-white py-4 rounded-full font-label-md tap-scale flex items-center justify-center gap-2">
+<span>Gửi yêu cầu</span>
+<span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+<button class="w-full py-4 text-outline font-label-md tap-scale" onclick="closeTradeModal()">
+                        Hủy
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+        const modalOverlay = document.getElementById('modalOverlay');
+        const tradeModal = document.getElementById('tradeModal');
+
+        function openTradeModal() {
+            modalOverlay.classList.remove('hidden');
+            // Force reflow
+            void modalOverlay.offsetWidth;
+            modalOverlay.classList.add('opacity-100');
+            tradeModal.classList.remove('translate-y-full');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTradeModal() {
+            modalOverlay.classList.remove('opacity-100');
+            tradeModal.classList.add('translate-y-full');
+            setTimeout(() => {
+                modalOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        // Add micro-shadow effect on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

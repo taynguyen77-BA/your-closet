@@ -4,3 +4,10 @@
 mobile/.claude/
 mobile/AGENTS.md
 mobile/CLAUDE.md
+firestore-debug.log
+firestore-debug.log.*
+mobile/dist-preview/
+mobile/dist-preview-unauth/
+mobile/dist-local/
+mobile/playwright-report/
+mobile/test-results/

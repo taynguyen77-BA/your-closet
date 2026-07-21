@@ -8,24 +8,31 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
+    "@expo-google-fonts/dm-sans": "^0.4.2",
+    "@expo-google-fonts/dm-serif-display": "^0.4.2",
     "@expo/metro-runtime": "~56.0.13",
     "@expo/vector-icons": "^15.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "babel-preset-expo": "~56.0.0",
     "expo": "~56.0.8",
+    "expo-auth-session": "~56.0.13",
     "expo-blur": "~56.0.3",
     "expo-constants": "~56.0.16",
     "expo-file-system": "^56.0.7",
+    "expo-font": "^56.0.5",
     "expo-image": "~56.0.9",
     "expo-image-picker": "~56.0.15",
     "expo-linear-gradient": "~56.0.4",
     "expo-linking": "~56.0.13",
+    "expo-local-authentication": "~56.0.4",
     "expo-location": "~56.0.15",
     "expo-media-library": "^56.0.6",
     "expo-router": "~56.2.8",
+    "expo-secure-store": "~56.0.4",
     "expo-sharing": "^56.0.15",
     "expo-status-bar": "~56.0.4",
     "firebase": "^11.10.0",
@@ -40,8 +47,30 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
+    "jest": "^30.4.2",
+    "serve": "^14.2.6",
+    "ts-jest": "^29.4.11",
     "typescript": "~6.0.3"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testMatch": [
+      "**/src/__tests__/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "tsconfig.jest.json"
+        }
+      ]
+    }
+  }
 }

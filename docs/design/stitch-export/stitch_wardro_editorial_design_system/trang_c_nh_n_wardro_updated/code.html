@@ -1,0 +1,338 @@
+<!DOCTYPE html><html class="light" lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f3f4",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-tertiary-container": "#858480",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-surface": "#1a1c1c",
+                        "on-secondary-container": "#755f42",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "surface-container-high": "#e8e8e8",
+                        "primary-fixed": "#f1e0ce",
+                        "on-secondary-fixed": "#281903",
+                        "secondary-container": "#f9dbb7",
+                        "background": "#f9f9f9",
+                        "surface-tint": "#695c4f",
+                        "outline": "#7e766d",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#e5e2de",
+                        "tertiary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f1",
+                        "secondary": "#705b3e",
+                        "on-surface-variant": "#4d463e",
+                        "primary-container": "#231a0f",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "on-primary-fixed": "#231a0f",
+                        "secondary-fixed": "#fcdeba",
+                        "primary": "#000000",
+                        "on-background": "#1a1c1c",
+                        "tertiary-container": "#1c1c1a",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "inverse-primary": "#d4c4b3",
+                        "outline-variant": "#cfc5bb",
+                        "on-primary-container": "#908273",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2f3131",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "surface-bright": "#f9f9f9",
+                        "on-secondary-fixed-variant": "#574329",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed-variant": "#504538",
+                        "espresso": "#1A1208",
+                        "sand": "#D4B896",
+                        "linen": "#F7F4F0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "unit": "4px",
+                        "container-max": "1200px",
+                        "stack-sm": "12px",
+                        "margin-desktop": "64px",
+                        "stack-lg": "48px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "body-md": ["DM Sans"],
+                        "headline-sm": ["DM Serif Display"],
+                        "label-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "display-lg": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["DM Serif Display"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen */
+            color: #1A1208; /* Espresso */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .profile-card-shadow {
+            box-shadow: 0 4px 20px -8px rgba(26, 18, 8, 0.08);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-linen/80 backdrop-blur-md flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-espresso cursor-pointer hover:opacity-70 transition-opacity">menu</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm-mobile text-espresso uppercase tracking-widest">Cá nhân</h1>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-espresso cursor-pointer hover:opacity-70 transition-opacity">shopping_bag</span>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile max-w-xl mx-auto">
+<!-- User Header Section -->
+<section class="flex flex-col items-center mb-stack-lg transition-all duration-700 opacity-100 translate-y-0">
+<div class="w-32 h-32 rounded-full overflow-hidden border-2 border-sand p-1 mb-stack-md transition-transform duration-500 hover:scale-105">
+<img class="w-full h-full object-cover rounded-full" data-alt="A sophisticated editorial studio portrait of a young Vietnamese woman with elegant, minimal makeup and sleek hair. She is wearing a soft cream cashmere sweater, set against a warm, sun-drenched minimalist interior with neutral linen textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeGkDNvIalcvwJgoxPspOC6DqzLflI1EmKAruIon1D7gFNB_jU5xxHZLOPOtL51Yh3ijTN-V8r0XrwH_8BwkglB0xbSQmZ2aPzK6HeVx52GK6YV3bkAzeWMG2AcM2rl86tCGd5SwSDx9J524b3CH235an5aLD7GUYsx-M4QolZ4ZrpGBosTL9l8H_m86jODhEJVtfwW-WXi-sT173IZCXUvOFkcsp_YkRa_H9LSiCCGkhZBunkmRX382SuWFylVlVxMgKKE3Mu-dk">
+</div>
+<h2 class="font-headline-md text-headline-md-mobile text-espresso mb-1 text-center">Nguyễn Minh Anh</h2>
+<p class="font-body-md text-on-surface-variant/70 mb-stack-sm text-center">Thành viên từ 2024</p>
+<!-- Style Level Strip -->
+<div class="w-full max-w-[200px]">
+<div class="flex justify-between items-end mb-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-espresso opacity-60">Cấp độ phong cách 12</span>
+<span class="font-label-sm text-label-sm text-sand">85%</span>
+</div>
+<div class="h-1 w-full bg-espresso/10 rounded-full overflow-hidden">
+<div class="h-full bg-sand w-[85%] transition-all duration-1000 ease-out"></div>
+</div>
+</div>
+</section>
+<!-- Membership Card -->
+<section class="mb-stack-lg transition-all duration-700 opacity-100 translate-y-0">
+<div class="bg-white p-gutter rounded-xl profile-card-shadow border border-espresso/5 flex justify-between items-center relative overflow-hidden group">
+<!-- Subtle texture overlay -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-2">
+<span class="font-headline-sm text-headline-sm-mobile text-espresso">Wardro Pro</span>
+<span class="bg-sand/20 text-sand px-2 py-0.5 rounded-full font-label-sm text-[10px] uppercase tracking-tighter">Gold</span>
+</div>
+<p class="font-body-md text-on-surface-variant/70 text-sm">Hạn dùng: 12/2025</p>
+</div>
+<div class="relative z-10">
+<button class="bg-espresso text-white px-4 py-2 rounded-full font-label-md hover:bg-espresso/90 transition-colors">
+                        Gia hạn
+                    </button>
+</div>
+</div>
+</section>
+<!-- Settings List -->
+<section class="space-y-unit transition-all duration-700 opacity-100 translate-y-0">
+<div class="bg-white rounded-xl overflow-hidden border border-espresso/5 profile-card-shadow">
+<!-- Nâng cấp row added under membership card section start -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">workspace_premium</span>
+<span class="font-body-md text-espresso">Nâng cấp gói Wardro</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Tủ đồ của tôi -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">inventory_2</span>
+<span class="font-body-md text-espresso">Tủ đồ của tôi</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Sự kiện -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">calendar_today</span>
+<span class="font-body-md text-espresso">Sự kiện</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Bộ đồ đã lưu -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">auto_awesome</span>
+<span class="font-body-md text-espresso">Bộ đồ đã lưu</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Cộng đồng -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">groups</span>
+<span class="font-body-md text-espresso">Cộng đồng</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Đăng tin của tôi -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">post_add</span>
+<span class="font-body-md text-espresso">Đăng tin của tôi</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Nhiệm vụ -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">assignment</span>
+<span class="font-body-md text-espresso">Nhiệm vụ</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Lịch sử mua sắm -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="{{DATA:SCREEN:SCREEN_105}}">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">receipt_long</span>
+<span class="font-body-md text-espresso">Lịch sử mua sắm</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Gu thời trang (was Cài đặt phong cách) -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">tune</span>
+<span class="font-body-md text-espresso">Gu thời trang</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Cài đặt -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">settings</span>
+<span class="font-body-md text-espresso">Cài đặt</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Thông tin tài khoản -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">person_outline</span>
+<span class="font-body-md text-espresso">Thông tin tài khoản</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+<div class="h-[1px] bg-linen mx-stack-md"></div>
+<!-- Trợ giúp & Hỗ trợ -->
+<a class="flex items-center justify-between p-stack-md hover:bg-linen/30 transition-colors group" href="#">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-espresso group-hover:scale-110 transition-transform">help_outline</span>
+<span class="font-body-md text-espresso">Trợ giúp &amp; Hỗ trợ</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/30 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</a>
+</div>
+<button class="w-full text-error font-label-md py-stack-md mt-stack-md hover:opacity-70 transition-opacity">
+                Đăng xuất
+            </button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 bg-surface/80 backdrop-blur-md px-margin-mobile pb-safe border-t border-outline-variant/30">
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-[10px] mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-[10px] mt-1">Tủ đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-label-sm text-[10px] mt-1">Thử đồ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-sm text-[10px] mt-1">Cộng đồng</span>
+</a>
+<!-- Active Tab: Cá nhân -->
+<a class="flex flex-col items-center justify-center text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-[10px] mt-1">Cá nhân</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for list items and scroll
+        document.querySelectorAll('a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                if(this.getAttribute('href') === '#') e.preventDefault();
+            });
+        });
+        
+        // Simple scroll reveal effect for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(section);
+        });
+    </script>
+
+
+
+
+</body></html>

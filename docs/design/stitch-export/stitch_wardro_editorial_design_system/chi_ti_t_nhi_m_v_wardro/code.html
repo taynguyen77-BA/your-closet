@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wardro - Chi tiết nhiệm vụ</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e2e2e2",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-surface": "#1a1c1c",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "surface-container-highest": "#e2e2e2",
+                    "on-surface-variant": "#4d463e",
+                    "on-secondary-fixed-variant": "#574329",
+                    "background": "#f9f9f9",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "secondary-fixed": "#fcdeba",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#1c1c1a",
+                    "surface-container-high": "#e8e8e8",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "surface-tint": "#695c4f",
+                    "primary": "#000000",
+                    "inverse-primary": "#d4c4b3",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#f1e0ce",
+                    "inverse-surface": "#2f3131",
+                    "on-tertiary-container": "#858480",
+                    "secondary": "#705b3e",
+                    "outline-variant": "#cfc5bb",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "primary-container": "#231a0f",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f3f4",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "on-secondary-fixed": "#281903",
+                    "tertiary-fixed": "#e5e2de",
+                    "tertiary": "#000000",
+                    "on-primary-fixed": "#231a0f",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "surface": "#f9f9f9",
+                    "outline": "#7e766d",
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#f9dbb7",
+                    "on-secondary-container": "#755f42",
+                    "surface-dim": "#dadada",
+                    "on-primary-container": "#908273",
+                    "inverse-on-surface": "#f0f1f1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "stack-md": "24px",
+                    "gutter": "24px",
+                    "stack-lg": "48px",
+                    "margin-desktop": "64px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "stack-sm": "12px"
+            },
+            "fontFamily": {
+                    "body-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "display-lg": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "headline-sm": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .progress-gradient {
+            background: linear-gradient(90deg, #000000 0%, #4d463e 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(26, 18, 8, 0.05);
+        }
+        /* Custom scrollbar for minimalist look */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f9f9f9; }
+        ::-webkit-scrollbar-thumb { background: #e2e2e2; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation Header -->
+<header class="bg-surface dark:bg-surface w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform flex items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-on-surface">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm md:font-headline-md md:text-headline-md text-primary dark:text-on-surface">Chi tiết nhiệm vụ</h1>
+</div>
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary dark:text-on-surface">more_vert</span>
+</button>
+</header>
+<main class="max-w-screen-xl mx-auto pb-32">
+<!-- Hero Section -->
+<section class="relative w-full h-[60vh] md:h-[70vh] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida/AP1WRLvYvZ01n0QoI3i3kD7xO39Nn8cXU4o4x334bm08zppxOEv3I4cRvSffPI76_yNKEIFeeOYoxd4IcgPAx1CH28fe1SeuSTk33GgGcqYIXwmznCOkWeXjh8ikHXMnBToRWM4VyR481ReSoM64TRSVvlXHYEan0mQV7iQl3GdvjMDxysOlifGKlf-OY8088BtqhmiL_N49PgYu3-xGviLtAubee67uPIuqFgwhn-O_Dp5SSGi84DxCIYcSC90')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-margin-mobile md:p-margin-desktop w-full md:max-w-2xl text-white">
+<span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-label-sm font-label-sm mb-4 uppercase tracking-widest">Thử thách phong cách</span>
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg mb-4">Biểu tượng Minimalism</h2>
+<p class="font-body-lg text-body-lg opacity-90 leading-relaxed">
+                    Khám phá sức mạnh của sự giản đơn. Nhiệm vụ này thách thức bạn kiến tạo những bộ trang phục tinh tế chỉ từ những gam màu trung tính và đường cắt tối giản.
+                </p>
+</div>
+</section>
+<div class="px-margin-mobile md:px-margin-desktop -mt-12 relative z-10 grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Progress & Tasks -->
+<div class="md:col-span-8 flex flex-col gap-stack-md">
+<!-- Progress Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-sm">
+<div class="flex justify-between items-end mb-6">
+<div>
+<p class="text-on-surface-variant font-label-md text-label-md uppercase mb-1">Trạng thái</p>
+<h3 class="font-headline-sm text-headline-sm">Tiến độ hiện tại</h3>
+</div>
+<div class="text-right">
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary leading-none">3/7</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">bộ đồ đã hoàn thành</p>
+</div>
+</div>
+<div class="w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full progress-gradient transition-all duration-700 ease-out" style="width: 42.8%;"></div>
+</div>
+</div>
+<!-- Tasks List -->
+<div class="bg-white p-8 rounded-xl border border-outline-variant/10">
+<h3 class="font-headline-sm text-headline-sm mb-8 border-b border-outline-variant/10 pb-4">Yêu cầu thử thách</h3>
+<div class="flex flex-col gap-6">
+<!-- Task 1 -->
+<div class="flex items-start gap-4 group">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center bg-primary text-white">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg text-body-lg font-bold text-primary line-through opacity-50">Phối 01 bộ đồ với tông màu trung tính</h4>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-60">Sử dụng các màu như trắng, đen, xám hoặc kem.</p>
+</div>
+</div>
+<!-- Task 2 -->
+<div class="flex items-start gap-4 group">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center bg-primary text-white">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg text-body-lg font-bold text-primary line-through opacity-50">Sử dụng ít nhất 1 món đồ từ Tủ đồ</h4>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-60">Kết hợp trang phục sẵn có của bạn vào outfit mới.</p>
+</div>
+</div>
+<!-- Task 3 -->
+<div class="flex items-start gap-4 group">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary transition-colors">
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg text-body-lg font-bold text-primary">Lưu vào bộ sưu tập Sự kiện</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Đánh dấu outfit của bạn để tham gia bình chọn cộng đồng.</p>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-secondary-container text-on-secondary-container rounded">Đang thực hiện</span>
+</div>
+<!-- Task 4 -->
+<div class="flex items-start gap-4 group">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary transition-colors">
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg text-body-lg font-bold text-primary">Phối 02 bộ đồ phong cách Minimalism Modern</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Tập trung vào cấu trúc và chất liệu vải cao cấp.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Rewards -->
+<div class="md:col-span-4 flex flex-col gap-stack-md">
+<div class="bg-primary text-white p-8 rounded-xl shadow-lg relative overflow-hidden">
+<!-- Subtle background decoration -->
+<div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+<h3 class="font-headline-sm text-headline-sm mb-6 border-b border-white/20 pb-4">Phần thưởng</h3>
+<ul class="flex flex-col gap-6">
+<li class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-fixed">auto_fix_high</span>
+</div>
+<div>
+<p class="font-body-lg text-body-lg font-bold">+5 Lượt thử đồ AI</p>
+<p class="font-label-sm text-label-sm text-white/60">Tính năng cao cấp</p>
+</div>
+</li>
+<li class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-fixed">military_tech</span>
+</div>
+<div>
+<p class="font-body-lg text-body-lg font-bold">+100 XP</p>
+<p class="font-label-sm text-label-sm text-white/60">Thăng hạng phong cách</p>
+</div>
+</li>
+<li class="flex items-center gap-4">
+<div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-fixed">verified</span>
+</div>
+<div>
+<p class="font-body-lg text-body-lg font-bold">Huy hiệu Zen Fashionista</p>
+<p class="font-label-sm text-label-sm text-white/60">Trưng bày trên profile</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Style Inspiration Mini-Gallery -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+<h4 class="font-label-md text-label-md uppercase text-on-surface-variant mb-4">Cảm hứng từ cộng đồng</h4>
+<div class="grid grid-cols-2 gap-3">
+<div class="aspect-[3/4] bg-surface-variant rounded-lg overflow-hidden group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A minimalist outfit flat lay on a beige surface, featuring an oversized white cotton shirt, tailored black trousers, and sleek leather loafers. Soft morning shadows create a peaceful, high-end editorial look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpj_381mMrqxuMMhHUlEDjzI9iUNsc5eWR5FIXbNyuYg29975Y0z0b_H3VO0l4Abd59IASau_T0BkmDWpWD5G9PCkdyj5H2HejyqxY4gRQanalhpmBsRkgKuW0Z4-JNw2eZgqbh5Sc-m1lOEqihBud7IpzgKl7CYPvvuQIgqNKbdnEUgxTo95HQZ0cFQShFttkbf7P-ZZZbeYzOpuq72BJ7h2ywYsw4PfMl9yQbRTeR6YWrUaM1a96ZfLFvQknB7O1CdvG_BLddhE"/>
+</div>
+<div class="aspect-[3/4] bg-surface-variant rounded-lg overflow-hidden group cursor-pointer">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A portrait of a person wearing a monochromatic grey linen suit in a bright, modern architectural space. The lighting is diffused and clean, emphasizing the minimalist fashion aesthetic and sophisticated silhouettes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdqY_DKP8Aft9qtuprokFSeyYfvNTECJc8lrCQNIMjfgxvFZEseYObn8H3KOgZn6bcDPyunJi0ygQfVpS5j7L1NWQwRhhJa8ZXCQT2Z_GXTaa6DKECYEbYwYNYTR4DJbDJVKrr8WpHr4YnT45HsCntx4ArzWF6xWZ3HYwVT270KXJdAu_FiORTCNUjQqfsiD7phusJyFJ7JedGpQ_uBPS0q1VHtjjxQj0Y5mgVDgEGX8tOay_D50YuNPZHnbaPbu0XEAMlLhfeyTI"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar (Fixed) -->
+<div class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-xl border-t border-outline-variant/20 p-margin-mobile md:px-margin-desktop z-[60]">
+<div class="max-w-screen-xl mx-auto flex gap-4">
+<button class="flex-grow bg-primary text-white py-4 px-8 rounded-full font-label-md text-label-md uppercase tracking-widest hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-[20px]">play_arrow</span>
+                TIẾP TỤC THỰC HIỆN
+            </button>
+<button class="hidden md:flex w-16 h-16 border border-primary rounded-full items-center justify-center hover:bg-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+<!-- Mobile Bottom Nav Bar (From Shared Components) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-20 px-margin-mobile bg-surface dark:bg-surface border-t border-outline-variant/20 z-50 md:hidden invisible opacity-0 translate-y-full transition-all duration-300" id="global-nav">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-on-surface scale-110" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">rebase_edit</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">military_tech</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for scroll effects
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md');
+                header.style.backgroundColor = 'rgba(249, 249, 249, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.classList.remove('shadow-md');
+                header.style.backgroundColor = '#f9f9f9';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // Toggle visibility of global nav based on focus
+        // (In a real app, this logic would trigger when navigating away from the task focus)
+    </script>
+</body></html>

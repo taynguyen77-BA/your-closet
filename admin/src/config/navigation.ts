@@ -69,6 +69,12 @@ export const navigationGroups: NavGroup[] = [
         permission: "ai.view",
       },
       {
+        title: "AI Routing Config",
+        href: "/ai/routing",
+        icon: Bot,
+        permission: "settings.view",
+      },
+      {
         title: "Outfit & Tủ đồ",
         href: "/outfits",
         icon: Shirt,
@@ -162,6 +168,12 @@ export const navigationGroups: NavGroup[] = [
         href: "/security",
         icon: Shield,
         permission: "security.view",
+      },
+      {
+        title: "Admin users",
+        href: "/admin-users",
+        icon: Users,
+        permission: "settings.manage",
       },
       {
         title: "Cài đặt",

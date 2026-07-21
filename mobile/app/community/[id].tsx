@@ -1,17 +1,18 @@
-import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { Alert, Modal, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { AppText } from '@/components/ui/AppText';
 import { PLATFORM_FEE_RATE } from '@/constants/membership';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function CommunityDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, source, recommendationId } = useLocalSearchParams<{ id: string; source?: string; recommendationId?: string }>();
   const { colors, gradients, spacing, radius } = useTheme();
   const listing = useAppStore((s) => s.communityListings.find((l) => l.id === id));
   const user = useAppStore((s) => s.user);
@@ -34,13 +35,14 @@ export default function CommunityDetailScreen() {
 
   const fee = listing.price ? Math.round(listing.price * PLATFORM_FEE_RATE) : 0;
   const complete = async () => {
+    if (flow !== 'report' && !useAuthStore.getState().requireAccount()) return;
     if (!flow) return;
     const createdAt = new Date().toISOString();
     try {
       if (flow === 'message') await sendMarketplaceMessage({ listingId: listing.id, senderId: user.id, sellerId: listing.userId, body: text.trim(), createdAt });
       if (flow === 'trade') await createTradeOffer({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, message: text.trim(), status: 'pending', createdAt });
       if (flow === 'report') await createListingReport({ listingId: listing.id, reporterId: user.id, reason: text.trim(), createdAt });
-      if (flow === 'buy') await createTransaction({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, amount: listing.price ?? 0, platformFeePercentage: PLATFORM_FEE_RATE * 100, platformFee: fee, status: 'pending', createdAt });
+      if (flow === 'buy') await createTransaction({ listingId: listing.id, buyerId: user.id, sellerId: listing.userId, amount: listing.price ?? 0, platformFeePercentage: PLATFORM_FEE_RATE * 100, platformFee: fee, status: 'pending', source: source === 'ai_stylist' ? 'ai_stylist' : 'community', recommendationId, createdAt });
       Alert.alert('Đã ghi nhận', flow === 'report' ? 'Báo cáo đã được gửi để kiểm duyệt.' : flow === 'buy' ? 'Đơn hàng đã tạo. Trạng thái hiện tại: chờ thanh toán.' : 'Yêu cầu đã được gửi tới người bán.');
       setText(''); setFlow(null);
     } catch { Alert.alert('Chưa thể gửi', 'Kiểm tra kết nối rồi thử lại.'); }
@@ -48,14 +50,14 @@ export default function CommunityDetailScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: spacing.lg }}>
-      <View style={[styles.heroWrap, { borderRadius: radius.xl }]}><Image source={{ uri: listing.imageUrls[0] }} style={styles.hero} /><View style={[styles.photoCount, { backgroundColor: colors.surfaceGlass }]}><AppText variant="caption">1 / {listing.imageUrls.length}</AppText></View></View>
+      <View style={[styles.heroWrap, { borderRadius: radius.xl }]}><SafeImage source={{ uri: listing.imageUrls[0] }} style={styles.hero} fallbackLabel="ẢNH MÓN ĐỒ" /><View style={[styles.photoCount, { backgroundColor: colors.surfaceGlass }]}><AppText variant="caption">1 / {listing.imageUrls.length}</AppText></View></View>
       <AppText variant="h1" style={{ marginTop: spacing.lg }}>
         {listing.title}
       </AppText>
       <AppText variant="body" muted>
         {listing.description}
       </AppText>
-      <View style={styles.chips}>{[listing.listingType === 'sale' ? 'For sale' : listing.listingType === 'trade' ? 'Open to trade' : 'Giveaway', `Size ${listing.size ?? 'N/A'}`, listing.condition, listing.location].map((chip) => <View key={chip} style={[styles.chip, { backgroundColor: colors.lavender }]}><AppText variant="caption">{chip}</AppText></View>)}</View>
+      <View style={styles.chips}>{[listing.listingType === 'sale' ? 'Đang bán' : listing.listingType === 'trade' ? 'Sẵn sàng trao đổi' : 'Tặng miễn phí', `Cỡ ${listing.size ?? 'Chưa rõ'}`, listing.condition, listing.location].map((chip) => <View key={chip} style={[styles.chip, { backgroundColor: colors.lavender }]}><AppText variant="caption">{chip}</AppText></View>)}</View>
       {listing.price ? (
         <AppText variant="h2" style={{ marginTop: spacing.md }}>
           {listing.price.toLocaleString('vi-VN')}đ
@@ -67,11 +69,11 @@ export default function CommunityDetailScreen() {
         </AppText>
       )}
       <View style={[styles.seller, { backgroundColor: colors.surface, borderRadius: radius.xl }]}>
-        <Image source={{ uri: listing.sellerAvatarUrl ?? user.avatarUrl }} style={styles.avatar} />
+        <SafeImage source={{ uri: listing.sellerAvatarUrl ?? user.avatarUrl }} style={styles.avatar} />
         <View style={{ flex: 1 }}><AppText variant="h3">{listing.sellerName}</AppText><AppText variant="bodySmall" muted>Seller · phản hồi nhanh trong ngày</AppText></View>
         <Ionicons name="chevron-forward" size={19} color={colors.textMuted} />
       </View>
-      {!canInteract ? <View style={[styles.notice, { backgroundColor: colors.lemon, borderRadius: radius.lg }]}><AppText variant="label">{isOwn ? 'Đây là listing của bạn' : 'Listing chưa sẵn sàng giao dịch'}</AppText><AppText variant="bodySmall" muted>{isOwn ? 'Bạn có thể theo dõi kiểm duyệt trong My Listings.' : 'Chỉ listing đã duyệt mới có thể nhắn tin, trao đổi hoặc mua.'}</AppText></View> : null}
+      {!canInteract ? <View style={[styles.notice, { backgroundColor: colors.lemon, borderRadius: radius.lg }]}><AppText variant="label">{isOwn ? 'Đây là tin đăng của bạn' : 'Tin đăng chưa sẵn sàng giao dịch'}</AppText><AppText variant="bodySmall" muted>{isOwn ? 'Bạn có thể theo dõi kiểm duyệt trong Tin đăng của tôi.' : 'Chỉ tin đăng đã duyệt mới có thể nhắn tin, trao đổi hoặc mua.'}</AppText></View> : null}
       <View style={styles.actions}>
         <Button label="Message" variant="secondary" icon="chatbubble-outline" disabled={!canInteract} onPress={() => setFlow('message')} style={{ flex: 1, marginRight: 8 }} />
         <Button label="Trade" variant="ghost" icon="swap-horizontal-outline" disabled={!canInteract} onPress={() => setFlow('trade')} style={{ flex: 1, marginRight: 8 }} />

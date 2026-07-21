@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Nhắn tin - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display:ital@0;1&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#000000",
+                        "on-secondary-container": "#755f42",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "surface-container-low": "#f3f3f4",
+                        "surface-tint": "#695c4f",
+                        "on-background": "#1a1c1c",
+                        "surface": "#f9f9f9",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#cfc5bb",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-tertiary-container": "#858480",
+                        "secondary-container": "#f9dbb7",
+                        "tertiary": "#000000",
+                        "error-container": "#ffdad6",
+                        "background": "#f9f9f9",
+                        "outline": "#7e766d",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "on-secondary-fixed": "#281903",
+                        "tertiary-container": "#1c1c1a",
+                        "on-secondary-fixed-variant": "#574329",
+                        "primary-fixed": "#f1e0ce",
+                        "secondary": "#705b3e",
+                        "tertiary-fixed": "#e5e2de",
+                        "surface-container-high": "#e8e8e8",
+                        "inverse-primary": "#d4c4b3",
+                        "on-primary-fixed": "#231a0f",
+                        "inverse-on-surface": "#f0f1f1",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface-variant": "#4d463e",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#231a0f",
+                        "inverse-surface": "#2f3131",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "surface-variant": "#e2e2e2",
+                        "secondary-fixed": "#fcdeba",
+                        "surface-container": "#eeeeee",
+                        "on-surface": "#1a1c1c",
+                        "surface-bright": "#f9f9f9",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#908273",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-primary-fixed-variant": "#504538"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["DM Sans"],
+                        "body-lg": ["DM Sans"],
+                        "body-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "headline-sm": ["DM Serif Display"],
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "display-lg-mobile": ["DM Serif Display"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #f9f9f9;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .chat-bubble-recipient {
+            border-top-left-radius: 2px;
+        }
+        .chat-bubble-user {
+            border-top-right-radius: 2px;
+            background-color: #231a0f;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-background border-b border-outline-variant/10 flex items-center justify-between px-margin-mobile py-4 h-16">
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20 bg-surface-container">
+<img alt="Nguyên An" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvR9qma-HJ02hyNOO2TwWswmbwEGXHYtsYubQGJ7vXfKhwjxEh1_WLWNqDc7ICrBbcYulTM6uCa3VudGuBLjzvi1G0xJEozYSiSQUuBbOQML1j06zvOlloasEGWU2Y2-IilASSkxRZIS8ABzHrFMMZ9tGHmrXoxUU9va1ox65xbt0Bb85vRJDdJmexLhthqQAVzbRslrlM0OUFpQ7o2g-dpR0N3mhcfdMyYzSxoMvRl5GaSyxrunnnS6D1b_CcXw24YFfw9CHeE3s"/>
+</div>
+<div>
+<h1 class="font-label-md text-label-md text-primary leading-tight">Wardro</h1>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] font-bold tracking-wider uppercase text-on-surface-variant">Nguyên An • Đang hoạt động</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Chat Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile py-stack-md scrollbar-hide flex flex-col gap-stack-md">
+<!-- Context Card: Trade Offer -->
+<div class="w-full bg-surface-container-lowest border border-outline-variant/10 rounded-lg p-3 flex gap-4 items-center shadow-sm">
+<div class="w-16 h-20 bg-surface-container rounded-sm overflow-hidden flex-shrink-0">
+<img alt="Silk Trench Coat" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc2yucBAQklE4f_EVU19un5UTW8t0vbDT-6fGsgzwbSAw1G4o0Bo2V7IuG9tMruGlCMzyHM5IdSG6VbQY4n9FzQFnSdSwrvyTxloqs4mRKAUl0ZrgBVkU2DzGlam178k4f7Jos4x799PKlmwByn9UPZDAfAts3oeR81ew6_VFCTKq3m_OFCputooagJfFldujX3QkBgLgFSEIi2BF7emxPSuIMEcIsPPoYfAWdqUzl8vMqo0EQrG6xqDVj3qApi4iP16dD75GP-Ng"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold text-secondary tracking-widest uppercase mb-1 block">Đề nghị trao đổi</span>
+<span class="text-[10px] text-on-surface-variant">Hôm nay</span>
+</div>
+<h3 class="font-headline-sm text-label-md text-primary mb-1">Silk Trench Coat</h3>
+<p class="text-label-sm text-on-surface-variant leading-none">BST Mùa Thu • Size M</p>
+</div>
+<button class="material-symbols-outlined text-outline" data-icon="chevron_right">chevron_right</button>
+</div>
+<!-- Date Divider -->
+<div class="flex justify-center my-2">
+<span class="px-3 py-1 rounded-full bg-surface-container-high/30 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Hôm nay</span>
+</div>
+<!-- Message List -->
+<div class="flex flex-col gap-6">
+<!-- Recipient Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="chat-bubble-recipient bg-surface-container-low p-4 rounded-xl text-on-surface text-body-md leading-relaxed shadow-sm">
+                    Chào bạn, mình vừa gửi đề nghị trao đổi cho chiếc Trench Coat.
+                </div>
+<span class="mt-2 ml-1 text-[10px] text-on-surface-variant font-medium">10:42 AM</span>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end self-end max-w-[85%]">
+<div class="chat-bubble-user p-4 rounded-xl text-on-primary text-body-md leading-relaxed shadow-sm">
+                    Chào bạn, mình đã nhận được đề nghị. Áo này tình trạng còn rất tốt đúng không ạ?
+                </div>
+<div class="flex items-center gap-1 mt-2 mr-1">
+<span class="text-[10px] text-on-surface-variant font-medium uppercase tracking-tight">Đã xem</span>
+<span class="material-symbols-outlined text-[12px] text-secondary" data-icon="done_all">done_all</span>
+</div>
+</div>
+<!-- Recipient Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="chat-bubble-recipient bg-surface-container-low p-4 rounded-xl text-on-surface text-body-md leading-relaxed shadow-sm">
+                    Đúng rồi bạn ơi, mình mới mặc đúng 2 lần thôi. Chất liệu lụa cao cấp nên giữ form rất tốt, mình có đính kèm thêm ảnh chi tiết chất vải ở phần đề nghị nhé.
+                </div>
+<span class="mt-2 ml-1 text-[10px] text-on-surface-variant font-medium">10:45 AM</span>
+</div>
+<!-- Recipient Message -->
+<div class="flex flex-col items-start max-w-[85%]">
+<div class="chat-bubble-recipient bg-surface-container-low p-4 rounded-xl text-on-surface text-body-md leading-relaxed shadow-sm">
+                    Bạn có muốn xem thêm ảnh không?
+                </div>
+<span class="mt-2 ml-1 text-[10px] text-on-surface-variant font-medium">10:45 AM</span>
+</div>
+</div>
+</main>
+<!-- Message Footer -->
+<footer class="w-full bg-background p-4 pb-safe-offset-4 border-t border-outline-variant/10">
+<div class="flex items-end gap-3 bg-surface-container-lowest rounded-full border border-outline-variant/30 px-4 py-2 shadow-sm focus-within:border-primary transition-colors">
+<button class="mb-1 text-on-surface-variant hover:text-primary transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-body-md text-primary placeholder-on-surface-variant/50 py-2 resize-none max-h-32 scrollbar-hide" placeholder="Nhắn tin..." rows="1"></textarea>
+<div class="flex items-center gap-2 mb-1">
+<button class="text-on-surface-variant hover:text-primary transition-colors active:scale-90">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded-full hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</footer>
+<script>
+        // Auto-expanding textarea
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+            tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+            tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+            this.style.height = 0;
+            this.style.height = (this.scrollHeight) + "px";
+            
+            // Scroll chat to bottom when typing expands the input
+            const main = document.querySelector('main');
+            main.scrollTop = main.scrollHeight;
+        }
+
+        // Simple scroll to bottom on load
+        window.onload = () => {
+            const main = document.querySelector('main');
+            main.scrollTop = main.scrollHeight;
+        };
+    </script>
+</body></html>

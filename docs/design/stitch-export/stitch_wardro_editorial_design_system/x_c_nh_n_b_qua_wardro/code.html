@@ -1,0 +1,216 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Bỏ qua khảo sát</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2f3131",
+                        "surface-variant": "#e2e2e2",
+                        "primary": "#000000",
+                        "inverse-primary": "#d4c4b3",
+                        "surface-tint": "#695c4f",
+                        "on-tertiary-container": "#858480",
+                        "on-primary-fixed-variant": "#504538",
+                        "surface-container-low": "#f3f3f4",
+                        "background": "#f9f9f9",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-secondary-container": "#755f42",
+                        "on-primary-fixed": "#231a0f",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "outline": "#7e766d",
+                        "surface": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#908273",
+                        "secondary-container": "#f9dbb7",
+                        "primary-container": "#231a0f",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#281903",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "tertiary-container": "#1c1c1a",
+                        "primary-fixed": "#f1e0ce",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-fixed": "#fcdeba",
+                        "on-surface-variant": "#4d463e",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "surface-dim": "#dadada",
+                        "on-secondary-fixed-variant": "#574329",
+                        "inverse-on-surface": "#f0f1f1",
+                        "tertiary-fixed": "#e5e2de",
+                        "tertiary": "#000000",
+                        "outline-variant": "#cfc5bb",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e8",
+                        "on-surface": "#1a1c1c",
+                        "secondary": "#705b3e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "stack-md": "24px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "64px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "headline-sm": ["DM Serif Display"],
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "label-sm": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "body-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9;
+            color: #1a1c1c;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .linen-bg {
+            background-color: #F7F4F0;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .bottom-sheet {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .glass-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- Top App Bar (Background Content) -->
+<header class="flex justify-between items-center px-margin-mobile h-16 w-full fixed top-0 z-10 bg-surface/80 backdrop-blur-md opacity-50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</div>
+<h1 class="font-display-lg-mobile text-[24px] font-bold text-primary tracking-tight">Wardro</h1>
+<button class="font-label-md text-primary opacity-80">Bỏ qua</button>
+</header>
+<!-- Main Content Background (Blurred/Dimmed) -->
+<main class="pt-20 px-margin-mobile min-h-screen opacity-40 blur-[2px] transition-all duration-500">
+<div class="mb-stack-lg">
+<p class="font-label-sm text-outline uppercase tracking-widest mb-2">Bước 1/5</p>
+<h2 class="font-headline-md text-on-surface mb-stack-sm leading-tight">Phong cách cá nhân của bạn là gì?</h2>
+<p class="font-body-md text-on-surface-variant">Chọn tối thiểu 3 phong cách để AI gợi ý trang phục phù hợp nhất với bạn.</p>
+</div>
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Style Cards (Dummy) -->
+<div class="aspect-[3/4] relative rounded-lg overflow-hidden border border-outline-variant/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A sophisticated editorial fashion photograph of a minimalist linen beige blazer and matching trousers. The lighting is soft and natural, emphasizing textures against a warm sand background. The aesthetic is premium, high-fashion, and clean-lined, embodying a modern luxury wardrobe essential." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATquUI5qCMsZ_bFRRUCoyB_pPBl3dVC3X81OG6LsSH--uNOdNTsAqS4I9yRVe5ga6ken2FLq1QSrHAx-QvQph8OhZ77_5rojW0sxtM2KsWFnyGQ0jxlGDdL1Ln2209DdZ6Rw9GzYkm4atwSjhMYoZkcjbYEqqO1buf4gbXr0rfh7GfFRGjczClMM7IVE2IuEy9Y2k2r-aY1u1wblcsOEKYmPL4SKeXHZGVybeQCQbfkHJ6EgRVKN375sy_qjr2euBP_KNg9KFc2cc')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<p class="absolute bottom-4 left-4 font-label-md text-white">Minimalist</p>
+</div>
+<div class="aspect-[3/4] relative rounded-lg overflow-hidden border border-outline-variant/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A stylish street fashion portrait featuring a bold, colorful mix of oversized vintage clothing and modern accessories. The composition is dynamic and photography-forward, with high-contrast shadows and a vibrant, energetic urban feel. The palette includes pops of primary colors against a neutral grey street background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWLdXNNVmxaK2yUddX4f12oLDsWLCOV0_7pXlMuPeh4yqn8EKxlvoH03au9RBDKKgSm2x1QwN3jOslKRUmY2uYMSfM-UrmR1J3rG3ajuyFgpVBQGdXBMeUmJYSvS8LfPy8r9Vhpt-2eTYHTZd5vj1DJVhlMN_Kd92b3NAmpyKFHgJDOqx9icxNoV-sPmyy6ri2yKfmSMhS7mVwTlTH0O7Ua08gfQfoB-CZg76-g83VsHjkQyyU7HL0MUCT25KDKJ-nvea8Z1VoAFI')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<p class="absolute bottom-4 left-4 font-label-md text-white">Streetwear</p>
+</div>
+<div class="aspect-[3/4] relative rounded-lg overflow-hidden border border-outline-variant/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="An elegant evening wear ensemble captured in a high-end architectural space. The image shows a flowing silk gown in deep Espresso black, shimmering under warm gallery spotlights. The mood is silent luxury and timeless elegance, with a focus on fluid motion and high-quality fabric drapes." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAXJin794avWVaL-X88HVHGBK-yA8r9ZO7Lg4-SzKqx9jCgTx_-gscOGUqRLhAjpCsgy_S8gyh24A2U9zFfkTnknAABeY4r4zDKWZurCKPDVXuSsWVEXuO8Ovde13IXZukSCK5ZBNkFgIleRGBaHf5GWkYpy7iueT2ewVo-N99nh3kjDsFrrydJjjxVL7rmsT9qbvGnuiC7zPS_1cQfGRcNZ5PcTFsWGw8SAvG-LfVzNVoKYu_3dTrIxAmjoEylYyNE4G_ymoGn1tk')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<p class="absolute bottom-4 left-4 font-label-md text-white">Quiet Luxury</p>
+</div>
+<div class="aspect-[3/4] relative rounded-lg overflow-hidden border border-outline-variant/10">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A curated flat-lay of professional office attire including a crisp white shirt, charcoal pleated skirts, and delicate gold jewelry. The aesthetic is utilitarian yet refined, presented as a magazine editorial spread. The lighting is even and professional, emphasizing a modern 'slow-fashion' corporate identity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC3R9BOTm2K5MZTzc0FSw0PdyI5TwMZ_pkWful33Hj_GxJa1AUAsvQX20yCaFm0pFry8SvgPXAjsf7TGS9GaWAX4cAchO5IIA5dWt0adRFcHKhzK2q6b3T3kwWAoCz4THmXPCRvuRtC8kyKaKNUa445Ko7McrweJU2EOGqYyxHI7yrsBegVujFAwNHoy5Jh_XzJ2IdGs9JorhbARluoXEVmXYiw_b3Udx8eBXvMf4s54LDJiyjz-y3_VakLFSVDZlquSo5ZIQwc4TY')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<p class="absolute bottom-4 left-4 font-label-md text-white">Office Core</p>
+</div>
+</div>
+</main>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 bg-black/40 z-40 transition-opacity duration-300"></div>
+<!-- Bottom Sheet Modal -->
+<div class="fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-500 ease-out translate-y-0 flex flex-col items-center">
+<!-- Handle for tactile feel -->
+<div class="w-10 h-1 bg-white/20 rounded-full mb-3"></div>
+<div class="linen-bg w-full max-w-[500px] rounded-t-[32px] px-margin-mobile pt-stack-md pb-12 shadow-2xl">
+<!-- Decorative Icon -->
+<div class="flex justify-center mb-stack-md">
+<div class="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]">question_mark</span>
+</div>
+</div>
+<!-- Content -->
+<div class="text-center space-y-stack-sm mb-stack-lg">
+<h3 class="font-headline-sm text-on-surface leading-tight">Bỏ qua khảo sát?</h3>
+<p class="font-body-md text-on-surface-variant max-w-[85%] mx-auto">
+                    Bạn có thể cập nhật gu thời trang sau trong Hồ sơ. Một hồ sơ đầy đủ giúp AI đề xuất trang phục tốt hơn.
+                </p>
+</div>
+<!-- Buttons -->
+<div class="flex flex-col gap-3">
+<button class="w-full py-4 bg-primary text-white font-label-md rounded-xl hover:opacity-90 active:scale-[0.98] transition-all duration-200">
+                    Bỏ qua
+                </button>
+<button class="w-full py-4 border border-primary/20 text-primary font-label-md rounded-xl hover:bg-primary/5 active:scale-[0.98] transition-all duration-200">
+                    Quay lại
+                </button>
+</div>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        // Simple entrance animation for the modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.querySelector('.bottom-sheet');
+            const backdrop = document.querySelector('.fixed.inset-0.bg-black/40');
+            
+            // Re-enforcing visible state for initial render
+            modal.style.transform = 'translateY(0)';
+            backdrop.style.opacity = '1';
+        });
+
+        // Add subtle parallax to background images
+        window.addEventListener('scroll', () => {
+            const scroll = window.pageYOffset;
+            const images = document.querySelectorAll('.bg-cover');
+            images.forEach(img => {
+                img.style.backgroundPositionY = (scroll * 0.2) + 'px';
+            });
+        });
+    </script>
+</body></html>

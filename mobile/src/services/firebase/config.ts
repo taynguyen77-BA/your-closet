@@ -22,19 +22,26 @@ const requiredFirebaseConfig = [
 
 let app: FirebaseApp | undefined;
 let auth: Auth | undefined;
-let db: Firestore | undefined;
+let firestore: Firestore | undefined;
 let storage: FirebaseStorage | undefined;
 
 export function isFirebaseConfigured(): boolean {
   return requiredFirebaseConfig.every(([, value]) => Boolean(value));
 }
 
+export function getMissingFirebaseConfig(): string[] {
+  return requiredFirebaseConfig.filter(([, value]) => !value).map(([key]) => key);
+}
+
+export function getFirebaseStatus() {
+  const missing = getMissingFirebaseConfig();
+  return { isConfigured: missing.length === 0, isExperienceMode: missing.length > 0, missing };
+}
+
 export function getFirebaseApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
-    const missing = requiredFirebaseConfig.filter(([, value]) => !value).map(([name]) => name);
-    throw new Error(
-      `Firebase chưa được cấu hình. Thiếu: ${missing.join(', ')}`,
-    );
+    if (__DEV__) console.warn('Firebase is not configured. Starting Experience Mode.', getMissingFirebaseConfig());
+    throw new Error('FIREBASE_NOT_CONFIGURED');
   }
   if (!app) {
     app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
@@ -47,9 +54,9 @@ export function getFirebaseAuth(): Auth {
   return auth;
 }
 
-export function getFirebaseDb(): Firestore {
-  if (!db) db = getFirestore(getFirebaseApp());
-  return db;
+export function getFirebaseFirestore(): Firestore {
+  if (!firestore) firestore = getFirestore(getFirebaseApp());
+  return firestore;
 }
 
 export function getFirebaseStorage(): FirebaseStorage {

@@ -1,6 +1,6 @@
 /** Shared domain models — aligned with mobile app + admin extensions */
 
-export type MembershipPlan = "free" | "premium" | "elite";
+export type MembershipPlan = "free" | "pro" | "premium";
 export type UserStatus = "active" | "suspended" | "banned";
 export type ListingStatus = "pending_review" | "approved" | "rejected" | "removed";
 export type TransactionStatus = "pending" | "paid" | "shipped" | "handed_over" | "completed" | "cancelled";
@@ -108,7 +108,7 @@ export interface Mission {
 
 export interface CommunityListing {
   id: string;
-  sellerId: string;
+  userId: string;
   sellerName: string;
   title: string;
   listingType: ListingType;
@@ -137,10 +137,35 @@ export interface AffiliateProduct {
   name: string;
   store: string;
   link: string;
+  category?: string;
+  type?: string;
+  colors?: string[];
+  styleTags?: string[];
+  sizes?: string[];
+  gender?: string;
+  price?: number;
+  commissionRate?: number;
+  partnerName?: string;
+  deeplink?: string;
+  trackingCode?: string;
+  status?: "active" | "inactive";
   clicks: number;
   conversions: number;
   revenueVnd: number;
   isActive: boolean;
+}
+
+export interface ShoppingEvent {
+  id: string;
+  userId: string;
+  eventType: "affiliate_click" | "product_impression" | "community_item_click";
+  targetType: "affiliate_product" | "community_listing";
+  targetId: string;
+  source: string;
+  recommendationId?: string;
+  reason?: string;
+  outfitId?: string;
+  createdAt: string;
 }
 
 export interface AffiliateCampaign {

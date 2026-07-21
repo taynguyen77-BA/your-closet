@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="vi" class="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f3f3f4",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "on-tertiary-container": "#858480",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#e5e2de",
+                      "surface": "#f9f9f9",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#cfc5bb",
+                      "surface-container": "#eeeeee",
+                      "surface-bright": "#f9f9f9",
+                      "primary-fixed-dim": "#d4c4b3",
+                      "on-primary-container": "#908273",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#dfc29f",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "background": "#f9f9f9",
+                      "surface-tint": "#695c4f",
+                      "surface-container-highest": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#574329",
+                      "on-background": "#1a1c1c",
+                      "inverse-primary": "#d4c4b3",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#f1e0ce",
+                      "on-secondary": "#ffffff",
+                      "primary": "#1A1208", // Espresso context override
+                      "tertiary-container": "#1c1c1a",
+                      "on-surface": "#1a1c1c",
+                      "surface-variant": "#e2e2e2",
+                      "tertiary-fixed-dim": "#c8c6c2",
+                      "secondary": "#705b3e",
+                      "on-secondary-fixed": "#281903",
+                      "on-surface-variant": "#4d463e",
+                      "surface-dim": "#dadada",
+                      "secondary-container": "#f9dbb7",
+                      "on-secondary-container": "#755f42",
+                      "outline": "#7e766d",
+                      "primary-container": "#231a0f",
+                      "tertiary": "#000000",
+                      "secondary-fixed": "#fcdeba",
+                      "on-primary-fixed-variant": "#504538",
+                      "on-primary-fixed": "#231a0f",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f0f1f1",
+                      "inverse-surface": "#2f3131",
+                      "surface-container-high": "#e8e8e8",
+                      "linen": "#F7F4F0"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "unit": "4px",
+                      "stack-sm": "12px",
+                      "stack-md": "24px",
+                      "margin-mobile": "20px",
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "stack-lg": "48px"
+              },
+              "fontFamily": {
+                      "body-md": ["DM Sans"],
+                      "label-sm": ["DM Sans"],
+                      "body-lg": ["DM Sans"],
+                      "label-md": ["DM Sans"],
+                      "headline-sm": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"],
+                      "headline-md": ["DM Serif Display"],
+                      "display-lg-mobile": ["DM Serif Display"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="font-body-md text-on-background selection:bg-secondary-container">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16">
+<button class="hover:opacity-70 transition-opacity active:scale-95 transition-transform flex items-center">
+<span class="material-symbols-outlined text-primary">close</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm text-primary tracking-tight">
+            Chỉnh sửa món đồ
+        </h1>
+<button class="font-label-md text-label-md text-primary hover:opacity-70 transition-opacity active:scale-95 transition-transform uppercase tracking-widest font-bold">
+            Xong
+        </button>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-screen-sm mx-auto px-margin-mobile py-stack-lg pb-24">
+<form class="space-y-stack-lg">
+<!-- Photo Upload Area -->
+<section class="flex flex-col items-center">
+<div class="relative group cursor-pointer w-full aspect-[3/4] max-w-[320px] bg-white overflow-hidden rounded-lg shadow-sm">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-end editorial fashion photograph of a beige linen blazer for women, styled on a minimalist ghost mannequin. The lighting is soft and natural, emphasizing the organic texture of the linen fabric and the precise tailoring. The background is a clean, off-white linen texture, maintaining a luxurious and airy aesthetic consistent with a premium fashion magazine spread." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKGorniO66nWL60YSPuRbPvdi45voKPHZvWpwOPX96n-H-SkYn2V-8m_fkHxzqGS35tI3AIYP8JPQxzKUk3apgvdzitTk0CpealoInsN2XjflPhT0FpJrQFmZOT_g-nsvi6Z0FG3ZzaD3MLqTsJq1e-aobge977_Edjd5WHcr6RuRs-ToKCvPkWFU1QZj1Qc1MCmJ9GMejEMI6wUAPTTzU94AFAgkdf-rHPQFXvvZ3jf5gEC_6S6GE4LVZn3MtoAI_M_3lsrUxDXM">
+<div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<div class="bg-white/90 px-stack-md py-stack-sm rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+<span class="text-label-sm font-bold uppercase">Thay đổi ảnh</span>
+</div>
+</div>
+</div>
+<p class="mt-4 text-label-sm text-on-surface-variant/60 uppercase tracking-widest">Xem trước hình ảnh sản phẩm</p>
+</section>
+<!-- Form Fields -->
+<div class="grid grid-cols-1 gap-stack-md">
+<!-- Tên món đồ -->
+<div class="flex flex-col">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Tên món đồ</label>
+<input class="luxury-input font-headline-sm text-primary" type="text" value="Beige Linen Blazer">
+</div>
+<!-- Thương hiệu -->
+<div class="flex flex-col">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Thương hiệu</label>
+<input class="luxury-input font-body-lg text-primary italic" type="text" value="The Curated Minimalist">
+</div>
+<!-- Grid Row for Status and Size -->
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Tình trạng -->
+<div class="flex flex-col relative">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Tình trạng</label>
+<select class="luxury-input font-body-md text-primary appearance-none cursor-pointer">
+<option>Mới 98%</option>
+<option>Mới 100% (Tag)</option>
+<option>Tốt (90%)</option>
+<option>Đã sử dụng</option>
+</select>
+<span class="material-symbols-outlined absolute bottom-3 right-0 pointer-events-none text-on-surface-variant/40">expand_more</span>
+</div>
+<!-- Size -->
+<div class="flex flex-col relative">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Size</label>
+<select class="luxury-input font-body-md text-primary appearance-none cursor-pointer">
+<option>M size</option>
+<option>S size</option>
+<option>L size</option>
+<option>Free size</option>
+</select>
+<span class="material-symbols-outlined absolute bottom-3 right-0 pointer-events-none text-on-surface-variant/40">expand_more</span>
+</div>
+</div>
+<!-- Grid Row-->
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Màu sắc -->
+<div class="flex flex-col relative">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Màu sắc</label>
+<div class="flex items-center luxury-input">
+<span class="w-3 h-3 rounded-full bg-[#E5DACE] mr-2 border border-black/5"></span>
+<select class="font-body-md text-primary appearance-none cursor-pointer bg-transparent border-none p-0 w-full focus:ring-0">
+<option>Beige</option>
+<option>Cream</option>
+<option>Espresso</option>
+<option>Sand</option>
+</select>
+</div>
+<span class="material-symbols-outlined absolute bottom-3 right-0 pointer-events-none text-on-surface-variant/40">expand_more</span>
+</div>
+<!-- Chất liệu -->
+<div class="flex flex-col">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Chất liệu</label>
+<input class="luxury-input font-body-md text-primary" type="text" value="100% Linen">
+</div>
+</div>
+<!-- Mô tả -->
+<div class="flex flex-col">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Mô tả</label>
+<textarea class="luxury-input font-body-md text-primary resize-none custom-scrollbar leading-relaxed" rows="4">Áo khoác blazer chất liệu linen cao cấp từ BST Mùa Hè. Form áo oversized hiện đại, thoáng mát, phù hợp cho cả đi làm và đi chơi. Đường may tinh xảo, tone màu beige trung tính dễ dàng phối hợp với nhiều trang phục khác nhau.</textarea>
+</div>
+</div>
+<!-- Danger-->
+<div class="pt-stack-lg border-t border-outline-variant/20 flex justify-center">
+<button class="flex items-center justify-center gap-2 text-error text-label-md font-bold uppercase tracking-widest hover:opacity-70 transition-opacity w-full py-stack-sm" type="button">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: &quot;FILL&quot; 0, &quot;wght&quot; 400, &quot;GRAD&quot; 0, &quot;opsz&quot; 24;">delete</span>
+                    Xóa khỏi tủ đồ
+                </button>
+</div>
+</form>
+</main>
+<!-- Success Feedback Overlay (Hidden by default) -->
+<div class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-primary text-white px-stack-md py-stack-sm rounded-full shadow-2xl opacity-0 translate-y-4 transition-all duration-500 pointer-events-none flex items-center gap-3" id="save-toast">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-sm uppercase font-bold tracking-widest">Đã lưu thay đổi</span>
+</div>
+<script>
+        // Micro-interactions
+        const saveBtn = document.querySelector('header button:last-child');
+        const toast = document.getElementById('save-toast');
+
+        saveBtn.addEventListener('click', () => {
+            // Simulate save
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        });
+
+        // Simple parallax effect on image scroll
+        window.addEventListener('scroll', () => {
+            const img = document.querySelector('img');
+            const scroll = window.pageYOffset;
+            img.style.transform = `translateY(${scroll * 0.05}px)`;
+        });
+
+        // Input active state styling
+        const inputs = document.querySelectorAll('.luxury-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label').classList.add('text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label').classList.remove('text-primary');
+            });
+        });
+    </script>
+
+</body></html>

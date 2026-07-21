@@ -1,0 +1,62 @@
+{
+  "migration": "migrate-tier-enum",
+  "targetEnv": "LOCAL",
+  "mode": "dry-run",
+  "startedAt": "2026-07-12T16:10:08.433Z",
+  "counts": {
+    "users": 3,
+    "subscriptions": 1,
+    "plan_limits": 2
+  },
+  "warnings": [
+    "plan_limits/pro already exists while old plan_limits/premium exists; not overwriting pro. Review manually.",
+    "plan_limits/premium already exists while plan_limits/elite exists; merging elite fields into premium requires review."
+  ],
+  "changes": [
+    {
+      "collection": "users",
+      "id": "user-elite-1",
+      "field": "tier",
+      "from": "elite",
+      "to": "premium"
+    },
+    {
+      "collection": "users",
+      "id": "user-elite-2",
+      "field": "tier",
+      "from": "elite",
+      "to": "premium"
+    },
+    {
+      "collection": "users",
+      "id": "user-elite-2",
+      "field": "plan",
+      "from": "elite",
+      "to": "premium"
+    },
+    {
+      "collection": "subscriptions",
+      "id": "sub-elite",
+      "field": "tier",
+      "from": "elite",
+      "to": "premium"
+    },
+    {
+      "collection": "plan_limits",
+      "id": "premium",
+      "field": "id",
+      "from": "premium",
+      "to": "pro",
+      "collision": true
+    },
+    {
+      "collection": "plan_limits",
+      "id": "elite",
+      "field": "id",
+      "from": "elite",
+      "to": "premium",
+      "collision": true
+    }
+  ],
+  "finishedAt": "2026-07-12T16:10:08.744Z"
+}

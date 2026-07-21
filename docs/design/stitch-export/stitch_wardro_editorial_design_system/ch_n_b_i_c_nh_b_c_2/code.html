@@ -1,0 +1,260 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Chọn bối cảnh - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#281903",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "secondary-container": "#f9dbb7",
+                    "primary-container": "#231a0f",
+                    "surface-bright": "#f9f9f9",
+                    "tertiary-container": "#1c1c1a",
+                    "primary-fixed": "#f1e0ce",
+                    "surface": "#f9f9f9",
+                    "error-container": "#ffdad6",
+                    "outline": "#7e766d",
+                    "on-primary-container": "#908273",
+                    "surface-container-highest": "#e2e2e2",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "on-secondary-container": "#755f42",
+                    "on-primary-fixed": "#231a0f",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-tertiary": "#ffffff",
+                    "primary": "#000000",
+                    "inverse-primary": "#d4c4b3",
+                    "inverse-surface": "#2f3131",
+                    "surface-variant": "#e2e2e2",
+                    "surface-container-low": "#f3f3f4",
+                    "background": "#f9f9f9",
+                    "surface-tint": "#695c4f",
+                    "on-tertiary-container": "#858480",
+                    "on-primary-fixed-variant": "#504538",
+                    "on-surface": "#1a1c1c",
+                    "secondary": "#705b3e",
+                    "tertiary": "#000000",
+                    "outline-variant": "#cfc5bb",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e8e8e8",
+                    "surface-dim": "#dadada",
+                    "surface-container": "#eeeeee",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-secondary-fixed-variant": "#574329",
+                    "inverse-on-surface": "#f0f1f1",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#fcdeba",
+                    "on-surface-variant": "#4d463e",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#dfc29f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-md": "24px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "stack-sm": "12px",
+                    "stack-lg": "48px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-lg": ["DM Sans"],
+                    "label-md": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f7f4f0; /* Linen background from Style Guidance */
+            color: #231a0f; /* Espresso ink */
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 4px 20px -4px rgba(35, 26, 15, 0.08);
+        }
+        .scene-card-overlay {
+            background: linear-gradient(to top, rgba(35, 26, 15, 0.6) 0%, transparent 60%);
+        }
+        .selected-highlight {
+            border-color: #f9dbb7; /* Sand accent */
+            box-shadow: 0 0 0 2px #f9dbb7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- Top Navigation (Shell Implementation) -->
+<header class="bg-background dark:bg-background text-primary dark:text-primary font-headline-sm text-headline-sm dark:text-on-background w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">arrow_back</button>
+</div>
+<div class="font-headline-sm text-headline-sm tracking-tight text-primary dark:text-primary uppercase">Wardro</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">close</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow px-margin-mobile pt-stack-md pb-32 max-w-lg mx-auto w-full">
+<!-- Screen Header -->
+<div class="mb-stack-md flex flex-col items-start gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary-container">Bước 2/3</span>
+<h1 class="font-headline-md text-headline-md text-primary mt-1">Chọn bối cảnh - Wardro</h1>
+<p class="text-on-surface-variant opacity-70">Chọn nơi bạn muốn thử bộ trang phục này.</p>
+</div>
+<!-- 6-Tile Grid (2x3) -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Biển -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/30 transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A serene coastal beach scene at sunset with soft golden hour lighting, calm turquoise waters, and fine white sand. The photography is editorial style, high-end travel magazine aesthetic, with a warm and peaceful mood using a palette of soft blues and warm golds." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoQjCu4UwfBPZj0IHDG1u_NFyG98FCTfpDt0xPcSx4Znhsq0EcDn58xWyywgzFlYj-8x4S2DFIaL9A-jWGcdqBoPmkPANI_MzfHUs3BAgxBQoqwF7IZtlbSVmTuSCTIehf-65VBDZJH9Hfz8xJYCzEdX8B-F92gSr1SbIIqDI7rWLPRePntHpho5sNU-67qL93s-G1TSZi62pGmOqtztt3N3p9HIE4rbyDCmRQaD5-7fOkyePaVntaKSU8-Snhk9olhYoptIS7g28')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<span class="text-white font-label-md text-label-md uppercase">Biển</span>
+</div>
+</div>
+<!-- Núi -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/30 transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A majestic mountain landscape with rolling green hills and distant misty peaks under a soft morning light. The visual style is minimal and airy, capturing the essence of 'slow fashion' outdoor exploration. The mood is fresh and crisp with a palette of earthy greens and cool grays." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCh4tOAmsmu4iUyQVyR0_tbmq95T2r6mtB5N5fLlT7GdXlv4TJeXw9y_dUDrX82s1KZHqqzYpD7xlTzVWmMbOQ_mxXy36y-5hb7X3nMEfDpTjxYRZqwoeoSR9QdAsnr4QdUDQnv0q55yTQxIXCcpfmg5YgfEvNqiMcdAFGzDqFD-x9LvwEjv8tLJ158NOOZr7Tu9Eu50yUTndoaMIoEupRm6WVpKvKUzKiW6sMExWKPLfN1aJnNWiD2lg_tv-uI7bda2GhW2oDs0_c')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<span class="text-white font-label-md text-label-md uppercase">Núi</span>
+</div>
+</div>
+<!-- Đô thị (Selected) -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border-2 selected-highlight transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A chic urban street scene in a modern metropolitan city, featuring minimalist architecture with clean lines and large glass windows. The lighting is bright afternoon sun, creating sharp, sophisticated shadows. The aesthetic is high-fashion street photography with a neutral palette of beige, grey, and black." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCK1kuhwCVYQt9qmJ2SypVGpQCp_tB8fFU5zypX92d7yH19Lomgf6Di81GtCx47MlbA0rWXGTmwQqFuyHxCWYrXMrMPjppD_FDwKExtxxLZKAorsIoYDnTB4dqZQSjuFY62VrwyFt_8QSU6GHDh-wf41tDZxR1Z-JVveoB1vJkScLoYCuNfdjWEZrIVrvuaCSW8DCY-AKbUWesASpoFLekkRTOhrtcvTe8iUk4kDfQVvhZNMjy6JW13QDDW9VSBE3Jsb5Of2tzx2N4')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<div class="flex flex-col gap-1">
+<span class="text-white font-label-md text-label-md uppercase">Đô thị</span>
+<div class="h-0.5 w-6 bg-secondary-container"></div>
+</div>
+</div>
+<div class="absolute top-2 right-2 bg-secondary-container text-primary rounded-full p-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Tiệc -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/30 transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A sophisticated evening gala or cocktail party setting with dim, warm ambient lighting and subtle reflections on marble surfaces. The style is glamorous and exclusive, like a scene from a high-end fashion event in a luxury hotel. The mood is elegant and mysterious with a palette of deep espresso and warm amber." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDHGMaSb3l3s35b_dykf2wDDb3m8VhcZdRyuXXkPN25pRIiUICwR-xpfYZyZaMULdntx1uXqrg4pxSDcuO4ukHLiT7PFasot_VlBVZWiGyqktaP0MFli-8D9Lwgwp05UEVjt9ceZNjZ6pB6fMjIbECoIEdNEOK5np0fFcxBFqXOT93D91IsDEj2-rTYyf9So97mkFeMFyDyeJ1ViS79X5ByPtAWDiVhnrTXWXYZ4je4kKM4GJPmmkaHdIy-D6RqMKhrzkN9HVULOqk')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<span class="text-white font-label-md text-label-md uppercase">Tiệc</span>
+</div>
+</div>
+<!-- Thường ngày -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/30 transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A cozy, sunlit minimalist cafe interior with wooden furniture, linen textiles, and potted plants. The lighting is soft and natural diffusing through large windows. The aesthetic is clean, warm, and inviting, reflecting a comfortable everyday lifestyle. The palette consists of light woods, cream whites, and soft sage greens." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCaCb0luM5rui8uMwMJjm_ebwyb4gsCIhk7KVTPP8yj-fk5jtbcEH1LzX8jqDPmU_-gzsRstupk5nnxGeqllhNMDWsq3g06j8gbXO8lRvSpWok67M_7haEuWmr-jIJOD3CkEO_DaAc-fi7uIcyUbF_uQF5lhcdp44UZvQiEqocvITgIEQmsY8ucivHiT3pOoNjeRrEYB1pvdKB9OVoKV64kW3gt1Qi9eTxJsj47q78BtktSvW89HyzoiDe5VSyauQEYx6qfbuXbPXc')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<span class="text-white font-label-md text-label-md uppercase">Thường ngày</span>
+</div>
+</div>
+<!-- Văn phòng -->
+<div class="relative group cursor-pointer aspect-[3/4] rounded-lg overflow-hidden border border-outline-variant/30 transition-all active:scale-[0.98]">
+<div class="w-full h-full bg-cover bg-center" data-alt="A professional and sleek office environment with modern desk setups, organized bookshelves, and soft overhead studio lighting. The style is utilitarian yet premium, representing high-end workspace design. The mood is focused and refined with a palette of whites, blacks, and professional navy blues." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBXEL45EDEGWpCpTQzXvcq99N-Dd-AyhVTxXH8HVTD-gTZpnhuC4AV-eOypb9sYIX9ZDxGRMhCRqbBBwFtqjXemLR_cCd1jPXsxbm-yqfYeEqwTWRL2SKLSOAAaB5OJ7naabNfVOHWdMC_cBBnhGJgWSjIsnjWhbksfh8mo3FL0aHIS-HAoErL2puauhUhl8f5dNIxzOFrvR0RfmMa3-oke4B2djhW_lpaNm3x29VO-IHBDNovYdA2E7XtMb0TmrKePCZGJ8R7kQXc')"></div>
+<div class="absolute inset-0 scene-card-overlay flex items-end p-4">
+<span class="text-white font-label-md text-label-md uppercase">Văn phòng</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Bottom Action Area -->
+<section class="fixed bottom-0 left-0 w-full z-[60] p-margin-mobile bg-gradient-to-t from-[#f7f4f0] via-[#f7f4f0] to-transparent">
+<div class="max-w-lg mx-auto flex flex-col gap-4">
+<button class="w-full bg-primary text-on-primary h-14 rounded-lg font-label-md text-label-md uppercase tracking-widest shadow-lg flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-95">
+                Tạo ảnh thử đồ
+                <span class="material-symbols-outlined">auto_awesome</span>
+</button>
+</div>
+</section>
+<!-- Bottom Navigation Shell (Filter Applied: Suppressed for focused Task Journey) -->
+<!-- Navigation is hidden as per "Relevance Check" for focused tasks like step-based workflows -->
+<script>
+        // Micro-interactions for tile selection
+        document.querySelectorAll('.group.cursor-pointer').forEach(tile => {
+            tile.addEventListener('click', () => {
+                // Remove selected classes from all
+                document.querySelectorAll('.group.cursor-pointer').forEach(t => {
+                    t.classList.remove('selected-highlight', 'border-2');
+                    t.classList.add('border', 'border-outline-variant/30');
+                    const check = t.querySelector('.bg-secondary-container');
+                    if (check) check.remove();
+                    const line = t.querySelector('.h-0.5');
+                    if (line) line.remove();
+                });
+
+                // Add selected classes to clicked
+                tile.classList.add('selected-highlight', 'border-2');
+                tile.classList.remove('border', 'border-outline-variant/30');
+                
+                // Add Checkmark
+                const checkDiv = document.createElement('div');
+                checkDiv.className = 'absolute top-2 right-2 bg-secondary-container text-primary rounded-full p-1 shadow-sm';
+                checkDiv.innerHTML = '<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: \'FILL\' 1;">check</span>';
+                tile.appendChild(checkDiv);
+
+                // Add Underline to label
+                const labelContainer = tile.querySelector('.flex-col') || tile.querySelector('.scene-card-overlay');
+                if (labelContainer.classList.contains('scene-card-overlay')) {
+                    const span = labelContainer.querySelector('span');
+                    const wrap = document.createElement('div');
+                    wrap.className = 'flex flex-col gap-1';
+                    span.parentNode.insertBefore(wrap, span);
+                    wrap.appendChild(span);
+                    const line = document.createElement('div');
+                    line.className = 'h-0.5 w-6 bg-secondary-container';
+                    wrap.appendChild(line);
+                }
+            });
+        });
+
+        // Atmospheric Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('editorial-shadow');
+                header.style.backgroundColor = '#ffffff';
+            } else {
+                header.classList.remove('editorial-shadow');
+                header.style.backgroundColor = '#f9f9f9';
+            }
+        });
+    </script>
+
+
+
+
+</body></html>

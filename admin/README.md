@@ -31,12 +31,12 @@ Production mode uses Firebase Authentication and verifies ID tokens in the Next.
 
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_API_URL=https://your-api.example.com
 FIREBASE_SERVICE_ACCOUNT_JSON='{"project_id":"...","client_email":"...","private_key":"..."}'
 ```
 
-Admin Firebase users must receive an `adminRole` custom claim matching one of the roles in
-`src/lib/rbac.ts`. Firestore rules additionally recognize the boolean `admin` custom claim
-for direct Firebase access.
+Admin Firebase users must receive `admin: true` and an `adminRole` custom claim matching one
+of the roles in `src/lib/rbac.ts`. Both claims are required by the portal and API.
 
 ### Optional demo mode
 
@@ -79,7 +79,19 @@ Use **Settings → Demo: Switch RBAC role** to preview sidebar permissions witho
 
 - `GET /api/dashboard` — Firestore KPI aggregates
 - `GET|POST /api/resources/:collection` — guarded Firestore list/create
-- `PATCH|DELETE /api/resources/:collection/:id` — guarded Firestore update/delete
+- `GET|PATCH|DELETE /api/resources/:collection/:id` — guarded Firestore detail/update/delete
+
+List endpoints support `limit`, `cursor`, `status`, `userId`, and `search`. Resource responses use:
+
+```json
+{ "data": [], "meta": { "total": 0, "limit": 50, "cursor": null } }
+```
+
+Seed CMS data before first production run:
+
+```bash
+npm run seed
+```
 
 ## Production
 

@@ -1,0 +1,255 @@
+name: Deploy — Staging
+
+on:
+  push:
+    branches: [main]
+
+# Only one deploy can run at a time; cancel any in-flight run for the same branch.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────────────
+  # 1. Lint & typecheck — fast signal before anything expensive runs
+  # ────────────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint & typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            mobile/package-lock.json
+            admin/package-lock.json
+
+      - name: Install mobile deps
+        run: npm ci
+        working-directory: mobile
+
+      - name: Mobile typecheck
+        run: npm run lint   # tsc --noEmit
+        working-directory: mobile
+
+      - name: Install admin deps
+        run: npm ci
+        working-directory: admin
+
+      - name: Admin lint
+        run: npm run lint
+        working-directory: admin
+
+      - name: Admin typecheck
+        run: npm run typecheck
+        working-directory: admin
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 2. Test suite — all P-01 → P-06, rules, and P-04 migration
+  # ────────────────────────────────────────────────────────────────────────────
+  test:
+    name: Test suite
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            mobile/package-lock.json
+            tests/rules/package-lock.json
+            tests/p04-migration/package-lock.json
+
+      # ── Install deps ────────────────────────────────────────────────────────
+      - name: Install mobile deps
+        run: npm ci
+        working-directory: mobile
+
+      - name: Install rules-test deps
+        run: npm ci
+        working-directory: tests/rules
+
+      - name: Install p04-migration-test deps
+        run: npm ci
+        working-directory: tests/p04-migration
+
+      # ── Build both static SPAs that Playwright needs ───────────────────────
+      # Unauth SPA (DEMO_MODE=false) → served on :8081 for P-01/P-02/P-03
+      - name: Build mobile SPA — unauth
+        working-directory: mobile
+        env:
+          EXPO_PUBLIC_DEMO_MODE: "false"
+          EXPO_PUBLIC_DEMO_AUTH_BYPASS: "false"
+          # Firebase config kept empty — assertFirebaseReady() fails → unauthenticated
+          EXPO_PUBLIC_FIREBASE_API_KEY: ""
+          EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN: ""
+          EXPO_PUBLIC_FIREBASE_PROJECT_ID: ""
+          EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET: ""
+          EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ""
+          EXPO_PUBLIC_FIREBASE_APP_ID: ""
+        run: npx expo export -p web --output-dir dist-preview-unauth --clear
+
+      # Auth SPA (DEMO_MODE=true) → served on :8082 for P-06
+      - name: Build mobile SPA — demo-auth
+        working-directory: mobile
+        env:
+          EXPO_PUBLIC_DEMO_MODE: "true"
+          EXPO_PUBLIC_DEMO_AUTH_BYPASS: "true"
+        run: npx expo export -p web --output-dir dist-preview --clear
+
+      # ── P-01 → P-03, P-06: Playwright (auth-flow + demo-auth) ─────────────
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: mobile
+
+      - name: Run Playwright tests (P-01 → P-03, P-06)
+        run: npx playwright test
+        working-directory: mobile
+        env:
+          CI: "true"
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: mobile/playwright-report/
+          retention-days: 14
+
+      # ── P-04 (retired-script sanity — node:test, no emulator needed) ───────
+      - name: Run retired-script sanity (P-04 sanity)
+        run: node --test tests/retired-script-sanity.test.js
+
+      # ── Firestore security rules tests ────────────────────────────────────
+      # Rules tests use @firebase/rules-unit-testing which spins its own emulator.
+      - name: Install Firebase CLI (for rules tests)
+        run: npm install -g firebase-tools
+
+      - name: Run Firestore rules tests (P-05 / rules)
+        run: npm test
+        working-directory: tests/rules
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      # ── P-04 migration tests — requires Firestore emulator ─────────────────
+      - name: Start Firestore emulator (background)
+        run: |
+          firebase emulators:start --only firestore \
+            --project demo-your-closet &
+          # Wait until the emulator REST endpoint responds
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8080/ && echo "Emulator ready" && break
+            echo "Waiting for emulator ($i/30)..."
+            sleep 2
+          done
+
+      - name: Run P-04 migration tests
+        run: npm test
+        working-directory: tests/p04-migration
+        env:
+          FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080"
+          FIREBASE_PROJECT_ID: "demo-your-closet"
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 3. Build deploy artifact & deploy to Firebase Hosting (staging)
+  # ────────────────────────────────────────────────────────────────────────────
+  deploy-staging:
+    name: Deploy → staging
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install mobile deps
+        run: npm ci
+        working-directory: mobile
+
+      # Production SPA build: real Firebase config baked in via secrets
+      - name: Build mobile SPA — staging
+        working-directory: mobile
+        env:
+          EXPO_PUBLIC_APP_ENV: "staging"
+          EXPO_PUBLIC_DEMO_MODE: "false"
+          EXPO_PUBLIC_DEMO_AUTH_BYPASS: "false"
+          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+          EXPO_PUBLIC_FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
+          EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
+          EXPO_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+          EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.STAGING_FIREBASE_STORAGE_BUCKET }}
+          EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.STAGING_FIREBASE_MESSAGING_SENDER_ID }}
+          EXPO_PUBLIC_FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
+          EXPO_PUBLIC_ENABLE_REAL_AI: "true"
+          EXPO_PUBLIC_AI_API_BASE_URL: ${{ secrets.STAGING_AI_API_BASE_URL }}
+        run: npx expo export -p web --output-dir dist --clear
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase Hosting (staging)
+        run: firebase deploy --only hosting --project staging
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # 4. Tag the git release (closes GAP-04)
+  # ────────────────────────────────────────────────────────────────────────────
+  tag-release:
+    name: Tag release
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to push the tag
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for tag list
+
+      - name: Compute next tag
+        id: tag
+        run: |
+          # Find the highest existing v* tag and increment the patch number.
+          LATEST=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          if [ -z "$LATEST" ]; then
+            NEXT="v0.1.0"
+          else
+            MAJOR=$(echo "$LATEST" | cut -d. -f1 | tr -d 'v')
+            MINOR=$(echo "$LATEST" | cut -d. -f2)
+            PATCH=$(echo "$LATEST" | cut -d. -f3)
+            NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+          fi
+          echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Next release tag: $NEXT"
+
+      - name: Create and push tag
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.tag.outputs.tag }} -m "Release ${{ steps.tag.outputs.tag }} — deployed to staging"
+          git push origin ${{ steps.tag.outputs.tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          body: |
+            Deployed to Firebase Hosting staging.
+            Commit: ${{ github.sha }}
+            Triggered by: ${{ github.actor }}
+          draft: false
+          prerelease: true   # staging tags are pre-release until promoted to prod

@@ -1,0 +1,199 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - Nhập số điện thoại</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#fcdeba",
+                    "surface-container-high": "#e8e8e8",
+                    "inverse-on-surface": "#f0f1f1",
+                    "surface-variant": "#e2e2e2",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#695c4f",
+                    "inverse-surface": "#2f3131",
+                    "secondary-container": "#f9dbb7",
+                    "surface-dim": "#dadada",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-primary-fixed-variant": "#504538",
+                    "inverse-primary": "#d4c4b3",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-tertiary-container": "#858480",
+                    "primary-fixed": "#f1e0ce",
+                    "on-secondary-fixed": "#281903",
+                    "background": "#F7F4F0", /* Overridden to Linen per prompt */
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary": "#705b3e",
+                    "outline-variant": "#cfc5bb",
+                    "on-secondary-container": "#755f42",
+                    "surface-container-low": "#f3f3f4",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-surface-variant": "#4d463e",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1A1208", /* Espresso per prompt */
+                    "outline": "#7e766d",
+                    "primary": "#1A1208", /* Espresso per prompt */
+                    "on-primary-fixed": "#231a0f",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-primary-container": "#908273",
+                    "tertiary": "#000000",
+                    "on-primary": "#ffffff",
+                    "surface": "#F7F4F0",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "on-surface": "#1A1208",
+                    "tertiary-container": "#1c1c1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "on-secondary-fixed-variant": "#574329",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#231a0f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "unit": "4px",
+                    "margin-desktop": "64px",
+                    "container-max": "1200px",
+                    "gutter": "24px",
+                    "stack-md": "24px",
+                    "stack-sm": "12px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"],
+                    "label-sm": ["DM Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Explicit Linen background */
+            color: #1A1208; /* Explicit Espresso text */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        .input-underline {
+            border: none;
+            border-bottom: 1px solid #1A1208;
+            background: transparent;
+            border-radius: 0;
+        }
+        .input-underline:focus {
+            outline: none;
+            box-shadow: none;
+            border-bottom: 2px solid #1A1208;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md">
+<!-- Top Navigation Area -->
+<nav class="w-full flex items-center px-margin-mobile py-8 pt-12">
+<button aria-label="Back" class="flex items-center justify-center p-2 -ml-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col px-margin-mobile">
+<header class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md text-primary leading-tight">
+                Nhập số điện thoại
+            </h1>
+</header>
+<section class="space-y-stack-md">
+<div class="flex flex-col gap-unit">
+<label class="font-label-sm text-label-sm uppercase tracking-widest text-outline" for="phone">
+                    Số điện thoại
+                </label>
+<div class="flex items-center gap-4">
+<span class="font-body-lg text-body-lg text-primary border-b border-primary pb-2 min-w-[48px]">
+                        +84
+                    </span>
+<input autofocus="" class="flex-grow input-underline font-body-lg text-body-lg text-primary placeholder:text-outline/40 py-2" id="phone" name="phone" placeholder="000 000 000" type="tel">
+</div>
+<p class="font-label-sm text-label-sm text-outline mt-2 font-normal opacity-80">
+                    Chúng tôi sẽ gửi mã xác nhận qua SMS
+                </p>
+</div>
+</section>
+<!-- Aesthetic Editorial Element -->
+<div class="mt-auto mb-stack-lg opacity-20 select-none pointer-events-none">
+<p class="font-headline-sm text-headline-sm italic">Minimalist lifestyle curation.</p>
+</div>
+</main>
+<!-- Footer Action -->
+<footer class="p-margin-mobile pb-12">
+<button class="w-full bg-primary text-on-primary py-5 font-label-md text-label-md tracking-[0.1em] uppercase transition-all hover:opacity-90 active:scale-[0.98] shadow-sm">
+            Gửi mã OTP
+        </button>
+</footer>
+<!-- Background Decorative Elements -->
+<div class="fixed top-0 right-0 w-1/2 h-screen overflow-hidden -z-10 opacity-[0.03]">
+<div class="w-full h-full bg-no-repeat bg-cover bg-center mix-blend-multiply" data-alt="A high-fashion editorial close-up of premium linen fabric texture, showcasing soft natural folds and intricate weave. The lighting is bright and airy, reflecting a sophisticated minimalist luxury aesthetic. Muted tones of sand and off-white dominate the frame, creating a sense of calm and tactile quality that aligns with a high-end fashion operating system." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD6JZSsPGg8l4PjQIsNgPJm54fumGbKGR6v2rbwEt8b7YJ1TMTchjxgciiKOJ31njtdju19RAhKcO2o0cTNYQq8uO8nXryMA_ZJuRYWzeTz7OWkKj8Xhn983oTzg9IQyopHNK5wJN3-x6H8krI6dPNGjX6TJZezHOiQBDvi6MWKL0vORP5BkRTCvND4p3_UxN8OtDgK-wkvaUMusQMtl5P70WKZBhPMG4W3SNBhuX7w1Y1NSuZd0npRLdoi6GqtDElfTSejUKle3_U')">
+</div>
+</div>
+<script>
+        // Micro-interaction for the phone input
+        const phoneInput = document.getElementById('phone');
+        phoneInput.addEventListener('input', (e) => {
+            // Remove non-numeric characters for a clean input feel
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 9) value = value.slice(0, 10);
+            
+            // Basic formatting for aesthetics 000 000 000
+            const match = value.match(/^(\d{3})(\d{3})(\d{3,4})$/);
+            if (match) {
+                e.target.value = `${match[1]} ${match[2]} ${match[3]}`;
+            } else {
+                e.target.value = value;
+            }
+        });
+
+        // Simple button active state simulation
+        const primaryBtn = document.querySelector('button.bg-primary');
+        primaryBtn.addEventListener('click', function() {
+            this.textContent = 'ĐANG GỬI...';
+            this.style.opacity = '0.7';
+            setTimeout(() => {
+                this.textContent = 'GỬI MÃ OTP';
+                this.style.opacity = '1';
+            }, 2000);
+        });
+    </script>
+</body></html>

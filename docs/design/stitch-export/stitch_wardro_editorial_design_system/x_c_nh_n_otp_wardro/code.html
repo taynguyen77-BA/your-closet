@@ -1,0 +1,278 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro - OTP Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#fcdeba",
+                    "surface-container-high": "#e8e8e8",
+                    "inverse-on-surface": "#f0f1f1",
+                    "surface-variant": "#e2e2e2",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#695c4f",
+                    "inverse-surface": "#2f3131",
+                    "secondary-container": "#f9dbb7",
+                    "surface-dim": "#dadada",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "on-primary-fixed-variant": "#504538",
+                    "inverse-primary": "#d4c4b3",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-tertiary-container": "#858480",
+                    "primary-fixed": "#f1e0ce",
+                    "on-secondary-fixed": "#281903",
+                    "background": "#f9f9f9",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e2e2e2",
+                    "secondary": "#705b3e",
+                    "outline-variant": "#cfc5bb",
+                    "on-secondary-container": "#755f42",
+                    "surface-container-low": "#f3f3f4",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-surface-variant": "#4d463e",
+                    "on-error": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "outline": "#7e766d",
+                    "primary": "#000000",
+                    "on-primary-fixed": "#231a0f",
+                    "tertiary-fixed": "#e5e2de",
+                    "on-primary-container": "#908273",
+                    "tertiary": "#000000",
+                    "on-primary": "#ffffff",
+                    "surface": "#f9f9f9",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "on-surface": "#1a1c1c",
+                    "tertiary-container": "#1c1c1a",
+                    "surface-bright": "#f9f9f9",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eeeeee",
+                    "on-secondary-fixed-variant": "#574329",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#231a0f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-lg": "48px",
+                    "unit": "4px",
+                    "margin-desktop": "64px",
+                    "container-max": "1200px",
+                    "gutter": "24px",
+                    "stack-md": "24px",
+                    "stack-sm": "12px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"],
+                    "body-md": ["DM Sans"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"],
+                    "label-sm": ["DM Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9f9; /* Linen background */
+            font-family: 'DM Sans', sans-serif;
+            color: #1a1c1c;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 1px #000000;
+        }
+
+        .error-state .otp-input {
+            border-color: #ba1a1a !important;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Smooth Transition for the "Success" state placeholder */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen max-w-md mx-auto bg-background">
+<!-- Top Navigation Header -->
+<header class="w-full flex items-center px-margin-mobile py-8 sticky top-0 bg-background z-10">
+<button aria-label="Quay lại" class="mr-4 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary text-[28px]">arrow_back_ios_new</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary">Nhập mã OTP</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col px-margin-mobile">
+<!-- Subtext Instruction -->
+<div class="mt-4 mb-stack-lg">
+<p class="font-body-md text-body-md text-outline">
+                Mã gồm 6 chữ số đã được gửi tới 
+                <span class="text-primary font-bold">090 ••• ••89</span>
+</p>
+</div>
+<!-- OTP Input Grid -->
+<!-- Error state container toggle: add class 'error-state' to the div below -->
+<div class="flex justify-between items-center gap-2 mb-stack-md" id="otp-container">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+<input class="otp-input w-12 h-14 bg-surface-container-lowest border border-outline-variant text-center font-headline-sm text-headline-sm rounded-lg transition-all focus:ring-0 appearance-none" inputmode="numeric" maxlength="1" pattern="[0-9]*" type="number">
+</div>
+<!-- Error Message (Hidden by default) -->
+<div class="hidden mb-stack-sm flex items-center gap-2 text-error" id="error-message">
+<span class="material-symbols-outlined text-[18px]">error</span>
+<span class="font-label-sm text-label-sm">Mã OTP không đúng, thử lại</span>
+</div>
+<!-- Timer / Resend Section -->
+<div class="flex flex-col items-center mt-stack-md space-y-2">
+<div class="font-label-md text-label-md text-outline" id="timer-display">
+                Gửi lại sau <span id="countdown">60</span>s
+            </div>
+<button class="hidden font-label-md text-label-md text-primary underline underline-offset-4 active:opacity-60 transition-opacity" id="resend-btn">
+                Gửi lại mã
+            </button>
+</div>
+<!-- Atmosphere / Visual Element (Editorial touch) -->
+<div class="mt-auto pt-stack-lg pb-stack-lg opacity-10">
+<div class="w-full h-[1px] bg-outline-variant mb-4"></div>
+<p class="font-label-sm text-label-sm uppercase tracking-[0.2em] text-center">Wardro Personal Fashion OS</p>
+</div>
+</main>
+<!-- Fixed Action Bottom Area -->
+<footer class="p-margin-mobile bg-background">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-xl active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none" id="submit-btn">
+            Xác nhận
+        </button>
+</footer>
+<script>
+        // Micro-interaction: Auto-focus next input
+        const inputs = document.querySelectorAll('.otp-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const container = document.getElementById('otp-container');
+        const errorMessage = document.getElementById('error-message');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length > 1) {
+                    e.target.value = e.target.value.slice(0, 1);
+                }
+                if (e.target.value !== '' && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                checkInputs();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        function checkInputs() {
+            const allFilled = Array.from(inputs).every(i => i.value !== '');
+            submitBtn.disabled = !allFilled;
+            
+            // Simulation of error state for demo if they enter "000000"
+            const code = Array.from(inputs).map(i => i.value).join('');
+            if (code === '000000') {
+                container.classList.add('error-state');
+                errorMessage.classList.remove('hidden');
+            } else {
+                container.classList.remove('error-state');
+                errorMessage.classList.add('hidden');
+            }
+        }
+
+        // Countdown Timer Logic
+        let seconds = 60;
+        const countdownEl = document.getElementById('countdown');
+        const timerDisplay = document.getElementById('timer-display');
+        const resendBtn = document.getElementById('resend-btn');
+
+        const timer = setInterval(() => {
+            seconds--;
+            countdownEl.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(timer);
+                timerDisplay.classList.add('hidden');
+                resendBtn.classList.remove('hidden');
+            }
+        }, 1000);
+
+        // Simple vibration/feedback on error
+        submitBtn.addEventListener('click', () => {
+            const code = Array.from(inputs).map(i => i.value).join('');
+            if (code === '000000') {
+                container.classList.add('animate-shake');
+                setTimeout(() => container.classList.remove('animate-shake'), 400);
+            }
+        });
+    </script>
+<style>
+        /* Aesthetic Micro-animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Hide number input arrows */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</body></html>

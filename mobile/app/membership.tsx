@@ -4,9 +4,10 @@ import { useRouter } from 'expo-router';
 import { Button } from '@/components/ui/Button';
 import { AppText } from '@/components/ui/AppText';
 import { GlassCard } from '@/components/ui/GlassCard';
-import { MEMBERSHIP_PLANS, PAYMENT_METHODS } from '@/constants/membership';
+import { PAYMENT_METHODS } from '@/constants/membership';
 import { useTheme } from '@/theme';
 import { useAppStore } from '@/stores/appStore';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function MembershipScreen() {
   const { colors, spacing, radius } = useTheme();
@@ -17,8 +18,10 @@ export default function MembershipScreen() {
   const avoidedPurchases = useAppStore((state) => state.clothing.filter((item) => item.timesWorn > 7).length);
   const [selectedPlan, setSelectedPlan] = useState<string>('premium');
   const [payment, setPayment] = useState('vnpay');
+  const plans = Object.values(planLimits);
 
   const checkout = () => {
+    if (!useAuthStore.getState().requireAccount()) return;
     router.push(`/payment/prepare?plan=${selectedPlan}&method=${payment}`);
   };
 
@@ -34,7 +37,7 @@ export default function MembershipScreen() {
         <AppText variant="h2" color={colors.textInverse}>{planLimits[user.plan].label}</AppText>
         <AppText variant="bodySmall" color={colors.warmGray}>{user.aiUsageRemaining}/{user.aiUsageMonthlyLimit} credits AI còn lại · {user.closetItemCount} món trong tủ</AppText>
       </View>
-      {MEMBERSHIP_PLANS.map((plan) => (
+      {plans.map((plan) => (
         <GlassCard
           key={plan.id}
           style={{
@@ -45,7 +48,7 @@ export default function MembershipScreen() {
           }}
         >
           <View style={styles.planHeader}>
-            <AppText variant="h2">{plan.name}</AppText>
+            <AppText variant="h2">{plan.label}</AppText>
             {plan.badge && (
               <View style={[styles.badge, { backgroundColor: colors.pink }]}>
                 <AppText variant="caption">{plan.badge}</AppText>
@@ -53,14 +56,14 @@ export default function MembershipScreen() {
             )}
           </View>
           <AppText variant="h3" color={colors.accentDark}>
-            {plan.priceLabel}
+            {plan.priceLabel ?? 'Liên hệ'}
           </AppText>
           <AppText variant="bodySmall" muted>
-            {planLimits[plan.id].aiMonthly < 0 ? 'Không giới hạn AI' : `${planLimits[plan.id].aiMonthly} lượt AI/tháng`}
+            {plan.aiMonthly < 0 ? 'Không giới hạn AI' : `${plan.aiMonthly} lượt AI/tháng`}
             {' · '}
-            {planLimits[plan.id].closetItems < 0 ? 'Tủ đồ không giới hạn' : `Tối đa ${planLimits[plan.id].closetItems} món`}
+            {plan.closetItems < 0 ? 'Tủ đồ không giới hạn' : `Tối đa ${plan.closetItems} món`}
           </AppText>
-          {plan.features.map((f) => (
+          {(plan.features ?? []).map((f) => (
             <AppText key={f} variant="bodySmall" style={{ marginTop: 4 }}>
               ✓ {f}
             </AppText>

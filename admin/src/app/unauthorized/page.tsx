@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function UnauthorizedPage(){return <main className="flex min-h-screen items-center justify-center bg-background p-6"><div className="max-w-md rounded-xl border border-border bg-card p-6 text-center"><h1 className="text-2xl font-semibold">Không có quyền truy cập</h1><p className="mt-2 text-sm text-muted-foreground">Tài khoản admin hiện tại chưa có quyền mở khu vực này.</p><Link className="mt-5 inline-block underline" href="/">Về dashboard</Link></div></main>}

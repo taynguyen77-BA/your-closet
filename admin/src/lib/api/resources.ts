@@ -31,3 +31,5 @@ export const subscriptionsService = createResource<Entity>(FIRESTORE_COLLECTIONS
 export const reportsService = createResource<Entity>(FIRESTORE_COLLECTIONS.reports);
 export const notificationTemplatesService = createResource<Entity>(FIRESTORE_COLLECTIONS.notificationTemplates);
 export const aiLogsService = createResource<Entity>(FIRESTORE_COLLECTIONS.aiLogs);
+export const cmsContentService = createResource<Entity>(FIRESTORE_COLLECTIONS.cmsContent);
+export const adminSettingsService = createResource<Entity>(FIRESTORE_COLLECTIONS.adminSettings);

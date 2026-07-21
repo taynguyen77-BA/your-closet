@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { DataState } from '@/components/ui/DataState';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const LISTING_LABELS = { sale: 'Bán', trade: 'Trao đổi', giveaway: 'Tặng' };
@@ -43,7 +43,7 @@ export default function CommunityScreen() {
           onPress={() => router.push(`/community/${item.id}`)}
           style={[styles.card, { backgroundColor: colors.surface, borderRadius: radius.lg }]}
         >
-          <Image source={{ uri: item.imageUrls[0] }} style={styles.image} contentFit="cover" />
+          <SafeImage source={{ uri: item.imageUrls[0] }} style={styles.image} contentFit="cover" fallbackLabel="ẢNH MÓN ĐỒ" />
           <View style={styles.info}>
             <AppText variant="h3">{item.title}</AppText>
             <AppText variant="bodySmall" muted>

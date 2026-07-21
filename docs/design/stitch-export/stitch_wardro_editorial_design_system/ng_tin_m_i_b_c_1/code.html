@@ -1,0 +1,229 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&amp;family=DM+Serif+Display&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100..900&amp;family=DM+Serif+Display:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-selection {
+            border-color: #000000 !important;
+            background-color: #ffffff !important;
+        }
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            background-color: #f9f9f9; /* Linen background from system */
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed-dim": "#d4c4b3",
+                      "surface-variant": "#e2e2e2",
+                      "on-tertiary-container": "#858480",
+                      "surface-container-high": "#e8e8e8",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#e2e2e2",
+                      "surface-container": "#eeeeee",
+                      "on-background": "#1a1c1c",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#231a0f",
+                      "on-primary-fixed-variant": "#504538",
+                      "secondary-fixed-dim": "#dfc29f",
+                      "tertiary": "#000000",
+                      "surface-dim": "#dadada",
+                      "inverse-surface": "#2f3131",
+                      "secondary-container": "#f9dbb7",
+                      "background": "#f9f9f9",
+                      "primary": "#000000",
+                      "on-surface-variant": "#4d463e",
+                      "secondary-fixed": "#fcdeba",
+                      "on-secondary-fixed-variant": "#574329",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#d4c4b3",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#c8c6c2",
+                      "surface-container-low": "#f3f3f4",
+                      "on-primary-fixed": "#231a0f",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#f1e0ce",
+                      "outline-variant": "#cfc5bb",
+                      "outline": "#7e766d",
+                      "secondary": "#705b3e",
+                      "surface-tint": "#695c4f",
+                      "on-primary-container": "#908273",
+                      "tertiary-fixed": "#e5e2de",
+                      "on-error-container": "#93000a",
+                      "tertiary-container": "#1c1c1a",
+                      "on-secondary-fixed": "#281903",
+                      "on-secondary-container": "#755f42",
+                      "surface-bright": "#f9f9f9",
+                      "surface": "#f9f9f9",
+                      "on-surface": "#1a1c1c",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f1",
+                      "error": "#ba1a1a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "20px",
+                      "stack-md": "24px",
+                      "stack-sm": "12px",
+                      "stack-lg": "48px",
+                      "gutter": "24px",
+                      "container-max": "1200px",
+                      "unit": "4px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "label-sm": ["DM Sans"],
+                      "headline-md": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"],
+                      "body-md": ["DM Sans"],
+                      "label-md": ["DM Sans"],
+                      "display-lg-mobile": ["DM Serif Display"],
+                      "headline-sm": ["DM Serif Display"],
+                      "body-lg": ["DM Sans"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-background border-b border-outline-variant/30 z-50">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full">
+<button aria-label="Close" class="hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">close</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm-mobile md:text-headline-sm text-primary">Đăng tin mới</h1>
+<button aria-label="More" class="hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">more_horiz</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center px-margin-mobile md:px-margin-desktop pt-stack-lg pb-32 max-w-container-max mx-auto w-full">
+<!-- Progress Indicator -->
+<div class="w-full max-w-md mb-stack-lg">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Bước 1 trên 5</span>
+<span class="font-headline-sm text-headline-sm-mobile text-primary">20%</span>
+</div>
+<div class="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/5 transition-all duration-700 ease-out"></div>
+</div>
+</div>
+<!-- Editorial Headline -->
+<div class="text-center mb-stack-lg">
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-stack-sm">
+                Chọn nguồn món đồ
+            </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">
+                Bắt đầu hành trình định hình phong cách cá nhân của bạn bằng cách chọn một món đồ từ tủ đồ hiện có hoặc làm mới với hình ảnh mới.
+            </p>
+</div>
+<!-- Selection Options -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter w-full max-w-4xl">
+<!-- Option 1: Closet -->
+<label class="group cursor-pointer relative block">
+<input checked="" class="sr-only peer" name="source" onchange="handleSelection(this)" type="radio" value="closet">
+<div class="h-full border border-outline-variant/30 bg-surface-container-lowest p-gutter rounded-lg transition-all duration-300 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:shadow-sm overflow-hidden flex flex-col">
+<div class="aspect-[4/5] mb-stack-md overflow-hidden bg-surface-container rounded">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="An editorial photography shot of a perfectly organized minimalist walk-in closet. The clothing items are in soft neutral tones like linen, beige, and espresso. Natural sunlight streams through a window, casting soft shadows. The atmosphere is quiet luxury, emphasizing order and high-end fashion curation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOd9N6zzFvzKO4rzq2mTxvJh4R0-Jzdqy78ofETanpurRMFfpmCWcHiAHuJGmfRt4rAnntsB2z8NLBLga3EcErobppepYb8Xh9VLNY31_CTyjiHOZLj1-6GUAOAtznAH-uj_ZcPoqNS7rvU3u0jJQbvR1-GRLyff3dwNZ8mFYyuRCW1zQ1nmP19-H3k_KW4whtRtBzPDZBVol68ThTDcdPsH_to2Lu9pS4xOr5pZyag6ztMMWX9ExKM14jP2BnEN_v4egqYDVVCHA">
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline-sm text-headline-sm text-primary">Tủ đồ của tôi</h3>
+<span class="material-symbols-outlined text-primary opacity-0 peer-checked:group-[]:opacity-100 transition-opacity">check_circle</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Chọn từ những món đồ bạn đã lưu trữ và phân loại trong hệ thống.</p>
+</div>
+</div>
+</label>
+<!-- Option 2: Upload -->
+<label class="group cursor-pointer relative block">
+<input class="sr-only peer" name="source" onchange="handleSelection(this)" type="radio" value="upload">
+<div class="h-full border border-outline-variant/30 bg-surface-container-lowest p-gutter rounded-lg transition-all duration-300 peer-checked:border-primary peer-checked:ring-1 peer-checked:ring-primary hover:shadow-sm overflow-hidden flex flex-col">
+<div class="aspect-[4/5] mb-stack-md overflow-hidden bg-surface-container rounded flex items-center justify-center relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A professional studio setup for fashion photography. A single high-end silk garment hangs on a minimalist black wire hanger against a textured linen background. The lighting is soft-box studio lighting, creating a clean, crisp, editorial look. The palette is muted and sophisticated, reflecting a modern fashion operating system aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8XyRykt-Atv0WtTj1DdKlIi-ZLiZWKyRXLwYENjJSDJQVrO3Ljl-88xyLSDwkNZRbkcGqLRsfButA_j0opS23lVknUL2cKmVnSsosMn420XSdj31_S5YjejH429akQNQMLQvYMHbip2HIWLnjX4K6cupipQ74042GO8YldTP9Hys8pPiJYGXpLNHzXAC8zMBX84o9zJHRp5npMqHvDrI-udbL_cIaK6BDURsH3HbsGJ4PVjyDMPV31pqK2cypmVpuxWC8cIsdGRQ">
+<div class="absolute inset-0 bg-primary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-5xl">add_a_photo</span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline-sm text-headline-sm text-primary">Tải ảnh lên</h3>
+<span class="material-symbols-outlined text-primary opacity-0 peer-checked:group-[]:opacity-100 transition-opacity">check_circle</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Chụp ảnh mới hoặc chọn từ thư viện ảnh của thiết bị để bắt đầu đăng tin.</p>
+</div>
+</div>
+</label>
+</div>
+<!-- Action Footer -->
+<div class="fixed bottom-0 left-0 w-full bg-background/80 backdrop-blur-md border-t border-outline-variant/20 px-margin-mobile md:px-margin-desktop py-stack-md flex justify-center z-40">
+<button class="w-full max-w-md bg-primary text-on-primary font-label-md text-label-md py-4 rounded-full uppercase tracking-[0.1em] hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/10">
+                Tiếp theo
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation (Suppressed per task focus on transactional screen, but included as per Shared Components JSON for reference if needed, hidden here) -->
+<nav class="hidden md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-surface-container-lowest dark:bg-surface-container-highest pb-safe h-20 border-t border-outline-variant/20">
+<a class="flex flex-col items-center justify-center text-primary dark:text-on-background" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">favorite</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+<script>
+        function handleSelection(input) {
+            // Visual feedback logic can go here if needed beyond CSS peer selectors
+            console.log("Selected source:", input.value);
+        }
+
+        // Simple animation for the progress bar on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const progressBar = document.querySelector('.bg-primary.w-1\\/5');
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.width = '20%';
+            }, 100);
+        });
+    </script>
+</body></html>

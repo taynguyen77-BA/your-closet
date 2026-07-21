@@ -4,7 +4,7 @@
  */
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export class ApiError extends Error {
   constructor(
@@ -21,7 +21,9 @@ export async function apiFetch<T>(
   path: string,
   options?: RequestInit & { params?: Record<string, string> }
 ): Promise<T> {
-  const url = new URL(path, BASE_URL || "http://localhost");
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "http://localhost";
+  const url = new URL(path, BASE_URL || origin);
   const query = options?.params;
   if (query) {
     Object.entries(query).forEach(([k, v]) => url.searchParams.set(k, v));
@@ -29,7 +31,8 @@ export async function apiFetch<T>(
 
   const init: RequestInit = { ...(options ?? {}) };
   delete (init as RequestInit & { params?: Record<string, string> }).params;
-  const demoRole = typeof window === "undefined" ? null : localStorage.getItem("tuado-admin-role");
+  const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const demoRole = demoMode && typeof window !== "undefined" ? localStorage.getItem("tuado-admin-role") : null;
   const token = typeof window === "undefined" ? null : localStorage.getItem("tuado-admin-token");
   const res = await fetch(url.toString(), {
     ...init,
@@ -42,9 +45,20 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("tuado-admin-token");
+      localStorage.removeItem("tuado-admin-auth");
+      window.location.assign("/login");
+    }
     const body = await res.json().catch(() => undefined);
-    throw new ApiError(res.statusText, res.status, body);
+    const message =
+      body && typeof body === "object" && "error" in body
+        ? String((body as { error: unknown }).error)
+        : res.statusText || `HTTP ${res.status}`;
+    throw new ApiError(message, res.status, body);
   }
 
-  return res.json() as Promise<T>;
+  if (res.status === 204) return undefined as T;
+  const payload = await res.json() as { data?: T } | T;
+  return typeof payload === "object" && payload !== null && "data" in payload ? payload.data as T : payload as T;
 }

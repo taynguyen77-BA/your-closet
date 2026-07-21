@@ -6,6 +6,7 @@ import { OutfitCard } from '@/components/outfit/OutfitCard';
 import { AiUsageBanner } from '@/components/ui/AiUsageBanner';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
+import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import type { Outfit } from '@/models';
@@ -14,6 +15,7 @@ import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { DataState } from '@/components/ui/DataState';
 import type { EventType } from '@/models';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function EventsScreen() {
   const router = useRouter();
@@ -26,6 +28,8 @@ export default function EventsScreen() {
   const createEvent = useAppStore((s) => s.createEvent);
   const loadState = useAppStore((s) => s.loadState);
   const error = useAppStore((s) => s.error);
+  const { isAuthenticated, isGuest } = useAuthStore();
+  const isPublicViewer = isGuest || !isAuthenticated;
 
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
@@ -34,6 +38,17 @@ export default function EventsScreen() {
   const [suggestions, setSuggestions] = useState<Partial<Outfit>[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  if (isPublicViewer) {
+    return (
+      <Screen bottomOffset={96}>
+        <AppText variant="display" style={{ marginBottom: spacing.md }}>Sự kiện</AppText>
+        <GuestAccessCard icon="calendar-outline" title="Đăng nhập để lưu lịch trình" description="Sự kiện, dress code và gợi ý outfit theo thời tiết là dữ liệu cá nhân nên cần tài khoản." />
+        <Button label="Xem mua sắm gợi ý" variant="secondary" icon="bag-handle-outline" onPress={() => router.push('/shopping')} />
+      </Screen>
+    );
+  }
+
   const saveEvent = async () => {
     if (!name || !date || !location) return Alert.alert('Thiếu thông tin', 'Nhập tên, ngày và địa điểm sự kiện.');
     setSaving(true);
@@ -41,7 +56,7 @@ export default function EventsScreen() {
       await createEvent({ userId: useAppStore.getState().user.id, name, date, location, eventType: eventType as EventType, linkedOutfitIds: [], createdAt: new Date().toISOString() });
       setName(''); setDate(''); setLocation('');
       Alert.alert('Đã lưu', 'Sự kiện đã được lưu.');
-    } catch { Alert.alert('Không thể lưu', 'Kiểm tra kết nối Firebase rồi thử lại.'); }
+    } catch { Alert.alert('Chưa lưu được', 'Thử lại sau một chút nhé. Chế độ trải nghiệm vẫn sẵn sàng để bạn khám phá ứng dụng.'); }
     finally { setSaving(false); }
   };
 
@@ -67,7 +82,7 @@ export default function EventsScreen() {
   ];
 
   return (
-    <Screen>
+    <Screen bottomOffset={96}>
       <AppText variant="display" style={{ marginBottom: spacing.md }}>
         Sự kiện
       </AppText>
@@ -79,7 +94,7 @@ export default function EventsScreen() {
         <TextInput placeholder="Ngày (YYYY-MM-DD)" value={date} onChangeText={setDate} style={inputStyle} />
         <TextInput placeholder="Địa điểm" value={location} onChangeText={setLocation} style={inputStyle} />
         <TextInput
-          placeholder="Loại: wedding, party, work, travel..."
+          placeholder="Loại: đám cưới, tiệc, công việc, du lịch..."
           value={eventType}
           onChangeText={setEventType}
           style={inputStyle}
@@ -121,7 +136,7 @@ export default function EventsScreen() {
         <GlassCard style={{ marginTop: spacing.lg }}>
           <AppText variant="h3">Gợi ý mua sắm</AppText>
           <AppText variant="bodySmall" muted style={{ marginVertical: 8 }}>
-            Tủ đồ chưa đủ để tạo outfit. Xem sản phẩm affiliate được đề xuất.
+            Tủ đồ chưa đủ để tạo bộ đồ. Xem các sản phẩm được đề xuất.
           </AppText>
           <Button label="Xem sản phẩm" variant="accent" onPress={() => router.push('/shopping')} />
         </GlassCard>
@@ -136,7 +151,7 @@ export default function EventsScreen() {
             {e.date} · {e.location} · {e.eventType}
           </AppText>
           {e.dressCode && (
-            <AppText variant="bodySmall">Dress code: {e.dressCode}</AppText>
+            <AppText variant="bodySmall">Quy định trang phục: {e.dressCode}</AppText>
           )}
         </GlassCard>
       ))}

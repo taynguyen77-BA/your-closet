@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html lang="vi" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#281903",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "secondary-container": "#f9dbb7",
+                        "primary-container": "#231a0f",
+                        "surface-bright": "#f9f9f9",
+                        "tertiary-container": "#1c1c1a",
+                        "primary-fixed": "#f1e0ce",
+                        "surface": "#f9f9f9",
+                        "error-container": "#ffdad6",
+                        "outline": "#7e766d",
+                        "on-primary-container": "#908273",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "on-secondary-container": "#755f42",
+                        "on-primary-fixed": "#231a0f",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#000000",
+                        "inverse-primary": "#d4c4b3",
+                        "inverse-surface": "#2f3131",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-low": "#f3f3f4",
+                        "background": "#f9f9f9",
+                        "surface-tint": "#695c4f",
+                        "on-tertiary-container": "#858480",
+                        "on-primary-fixed-variant": "#504538",
+                        "on-surface": "#1a1c1c",
+                        "secondary": "#705b3e",
+                        "tertiary": "#000000",
+                        "outline-variant": "#cfc5bb",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e8",
+                        "surface-dim": "#dadada",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "tertiary-fixed": "#e5e2de",
+                        "on-secondary-fixed-variant": "#574329",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#fcdeba",
+                        "on-surface-variant": "#4d463e",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#dfc29f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["DM Serif Display"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "label-md": ["DM Sans"],
+                        "body-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f4f0; /* Linen background from brand identity */
+            color: #231a0f; /* Espresso ink color */
+        }
+        .linen-bg { background-color: #f7f4f0; }
+        .espresso-text { color: #231a0f; }
+        .espresso-border { border-color: rgba(35, 26, 15, 0.1); }
+        .sand-accent { background-color: #f1e0ce; }
+        
+        /* Hide scrollbar for carousel */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .active-selection {
+            outline: 1.5px solid #000000;
+            outline-offset: 4px;
+        }
+    </style>
+</head>
+<body class="font-body-md antialiased min-h-screen">
+<!-- Top Navigation Anchor -->
+<header class="w-full top-0 sticky bg-background/80 backdrop-blur-md z-40">
+<div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm tracking-tight text-primary uppercase">Wardro</h1>
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto px-margin-mobile pb-32 pt-8">
+<!-- Quota Badge -->
+<div class="flex justify-center mb-stack-md">
+<span class="sand-accent espresso-text font-label-sm text-label-sm px-4 py-1.5 rounded-full uppercase tracking-wider">
+                Còn 2 lượt thử đồ miễn phí tháng này
+            </span>
+</div>
+<!-- Header & Step Indicator -->
+<div class="text-center mb-stack-lg">
+<h2 class="font-headline-md text-headline-md espresso-text mb-2">Thử đồ ảo - Bước 1 - Wardro</h2>
+<p class="font-label-sm text-label-sm uppercase tracking-widest opacity-60 py-1">Bước 1/3: Chọn trang phục</p>
+</div>
+<!-- Outfit Picker Carousel -->
+<section class="mb-stack-lg overflow-hidden">
+<div class="flex justify-between items-end mb-4">
+<h3 class="font-label-md text-label-md espresso-text uppercase tracking-widest">Bộ sưu tập đề xuất</h3>
+<span class="text-[10px] opacity-40">Cuộn để xem thêm</span>
+</div>
+<div class="flex overflow-x-auto gap-gutter pb-6 hide-scrollbar snap-x snap-mandatory">
+<!-- Card 1 -->
+<div class="snap-start flex-shrink-0 w-64 active-selection group cursor-pointer">
+<div class="aspect-[3/4] bg-white rounded-lg overflow-hidden mb-3 border espresso-border">
+<img class="w-full h-full object-cover grayscale-[0.2] group-hover:scale-105 transition-transform duration-700" data-alt="A high-end editorial fashion photograph of a minimalist linen blazer and tailored trousers set in a creamy white color. The outfit is laid flat on a rustic wooden floor in a sunlit room with large windows, creating a soft, warm, luxury lifestyle aesthetic consistent with premium Vietnamese boutique branding. The lighting is natural and atmospheric." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8PGmr_Q3b1be_yx2bMdYsm42f31l7OGcSqeMK6uB9QCvFOxwaag6SDBI63ib7laBD4MAnfrVBIDeQm4O_mP1wMU92FbhxcJQgKRP4ZHHDxj9UzMoVebgNwncwOCmmJVwiQwNl2-iEXLj10DqSCtsIcbbnBl71aeKad1tLkhDhnJqUYBVS_kUFQYwlcOSWqIz2CL_Jy58IW5TdvVj5tnLN-yGxc_lO2-TDMXpMK2mYb9H6pQci8-80uWRwdhRlWLfViSiswtUqWls"/>
+</div>
+<div class="px-1">
+<p class="font-headline-sm text-[18px] espresso-text mb-1">Linen Elegance</p>
+<p class="font-label-sm text-label-sm opacity-60">Mùa hè • Tự nhiên</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="snap-start flex-shrink-0 w-64 group cursor-pointer opacity-70">
+<div class="aspect-[3/4] bg-white rounded-lg overflow-hidden mb-3 border espresso-border">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A professional fashion flat lay featuring a sophisticated silk dress in a deep espresso brown color. The garment is presented on a textured paper-like background with subtle shadows. The aesthetic is clean, minimalist, and expensive, reflecting a 'slow fashion' philosophy with high-contrast serif typography elements visible in the periphery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO-qiIU-4sxGnbLkst5Ae9MwjWGbFiTq87BB4HDuuGLFWwHmS1GQda5m0aKwSO_-FNbqV9tzNmtdUd3LVWIdC8nfMcx-FyMDvDZEZ5xQfgAZyBf_MT2XAicsam4vL5DSF-1_QL2I_OEdyixCD4lnzFbWa6ryKPb2E_IbzHX1dZEOOylVGabj_B78yrg5KFC5aGL1Btdzl4PuCmfsAkFB6W70H19yiS2c5VUY1T9UjCUV5R_97C_EejO7Yo6aRJJJbrNdNFrselw_E"/>
+</div>
+<div class="px-1">
+<p class="font-headline-sm text-[18px] espresso-text mb-1">Silk Serenity</p>
+<p class="font-label-sm text-label-sm opacity-60">Dự tiệc • Cao cấp</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="snap-start flex-shrink-0 w-64 group cursor-pointer opacity-70">
+<div class="aspect-[3/4] bg-white rounded-lg overflow-hidden mb-3 border espresso-border">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A modern editorial fashion shot of a contemporary urban outfit consisting of wide-leg cotton pants and a structured vest in neutral sand tones. The composition is artistic and asymmetric, using massive white space. The lighting is soft-luxury, emphasizing the texture of the natural fabrics and the precise tailoring." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-xKdPmW7EH6oFM1qBg0TOWfa_oROIV1ZWMTWY4F64pblNMQyVVUt_O3RrbFyulsMOgOu-OUJzgAAG2hr49ID4kzWWEK38Eml-9OMBWPNoEQE_8_zOFoleZzYCaLxujKAwwE-jN-yYPW1WxxktfZojMwiDe52oiADm6OqG6_8ed7X18OT_PLD6lw0L7kGS4SmuCrKvmj2PAUJeqBkinha8jgdosBl26k3lxWtgm55c4ctCmt-CFNz5QuzVkRV78D1-FtEKDVQXp28"/>
+</div>
+<div class="px-1">
+<p class="font-headline-sm text-[18px] espresso-text mb-1">Urban Nomad</p>
+<p class="font-label-sm text-label-sm opacity-60">Dạo phố • Hiện đại</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Photo Upload Tile -->
+<section class="mb-stack-lg">
+<h3 class="font-label-md text-label-md espresso-text uppercase tracking-widest mb-4">Hình ảnh của bạn</h3>
+<div class="grid grid-cols-2 gap-4 w-full aspect-[4/3]">
+<!-- Option 1: Upload -->
+<label class="relative group flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant/50 hover:border-primary transition-colors cursor-pointer bg-white/50 overflow-hidden" for="file-upload">
+<input class="hidden" id="file-upload" type="file"/>
+<div class="w-12 h-12 rounded-full sand-accent flex items-center justify-center espresso-text group-hover:scale-110 transition-transform duration-300 mb-3">
+<span class="material-symbols-outlined text-[28px]">photo_camera</span>
+</div>
+<div class="text-center px-2">
+<p class="font-label-md text-label-md espresso-text font-bold uppercase tracking-wider">Tải ảnh lên</p>
+</div>
+</label>
+<!-- Option 2: From Wardrobe -->
+<button class="relative group flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-outline-variant/50 hover:border-primary transition-colors cursor-pointer bg-white/50 overflow-hidden">
+<div class="w-12 h-12 rounded-full sand-accent flex items-center justify-center espresso-text group-hover:scale-110 transition-transform duration-300 mb-3">
+<span class="material-symbols-outlined text-[28px]">checkroom</span>
+</div>
+<div class="text-center px-2">
+<p class="font-label-md text-label-md espresso-text font-bold uppercase tracking-wider">Chọn từ tủ đồ</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Fixed Action Button Area -->
+<div class="fixed bottom-0 left-0 w-full px-margin-mobile pb-10 pt-4 bg-gradient-to-t from-[#f7f4f0] via-[#f7f4f0] to-transparent z-40">
+<div class="max-w-md mx-auto">
+<button class="w-full h-14 bg-surface-container-highest text-on-surface-variant font-label-md text-label-md uppercase tracking-[0.2em] rounded-lg cursor-not-allowed flex items-center justify-center gap-2" disabled="">
+                    Tiếp tục
+                    <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface-container-lowest border-t border-outline-variant/30"><a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 h-[44px] min-w-[44px] hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">home</span><span class="font-label-sm text-[10px] uppercase tracking-wider mt-1.5">Trang chủ</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 h-[44px] min-w-[44px] hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">checkroom</span><span class="font-label-sm text-[10px] uppercase tracking-wider mt-1.5">Tủ đồ</span></a><a class="flex flex-col items-center justify-center text-primary h-[44px] min-w-[44px]" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">styler</span><span class="font-label-sm text-[10px] uppercase tracking-wider mt-1.5">Thử đồ</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 h-[44px] min-w-[44px] hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">groups</span><span class="font-label-sm text-[10px] uppercase tracking-wider mt-1.5">Cộng đồng</span></a><a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 h-[44px] min-w-[44px] hover:bg-surface-container-low transition-colors" href="#"><span class="material-symbols-outlined">person</span><span class="font-label-sm text-[10px] uppercase tracking-wider mt-1.5">Cá nhân</span></a></nav>
+<script>
+        // Micro-interaction for outfit selection
+        const cards = document.querySelectorAll('.snap-start');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                cards.forEach(c => {
+                    c.classList.remove('active-selection');
+                    c.classList.add('opacity-70');
+                });
+                card.classList.add('active-selection');
+                card.classList.remove('opacity-70');
+                
+                // Logic to enable continue button if file also uploaded (simplified here)
+                checkValidation();
+            });
+        });
+
+        // Simple validation check
+        function checkValidation() {
+            const btn = document.querySelector('button[disabled]');
+            if(btn) {
+                // For demo purposes, we don't fully enable unless image logic exists
+            }
+        }
+
+        // File upload visual feedback
+        const fileInput = document.getElementById('file-upload');
+        fileInput.addEventListener('change', (e) => {
+            if(e.target.files.length > 0) {
+                const label = document.querySelector('label[for="file-upload"]');
+                label.classList.add('border-primary', 'bg-sand-accent/10');
+                const btn = document.querySelector('button[disabled]');
+                if(btn) {
+                    btn.removeAttribute('disabled');
+                    btn.classList.remove('bg-surface-container-highest', 'text-on-surface-variant', 'cursor-not-allowed');
+                    btn.classList.add('bg-primary', 'text-white', 'hover:opacity-90', 'active:scale-95', 'transition-all');
+                }
+            }
+        });
+    </script>
+</body></html>

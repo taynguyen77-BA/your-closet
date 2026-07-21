@@ -1,0 +1,319 @@
+<!DOCTYPE html><html class="light" lang="vi" style="width: 390px; height: 1680px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Chi tiết đơn hàng - Wardro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#1c1c1a",
+                        "tertiary-container": "#1c1c1a",
+                        "surface": "#f9f9f9",
+                        "on-secondary-container": "#755f42",
+                        "error-container": "#ffdad6",
+                        "background": "#f9f9f9",
+                        "on-surface-variant": "#4d463e",
+                        "on-surface": "#1a1c1c",
+                        "primary-fixed-dim": "#d4c4b3",
+                        "surface-bright": "#f9f9f9",
+                        "outline-variant": "#cfc5bb",
+                        "tertiary": "#000000",
+                        "surface-container": "#eeeeee",
+                        "surface-dim": "#dadada",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#231a0f",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-container": "#f9dbb7",
+                        "secondary": "#705b3e",
+                        "on-background": "#1a1c1c",
+                        "inverse-surface": "#2f3131",
+                        "primary-container": "#231a0f",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#f1e0ce",
+                        "on-primary-container": "#908273",
+                        "inverse-primary": "#d4c4b3",
+                        "secondary-fixed": "#fcdeba",
+                        "outline": "#7e766d",
+                        "secondary-fixed-dim": "#dfc29f",
+                        "on-tertiary-container": "#858480",
+                        "surface-container-low": "#f3f3f4",
+                        "on-tertiary-fixed-variant": "#474744",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#574329",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#000000",
+                        "tertiary-fixed-dim": "#c8c6c2",
+                        "tertiary-fixed": "#e5e2de",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-secondary-fixed": "#281903",
+                        "on-primary-fixed-variant": "#504538",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#695c4f",
+                        "espresso": "#1A1208",
+                        "linen": "#F7F4F0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "24px",
+                        "container-max": "1200px",
+                        "unit": "4px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "stack-sm": "12px",
+                        "stack-lg": "48px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["DM Serif Display"],
+                        "display-lg": ["DM Serif Display"],
+                        "body-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"],
+                        "headline-md": ["DM Serif Display"],
+                        "display-lg-mobile": ["DM Serif Display"],
+                        "body-lg": ["DM Sans"],
+                        "label-md": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen background as per style guidance */
+            color: #1A1208; /* Espresso primary text */
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d4c4b3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- Top App Bar (Shared Component Strategy) -->
+<header class="fixed top-0 w-full z-50 bg-surface h-16 flex justify-between items-center px-margin-mobile md:px-margin-desktop">
+<button class="cursor-pointer active:scale-95 transition-transform flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">arrow_back_ios</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-primary">Chi tiết đơn hàng</h1>
+<button class="cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary">shopping_bag</span>
+</button>
+</header>
+<main class="pt-24 pb-32 max-w-screen-md mx-auto px-margin-mobile">
+<!-- Order Status Section -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-stack-sm">
+<span class="font-label-sm text-label-sm tracking-widest text-secondary opacity-70">TRẠNG THÁI</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">#WRD8829</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm mb-stack-sm">Đang giao hàng</h2>
+<!-- Progress Tracker -->
+<div class="relative pt-4 pb-8">
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant/30 transform -translate-y-1/2"></div>
+<div class="relative flex justify-between">
+<div class="flex flex-col items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary z-10 border-4 border-surface"></div>
+<span class="font-label-sm text-label-sm text-primary">Đã xác nhận</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary z-10 border-4 border-surface"></div>
+<span class="font-label-sm text-label-sm text-primary">Đang xử lý</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary z-10 border-4 border-surface ring-4 ring-primary/10"></div>
+<span class="font-label-sm text-label-sm text-primary">Đang giao</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-outline-variant/30 z-10 border-4 border-surface"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/50">Đã giao</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Order Summary Card -->
+<section class="bg-surface p-6 rounded-lg mb-stack-md border border-espresso/5 shadow-sm">
+<h3 class="font-headline-sm text-headline-sm mb-stack-sm">Sản phẩm</h3>
+<div class="space-y-6">
+<!-- Item 1 -->
+<div class="flex gap-4">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container overflow-hidden rounded">
+<img class="w-full h-full object-cover" data-alt="A high-end editorial shot of a cream-colored minimalist linen blazer laid out on a weathered wooden floor. The lighting is soft and warm, coming from a nearby window, creating a serene and sophisticated atmosphere. The image captures the texture of the fabric and the fine stitching, embodying a soft-luxury and minimal fashion aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfZnG8b5DQ9HWpsnpphZxkAO0ZcunQdatu0EoTgrL11rPj84hKcbnImAjYf9WrWRcdNSYUB5jlwjlzQ-vz3jl4lQ6KkqXuKN0hDona6y2hLB52CB1mms3U8xibANU6fUI-K-T85qw07UHvgZFoBH4uNG4KzTLCueTMwU90POtlkm2_RGXqi3tIOLbD2CtkNy_cs0lSdWq2GGCMALd9QlE026n9ZYDv61gNsgN1wQMwwnSmrIKp-VeRq31Rz3AIhMCzDTVOdjOby_I">
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h4 class="font-body-lg text-body-lg text-espresso font-medium">Áo Blazer Linen Cao Cấp</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Màu: Kem • Size: M</p>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-body-md text-body-md">x1</span>
+<span class="font-body-md text-body-md font-bold">2.450.000đ</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4">
+<div class="w-24 h-32 flex-shrink-0 bg-surface-container overflow-hidden rounded">
+<img class="w-full h-full object-cover" data-alt="Close up editorial photography of a pair of tan leather loafers resting on a warm wooden floor in a sunlit room. The shoes feature a classic penny loafer design with elegant stitching. The soft morning light highlights the smooth texture of the high-quality leather, conveying a sense of premium craftsmanship and timeless style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvPspta71BPiZJX9svvhbn43KkTAUyD4g4pfIvZCvGfteqoQIG6FblKrdYVafTd2Lbb5oZnh55MzAmgmq6IJ_bfkD1lcqXXGKycG0NOJbWozKLV3pdOm9VSfvPR8xrUrgXKvs4vXPb8A98xE3Pz_a9TkRy6U2WYDg6QsLUgkNX7yuGaNV1ebARDfQxhR5gPuxLIzMZDZPuHbpcGfiG1np1CtNDC2FBANC4f_UCCJaY7c_TkDO1UCGqg6j9fogtKyYhRUE-S05KRqM">
+</div>
+<div class="flex flex-col justify-between py-1">
+<div>
+<h4 class="font-body-lg text-body-lg text-espresso font-medium">Giày Loafer Da Thật</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Màu: Nâu Nhạt • Size: 40</p>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-body-md text-body-md">x1</span>
+<span class="font-body-md text-body-md font-bold">1.890.000đ</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Delivery & Shipping -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md mb-stack-md">
+<!-- Delivery Info -->
+<section class="bg-surface p-6 rounded-lg border border-espresso/5 shadow-sm">
+<h3 class="font-label-sm text-label-sm tracking-widest text-secondary opacity-70 mb-4 uppercase">Thông tin nhận hàng</h3>
+<div class="space-y-2">
+<p class="font-body-md text-body-md font-bold">Nguyễn Minh Anh</p>
+<p class="font-body-md text-body-md text-on-surface-variant">090 123 4567</p>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        123 Đường Lê Lợi, Phường Bến Thành,<br>
+                        Quận 1, TP. Hồ Chí Minh
+                    </p>
+</div>
+</section>
+<!-- Shipping Method -->
+<section class="bg-surface p-6 rounded-lg border border-espresso/5 shadow-sm">
+<h3 class="font-label-sm text-label-sm tracking-widest text-secondary opacity-70 mb-4 uppercase">Phương thức vận chuyển</h3>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary">local_shipping</span>
+<div>
+<p class="font-body-md text-body-md font-bold">Giao hàng tiêu chuẩn</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Dự kiến nhận hàng: 15/10/2023</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Payment Breakdown -->
+<section class="bg-surface p-6 rounded-lg border border-espresso/5 shadow-sm mb-stack-lg">
+<h3 class="font-label-sm text-label-sm tracking-widest text-secondary opacity-70 mb-4 uppercase">Chi tiết thanh toán</h3>
+<div class="space-y-3">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Tổng tiền hàng</span>
+<span class="font-body-md">4.340.000đ</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Phí dịch vụ (10%)</span>
+<span class="font-body-md">434.000đ</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Phí vận chuyển</span>
+<span class="font-body-md">35.000đ</span>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant/30 flex justify-between items-center">
+<span class="font-bold text-espresso text-lg">Tổng cộng</span>
+<span class="font-headline-sm text-headline-sm text-espresso">4.809.000đ</span>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30 flex justify-between text-on-surface-variant/60 font-label-sm text-label-sm">
+<span>Đặt lúc: 14:32, 12/10/2023</span>
+<span>Thẻ tín dụng (**** 4421)</span>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex flex-col gap-4">
+<button class="w-full py-4 bg-espresso text-on-primary rounded-lg font-label-md tracking-widest uppercase hover:opacity-90 active:scale-[0.98] transition-all">
+                Hủy đơn hàng
+            </button>
+<button class="w-full py-4 bg-transparent border border-espresso text-espresso rounded-lg font-label-md tracking-widest uppercase hover:bg-espresso/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+                LIÊN HỆ HỖ TRỢ
+            </button>
+</div>
+</main>
+<!-- Bottom Nav Bar (Shared Component Strategy) -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface border-t border-outline-variant/30 flex justify-around items-center pt-unit pb-safe px-2 h-16 z-50">
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 opacity-60 cursor-pointer active:scale-90 transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 opacity-60 cursor-pointer active:scale-90 transition-all">
+<span class="material-symbols-outlined">dry_cleaning</span>
+<span class="font-label-sm text-label-sm mt-1">Tủ đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 opacity-60 cursor-pointer active:scale-90 transition-all">
+<span class="material-symbols-outlined">flare</span>
+<span class="font-label-sm text-label-sm mt-1">Thử đồ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary font-bold cursor-pointer active:scale-90 transition-all">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm mt-1">Cộng đồng</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant/60 opacity-60 cursor-pointer active:scale-90 transition-all">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Cá nhân</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for feedback
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                let ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '5px';
+                ripple.style.height = '5px';
+                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.transform = 'translate(-50%, -50%)';
+                ripple.style.pointerEvents = 'none';
+                ripple.classList.add('animate-ping');
+                
+                btn.style.position = 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

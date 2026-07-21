@@ -1,9 +1,9 @@
-import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { AppText } from '@/components/ui/AppText';
+import { SafeImage } from '@/components/ui/SafeImage';
 import type { Outfit } from '@/models';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
@@ -21,10 +21,11 @@ export function OutfitCard({ outfit, compact }: OutfitCardProps) {
   return (
     <GlassCard style={{ marginBottom: spacing.lg, padding: 0, overflow: 'hidden' }}>
       {outfit.previewImageUrl ? (
-        <Image
+        <SafeImage
           source={{ uri: outfit.previewImageUrl }}
           style={[styles.image, compact && styles.imageCompact]}
           contentFit="cover"
+          fallbackLabel="ẢNH OUTFIT"
         />
       ) : null}
       <View style={{ padding: spacing.lg }}>

@@ -1,0 +1,250 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro Style Survey - Confidence Level</title>
+<!-- Google Fonts: DM Serif Display & DM Sans -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "inverse-surface": "#2f3131",
+                "surface-variant": "#e2e2e2",
+                "primary": "#000000",
+                "inverse-primary": "#d4c4b3",
+                "surface-tint": "#695c4f",
+                "on-tertiary-container": "#858480",
+                "on-primary-fixed-variant": "#504538",
+                "surface-container-low": "#f3f3f4",
+                "background": "#f9f9f9",
+                "surface-container-highest": "#e2e2e2",
+                "tertiary-fixed-dim": "#c8c6c2",
+                "on-secondary-container": "#755f42",
+                "on-primary-fixed": "#231a0f",
+                "on-tertiary-fixed-variant": "#474744",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-fixed": "#1c1c1a",
+                "outline": "#7e766d",
+                "surface": "#f7f4f0", /* Overridden to Linen as per prompt */
+                "error-container": "#ffdad6",
+                "on-primary-container": "#908273",
+                "secondary-container": "#f9dbb7",
+                "primary-container": "#231a0f",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed": "#281903",
+                "on-secondary": "#ffffff",
+                "on-background": "#1a1c1c",
+                "tertiary-container": "#1c1c1a",
+                "primary-fixed": "#f1e0ce",
+                "surface-bright": "#f9f9f9",
+                "secondary-fixed": "#fcdeba",
+                "on-surface-variant": "#4d463e",
+                "on-error-container": "#93000a",
+                "on-error": "#ffffff",
+                "on-primary": "#ffffff",
+                "secondary-fixed-dim": "#dfc29f",
+                "surface-container": "#eeeeee",
+                "primary-fixed-dim": "#d4c4b3",
+                "surface-dim": "#dadada",
+                "on-secondary-fixed-variant": "#574329",
+                "inverse-on-surface": "#f0f1f1",
+                "tertiary-fixed": "#e5e2de",
+                "tertiary": "#000000",
+                "outline-variant": "#cfc5bb",
+                "error": "#ba1a1a",
+                "surface-container-high": "#e8e8e8",
+                "on-surface": "#1a1c1c",
+                "secondary": "#705b3e",
+                "sand": "#D4B896"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "unit": "4px",
+                "stack-md": "24px",
+                "margin-mobile": "20px",
+                "gutter": "24px",
+                "container-max": "1200px",
+                "margin-desktop": "64px",
+                "stack-sm": "12px",
+                "stack-lg": "48px"
+            },
+            "fontFamily": {
+                "display-lg-mobile": ["DM Serif Display"],
+                "body-lg": ["DM Sans"],
+                "headline-sm": ["DM Serif Display"],
+                "headline-md": ["DM Serif Display"],
+                "display-lg": ["DM Serif Display"],
+                "label-sm": ["DM Sans"],
+                "label-md": ["DM Sans"],
+                "body-md": ["DM Sans"]
+            },
+            "fontSize": {
+                "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F7F4F0; /* Linen background as requested */
+            color: #1a1c1c;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-selected {
+            background-color: #D4B896 !important;
+            color: #ffffff !important;
+            border-color: #D4B896 !important;
+            transform: scale(1.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md antialiased overflow-x-hidden">
+<!-- Top AppBar Implementation based on JSON -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface px-margin-mobile h-16 flex justify-between items-center transition-opacity hover:opacity-80">
+<div class="flex items-center gap-2">
+<button class="active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="font-display-lg-mobile text-display-lg-mobile text-primary">Wardro</span>
+</div>
+<button class="text-primary font-label-md text-label-md active:scale-95 transition-transform">Bỏ qua</button>
+</header>
+<!-- Progress Bar (Top Position) -->
+<div class="fixed top-16 left-0 w-full h-1 bg-outline-variant/20 z-40">
+<div class="h-full bg-primary w-[80%] transition-all duration-700 ease-in-out"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="pt-32 pb-40 px-margin-mobile flex flex-col min-h-screen">
+<!-- Imagery Section: Editorial Feel -->
+<div class="mb-stack-lg rounded-xl overflow-hidden aspect-[4/5] relative bg-white shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A high-fashion editorial portrait of a young Vietnamese individual standing in a minimalist concrete studio. The lighting is soft and cinematic, casting gentle shadows that emphasize the textures of a structured oversized linen blazer and tailored trousers. The color palette is composed of muted earth tones, soft linen whites, and deep espresso blacks, creating a sophisticated and quiet luxury atmosphere typical of modern Vietnamese style curation." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDn8AZG4QzgcM0MccIjW4uoiNg4L62t_CpITi8uEBNUn8oge40Q4VURW3VH5tuBhYUd_8bFr15ieIYn8gPGIQBFTYcyeSz83I1iOJub_jkAS2WYv6V54NnzpBaZYa_O7Wi_sbERyFj_F03vyyfB_Ye3oRhSG5rBadyEroz60qtN4h9dF7Z5EE_gVupms75KiHFoFFPk9xFJicuadsaaSZ4jgWkgHVY_yWMvfyKoGq3iD-GTUQB-MqvnEbyJPqaam7KhoDuhYspQPNQ')">
+</div>
+<div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/20 to-transparent">
+<p class="text-white font-label-sm text-label-sm tracking-widest">STEP 04: CONFIDENCE</p>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-md text-headline-md text-primary mb-stack-md leading-tight">
+            Bạn tự tin về gu thời trang của mình đến mức nào?
+        </h1>
+<!-- Scale Selector Component -->
+<section class="mt-stack-md">
+<div class="flex flex-col gap-6">
+<!-- Scale Points -->
+<div class="flex justify-between items-end h-24 gap-2 px-2">
+<!-- Point 1 -->
+<button class="scale-btn flex flex-col items-center gap-3 flex-1 group" onclick="selectStep(1)">
+<div class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center transition-all duration-300 bg-white" id="circle-1">
+<span class="font-label-md text-label-md">1</span>
+</div>
+</button>
+<!-- Point 2 -->
+<button class="scale-btn flex flex-col items-center gap-3 flex-1 group" onclick="selectStep(2)">
+<div class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center transition-all duration-300 bg-white" id="circle-2">
+<span class="font-label-md text-label-md">2</span>
+</div>
+</button>
+<!-- Point 3 -->
+<button class="scale-btn flex flex-col items-center gap-3 flex-1 group" onclick="selectStep(3)">
+<div class="w-14 h-14 rounded-full border border-outline/30 flex items-center justify-center transition-all duration-300 bg-white shadow-sm" id="circle-3">
+<span class="font-label-md text-label-md">3</span>
+</div>
+</button>
+<!-- Point 4 -->
+<button class="scale-btn flex flex-col items-center gap-3 flex-1 group" onclick="selectStep(4)">
+<div class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center transition-all duration-300 bg-white" id="circle-4">
+<span class="font-label-md text-label-md">4</span>
+</div>
+</button>
+<!-- Point 5 -->
+<button class="scale-btn flex flex-col items-center gap-3 flex-1 group" onclick="selectStep(5)">
+<div class="w-12 h-12 rounded-full border border-outline/30 flex items-center justify-center transition-all duration-300 bg-white" id="circle-5">
+<span class="font-label-md text-label-md">5</span>
+</div>
+</button>
+</div>
+<!-- Labels -->
+<div class="flex justify-between px-2">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Cần tư vấn</span>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Chuyên gia</span>
+</div>
+</div>
+<p class="mt-stack-md text-center text-on-surface-variant font-body-md text-body-md italic opacity-0 transition-opacity duration-300" id="description-text">
+                Hãy chọn một mức độ để chúng tôi hiểu bạn hơn.
+            </p>
+</section>
+</main>
+<!-- Bottom Navigation Footer -->
+<footer class="fixed bottom-0 left-0 w-full bg-surface px-margin-mobile py-6 flex justify-between items-center z-50 border-t border-outline-variant/10">
+<button class="flex items-center gap-2 text-outline font-label-md text-label-md hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+            Quay lại
+        </button>
+<button class="bg-primary text-white px-10 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 transition-all opacity-50 cursor-not-allowed" id="next-btn">
+            Tiếp tục
+        </button>
+</footer>
+<script>
+        const descriptions = {
+            1: "Tôi thường băn khoăn mỗi khi phối đồ.",
+            2: "Tôi biết mình thích gì nhưng đôi khi vẫn cần gợi ý.",
+            3: "Tôi khá tự tin và muốn khám phá thêm phong cách mới.",
+            4: "Tôi am hiểu về xu hướng và biết cách làm mới mình.",
+            5: "Fashionista chính hiệu! Tôi làm chủ mọi bộ trang phục."
+        };
+
+        function selectStep(step) {
+            // Remove previous selections
+            document.querySelectorAll('.scale-btn div').forEach(div => {
+                div.classList.remove('step-selected');
+            });
+
+            // Add new selection
+            const activeCircle = document.getElementById(`circle-${step}`);
+            activeCircle.classList.add('step-selected');
+
+            // Update description
+            const desc = document.getElementById('description-text');
+            desc.textContent = descriptions[step];
+            desc.classList.remove('opacity-0');
+            desc.classList.add('opacity-100');
+
+            // Enable Next button
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextBtn.classList.add('opacity-100', 'cursor-pointer');
+            
+            // Subtle feedback vibration if supported
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+    </script>
+</body></html>

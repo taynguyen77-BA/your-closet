@@ -12,16 +12,15 @@ const FEATURE_FLAGS = [
   { id: "virtual_tryon", label: "Virtual Try-on", enabled: true },
   { id: "community_market", label: "Community Marketplace", enabled: true },
   { id: "affiliate_shop", label: "Affiliate Shopping", enabled: true },
-  { id: "ai_stylist_elite", label: "Elite Stylist AI", enabled: true },
+  { id: "ai_stylist_premium", label: "Premium Stylist AI", enabled: true },
   { id: "missions", label: "Missions & Rewards", enabled: true },
 ];
 
 const ROLES: AdminRole[] = [
   "super_admin",
-  "admin",
+  "content_manager",
   "moderator",
   "support",
-  "marketing",
   "finance",
 ];
 

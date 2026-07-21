@@ -1,0 +1,217 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Wardro | Đang phối đồ...</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .animate-shimmer {
+            animation: shimmer 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 1.2s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-accent {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Custom scrollbar for minimalist look */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F4F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cfc5bb;
+            border-radius: 2px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#281903",
+                      "on-secondary": "#ffffff",
+                      "on-background": "#1a1c1c",
+                      "secondary-container": "#f9dbb7",
+                      "primary-container": "#231a0f",
+                      "surface-bright": "#f9f9f9",
+                      "tertiary-container": "#1c1c1a",
+                      "primary-fixed": "#f1e0ce",
+                      "surface": "#f9f9f9",
+                      "error-container": "#ffdad6",
+                      "outline": "#7e766d",
+                      "on-primary-container": "#908273",
+                      "surface-container-highest": "#e2e2e2",
+                      "tertiary-fixed-dim": "#c8c6c2",
+                      "on-tertiary-fixed": "#1c1c1a",
+                      "on-secondary-container": "#755f42",
+                      "on-primary-fixed": "#231a0f",
+                      "on-tertiary-fixed-variant": "#474744",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#000000",
+                      "inverse-primary": "#d4c4b3",
+                      "inverse-surface": "#2f3131",
+                      "surface-variant": "#e2e2e2",
+                      "surface-container-low": "#f3f3f4",
+                      "background": "#f9f9f9",
+                      "surface-tint": "#695c4f",
+                      "on-tertiary-container": "#858480",
+                      "on-primary-fixed-variant": "#504538",
+                      "on-surface": "#1a1c1c",
+                      "secondary": "#705b3e",
+                      "tertiary": "#000000",
+                      "outline-variant": "#cfc5bb",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e8e8e8",
+                      "surface-dim": "#dadada",
+                      "surface-container": "#eeeeee",
+                      "primary-fixed-dim": "#d4c4b3",
+                      "tertiary-fixed": "#e5e2de",
+                      "on-secondary-fixed-variant": "#574329",
+                      "inverse-on-surface": "#f0f1f1",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#fcdeba",
+                      "on-surface-variant": "#4d463e",
+                      "on-error-container": "#93000a",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#dfc29f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-md": "24px",
+                      "margin-mobile": "20px",
+                      "gutter": "24px",
+                      "container-max": "1200px",
+                      "unit": "4px",
+                      "stack-sm": "12px",
+                      "stack-lg": "48px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["DM Serif Display"],
+                      "display-lg-mobile": ["DM Serif Display"],
+                      "body-lg": ["DM Sans"],
+                      "label-md": ["DM Sans"],
+                      "body-md": ["DM Sans"],
+                      "label-sm": ["DM Sans"],
+                      "headline-md": ["DM Serif Display"],
+                      "display-lg": ["DM Serif Display"]
+              },
+              "fontSize": {
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-[#F7F4F0] text-primary selection:bg-secondary-container overflow-hidden">
+<!-- Transition Canvas -->
+<main class="relative h-screen w-full flex flex-col items-center justify-center px-margin-mobile">
+<!-- Subtle Ambient Background Layer -->
+<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
+<div class="absolute top-[10%] left-[15%] w-64 h-64 bg-secondary-fixed-dim blur-[120px] rounded-full floating-accent"></div>
+<div class="absolute bottom-[10%] right-[10%] w-96 h-96 bg-primary-fixed blur-[150px] rounded-full floating-accent" style="animation-delay: -2s;"></div>
+</div>
+<!-- Central Loading Content -->
+<div class="relative z-10 flex flex-col items-center text-center fade-in-up">
+<!-- Branded Abstract Icon / Spinner Replacement -->
+<div class="mb-stack-lg relative w-24 h-24 flex items-center justify-center">
+<!-- Outer Ring -->
+<div class="absolute inset-0 border-[1.5px] border-outline-variant/30 rounded-full"></div>
+<!-- Pulsing Inner Core -->
+<div class="w-16 h-16 bg-surface-container-lowest border border-outline-variant/10 rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary text-3xl animate-pulse">checkroom</span>
+</div>
+<!-- Rotating Decorative Ornament -->
+<div class="absolute inset-0 border-t-[1.5px] border-secondary rounded-full animate-[spin_3s_linear_infinite]"></div>
+</div>
+<!-- Micro-copy -->
+<h1 class="font-headline-sm text-headline-sm text-primary mb-2">
+                Đang phối đồ cho bạn...
+            </h1>
+<!-- Secondary Note -->
+<p class="font-label-md text-label-md text-on-surface-variant/70 mb-stack-md">
+                Có thể mất 15-20 giây
+            </p>
+<!-- Branded Progress Bar -->
+<div class="w-48 h-[2px] bg-outline-variant/20 relative overflow-hidden rounded-full">
+<div class="absolute inset-0 bg-secondary-fixed animate-shimmer"></div>
+</div>
+</div>
+<!-- Editorial Style Elements (Non-functional, purely aesthetic for the loading screen) -->
+<div class="absolute bottom-12 left-12 hidden md:block opacity-20 pointer-events-none">
+<span class="font-headline-md text-headline-md italic">WARDRO</span>
+</div>
+<div class="absolute top-12 right-12 hidden md:block opacity-20 pointer-events-none">
+<span class="font-label-sm text-label-sm uppercase tracking-[0.3em]">AI Personal Stylist System</span>
+</div>
+<!-- Decorative Photography Context (Blurry images to hint at what's being generated) -->
+<div class="fixed inset-0 z-[-1] flex items-center justify-around pointer-events-none blur-3xl opacity-10">
+<div class="w-1/3 aspect-[3/4] bg-center bg-cover scale-110" data-alt="A soft-luxury editorial fashion shot of high-end silk fabrics draped elegantly in a bright, linen-toned studio. The lighting is ethereal and soft, emphasizing natural textures and minimal aesthetics. The color palette is composed of warm beiges, soft creams, and deep espresso tones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDDZQ65jCbUxkOfWAaeTnwzr8KRj2DkOGiH2Ibl2MaIoW2S4vP_g9QZYs-9TXVICGXH8WYc0Nhcl0JiafvJxg1xPLunhAROBahX4A92Uu4-Z_cxwWwypcXOBqbnHXEHB-lTu-rAWy-v_2rmXej0puy-BBvvVMI5LWLYY1gwWALOQOXxmFggw2ZzFW75GPjTchGSaMEBcXuPSwje-hjKp19a_EVYafcDYvs5q8hGp7KP62EXjcWPkeehUKdnj-VAHA5_xnBNp3s_L7g')"></div>
+<div class="w-1/3 aspect-[3/4] bg-center bg-cover scale-125" data-alt="A minimalist overhead flat-lay of designer clothing pieces including a tailored wool coat and linen trousers on a textured paper background. The scene is shot with high-key lighting for a clean, editorial look. Deep shadows provide a sense of tactile depth and premium quality." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAaoGRj17mMF2QEYfpKOxdm3vzflgOf7cQN-4_By7nmzSasFdXgTCQAZR42SSUZnojuDCO7KJtT3THaM2rRyiX_bM9XGBPeXTI3Bk1phD833s0FNyEXrvbwcoG8S6tBln5LUA-59g2a9rC-FG2NXYkLgrQ15rr_xnDV7PKZNQeaayEm8Z59F3MrEkD4akcLS3e_ouMhsQKkZyYiurEj3a6ufmJS1IE0QJF6MO_dKYcsbKUYw_l96tLEwu56dEk8RTVVp8YL0asjHng')"></div>
+</div>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Subtle rotation and scale effects for the background accents
+            const accents = document.querySelectorAll('.floating-accent');
+            accents.forEach((accent, index) => {
+                accent.style.transition = 'all 8s ease-in-out';
+            });
+
+            // Simulate progress (for visual feedback only)
+            const progressContainer = document.querySelector('.w-48.h-\\[2px\\]');
+            if (progressContainer) {
+                // In a real app, this would be tied to a websocket or status polling
+                console.log("Wardro: Generating virtual try-on session...");
+            }
+        });
+    </script>
+</body></html>

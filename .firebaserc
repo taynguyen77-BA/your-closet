@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "staging": "your-closet-staging",
+    "production": "your-closet-prod"
+  }
+}

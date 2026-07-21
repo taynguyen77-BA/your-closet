@@ -1,0 +1,216 @@
+<!DOCTYPE html><html class="light" lang="vi"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#705b3e",
+                    "inverse-primary": "#d4c4b3",
+                    "secondary-fixed-dim": "#dfc29f",
+                    "secondary-fixed": "#fcdeba",
+                    "background": "#f9f9f9",
+                    "on-secondary-container": "#755f42",
+                    "surface": "#f9f9f9",
+                    "on-background": "#1a1c1c",
+                    "tertiary-fixed": "#e5e2de",
+                    "primary-fixed": "#f1e0ce",
+                    "tertiary-fixed-dim": "#c8c6c2",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#d4c4b3",
+                    "outline-variant": "#cfc5bb",
+                    "on-error": "#ffffff",
+                    "on-tertiary-container": "#858480",
+                    "on-primary-fixed-variant": "#504538",
+                    "tertiary-container": "#1c1c1a",
+                    "primary": "#000000",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-container-low": "#f3f3f4",
+                    "surface-container-high": "#e8e8e8",
+                    "surface-container": "#eeeeee",
+                    "on-tertiary-fixed-variant": "#474744",
+                    "on-primary-container": "#908273",
+                    "inverse-on-surface": "#f0f1f1",
+                    "surface-bright": "#f9f9f9",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#281903",
+                    "surface-tint": "#695c4f",
+                    "surface-variant": "#e2e2e2",
+                    "secondary-container": "#f9dbb7",
+                    "on-surface-variant": "#4d463e",
+                    "on-secondary": "#ffffff",
+                    "outline": "#7e766d",
+                    "inverse-surface": "#2f3131",
+                    "on-tertiary-fixed": "#1c1c1a",
+                    "tertiary": "#000000",
+                    "on-primary-fixed": "#231a0f",
+                    "primary-container": "#231a0f",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#dadada",
+                    "on-surface": "#1a1c1c",
+                    "on-secondary-fixed-variant": "#574329"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-lg": "48px",
+                    "margin-desktop": "64px",
+                    "container-max": "1200px",
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "stack-sm": "12px",
+                    "stack-md": "24px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["DM Serif Display"],
+                    "headline-md": ["DM Serif Display"],
+                    "display-lg": ["DM Serif Display"],
+                    "label-md": ["DM Sans"],
+                    "label-sm": ["DM Sans"],
+                    "display-lg-mobile": ["DM Serif Display"],
+                    "body-md": ["DM Sans"],
+                    "body-lg": ["DM Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-mask {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Top AppBar (from JSON - Semantic Shell Suppression Applied for Transactional Page, but keeping a minimal header for brand identity as requested for "Wardro") -->
+<header class="w-full top-0 sticky flex items-center justify-between px-margin-mobile py-6 bg-background z-50">
+<div class="font-headline-md text-headline-md tracking-tight text-primary">Wardro</div>
+<button class="text-primary hover:opacity-70 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<main class="min-h-[707px] flex flex-col items-center justify-center px-margin-mobile pb-stack-lg max-w-lg mx-auto">
+<!-- Success Animation/Graphic -->
+<div class="mb-stack-md flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.1s;">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<!-- Decorative Circle -->
+<div class="absolute inset-0 border border-outline-variant/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
+<div class="absolute inset-2 border border-outline-variant/50 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+<!-- Main Success Icon -->
+<div class="bg-surface-container-lowest p-6 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/10">
+<span class="material-symbols-outlined text-6xl text-primary font-thin" style="font-variation-settings: 'wght' 100;">check</span>
+</div>
+</div>
+</div>
+<!-- Headline & Subtext -->
+<div class="text-center mb-stack-lg animate-fade-in-up" style="animation-delay: 0.2s;">
+<h1 class="font-headline-md text-headline-md mb-4">Đặt hàng thành công!</h1>
+<p class="text-on-surface-variant font-body-md max-w-[280px] mx-auto leading-relaxed">
+                Cảm ơn bạn đã tin dùng Wardro. Đơn hàng của bạn đang được chuẩn bị.
+            </p>
+</div>
+<!-- Order Summary Card -->
+<div class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-stack-md mb-stack-lg shadow-sm animate-fade-in-up" style="animation-delay: 0.3s;">
+<div class="flex flex-col gap-unit">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="font-label-sm text-outline uppercase tracking-wider">Mã đơn hàng</span>
+<span class="font-label-md text-primary">#WRD8829</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant/10">
+<span class="font-label-sm text-outline uppercase tracking-wider">Ngày đặt</span>
+<span class="font-label-md text-primary">12/10/2023</span>
+</div>
+<div class="flex justify-between items-center py-4">
+<span class="font-label-md text-primary font-bold">Tổng cộng</span>
+<span class="font-headline-sm text-headline-sm text-primary">1.350.000đ</span>
+</div>
+</div>
+<!-- Aesthetic Editorial Image Strip -->
+<div class="mt-4 flex gap-2 overflow-hidden opacity-80">
+<div class="w-16 h-20 bg-surface-container-high rounded-sm">
+<img class="w-full h-full object-cover" data-alt="A minimalist fashion editorial shot of a high-quality linen garment hanging in a bright, sunlit room with clean white walls and soft shadows. The lighting is high-key and serene, emphasizing the texture and luxury of the fabric in a soft-luxury Vietnamese aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOrBUEOmrBepL-L9l2AWGCI_LgOJ3pDgs6bLsM-VRVQml43FdqHYQcIsNRy_UKoWNPIN5n2nVf9TEhs6Ch6no1JHRx637shy3DoNGky7R9fqv0pZNDmvBZq61fZNJJNF1pOhDfrnAwJamiE7xXD5f1IA6PogKrqMNDRY3MC2uVoRi5CycCzftHnX9ozdktwCpbSTt-S_mSv_YZ0ETpD38UjOwnD0mGxZ4yNkwVAchBdhwHu8qCWEj5K9AvgSJ3Gzd44AXwqWfpE4s">
+</div>
+<div class="w-16 h-20 bg-surface-container-high rounded-sm">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of artisanal clothing details, featuring a hand-woven tag and delicate stitching on neutral-toned fabric. The scene is lit by warm, natural afternoon sunlight, creating a high-end editorial feel that aligns with the Wardro brand's minimalist and sophisticated identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjSIxh07LrhR9XGeojSw23S0RzlSl6SK0Jb-c-2PkXcvfbdcEP4Glg4zrb2W3YjpY44y3E4zHG0rA3SzacM70YOb5JI8-3gF8yLcJak5fwaHTrFWkfq2D0pHxcvv0eE3zZUmlpAgbWoV0lsKcuTrWp5HcGPgZXCqNb_vLoh1mE9Ujgkwmpil_BhFaTmZnOeRDfj1vlI3zxjMV1btGzakcpdlmKB0sIoQoyVY6eswKn0ZFRbgHSj1ys8AoTkmbOoi1zIwkvojDX-64">
+</div>
+<div class="flex-1 flex flex-col justify-center px-2">
+<span class="font-label-sm text-outline">+ 2 sản phẩm khác</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="w-full flex flex-col gap-3 animate-fade-in-up" style="animation-delay: 0.4s;">
+<button class="w-full bg-primary text-on-primary py-4 rounded-full font-label-md tracking-widest hover:opacity-90 active:scale-95 transition-all shadow-md">
+                THEO DÕI ĐƠN HÀNG
+            </button>
+<button class="w-full bg-transparent text-primary border border-primary/20 py-4 rounded-full font-label-md tracking-widest hover:bg-surface-container-low active:scale-95 transition-all">
+                VỀ TRANG CHỦ
+            </button>
+</div>
+<!-- Micro-interaction footer -->
+<div class="mt-12 text-center animate-fade-in-up" style="animation-delay: 0.5s;">
+<p class="font-label-sm text-outline-variant flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Giao dịch được bảo mật bởi Wardro Pay
+            </p>
+</div>
+</main>
+<!-- Background Decoration (Subtle Gradient/Shapes) -->
+<div class="fixed top-0 right-0 -z-10 opacity-20 pointer-events-none">
+<div class="w-[500px] h-[500px] bg-secondary-fixed rounded-full blur-[100px] -mr-48 -mt-48"></div>
+</div>
+<div class="fixed bottom-0 left-0 -z-10 opacity-20 pointer-events-none">
+<div class="w-[300px] h-[300px] bg-tertiary-fixed-dim rounded-full blur-[80px] -ml-24 -mb-24"></div>
+</div>
+<!-- Scripts for micro-interactions -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Subtle parallax for the success icon or other floating elements
+            window.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) / 50;
+                const moveY = (e.clientY - window.innerHeight / 2) / 50;
+                const floatingBg = document.querySelectorAll('.bg-secondary-fixed, .bg-tertiary-fixed-dim');
+                floatingBg.forEach(el => {
+                    el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+
+            // Trigger success vibration for mobile if supported
+            if ("vibrate" in navigator) {
+                navigator.vibrate([100, 30, 100]);
+            }
+        });
+    </script>
+</body></html>
