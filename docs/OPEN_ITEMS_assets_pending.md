@@ -47,3 +47,13 @@ and aspect ratio are already correct.
 - **Profile / Settings tier + expiry**: Stitch shows a "GOLD" tier chip and
   "Hạn dùng 12/2025"; the data model has neither (only plan label + usage), so
   those specific fields are not rendered.
+
+## Export reference caveats — forward packages (not yet built)
+
+Notes to read before using a Stitch screen as a reference for a package that
+hasn't been built yet. These are export defects, not code work — do not "fix"
+them in the export.
+
+| Package | Stitch folder | Caveat |
+|---|---|---|
+| Package 6 — Membership/Payment (Thanh toán thành công) | `n_ng_c_p_th_nh_c_ng_wardro` | **Branding bug in the export:** the screen's `<title>` reads `Thanh toán thành công \| LINEN` — "LINEN" instead of "Wardro" (every other screen uses "Wardro", e.g. `Wardro \| Membership Comparison`, `Wardro - Sự kiện`). The layout/tokens are fine to reference, but the wordmark/title in this file is wrong. When Package 6 is built, use "Wardro" — do not copy the "LINEN" title. Cross-ref ADR-09 (`11_solution_architecture.md`), which already records the export as internally inconsistent. Left unfixed intentionally (export is a read-only reference). |
