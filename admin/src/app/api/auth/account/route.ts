@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/server/firebase-admin";
+import { adminAuth, adminDb, adminStorage } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
 import { FIRESTORE_COLLECTIONS } from "@/lib/firestore-schema";
 
@@ -25,6 +25,11 @@ const CASCADE_COLLECTIONS: { collection: string; ownerField: string }[] = [
 ];
 
 const BATCH_SIZE = 500;
+
+async function deleteStorageForUser(uid: string) {
+  const [files] = await adminStorage.bucket().getFiles({ prefix: `users/${uid}/clothes/` });
+  for (const file of files) await file.delete({ ignoreNotFound: true });
+}
 
 async function deleteCollectionForUser(collection: string, ownerField: string, uid: string) {
   const ref = adminDb.collection(collection);
@@ -54,10 +59,15 @@ export async function DELETE(request: NextRequest) {
 
   const uid = decoded.uid;
   try {
+    // Delete owned wardrobe assets first. If Storage cleanup fails, stop before
+    // deleting the Firestore/Auth identity so the account remains recoverable.
+    await deleteStorageForUser(uid);
     for (const { collection, ownerField } of CASCADE_COLLECTIONS) {
       await deleteCollectionForUser(collection, ownerField, uid);
     }
     await adminDb.collection(FIRESTORE_COLLECTIONS.users).doc(uid).delete();
+    // ai_logs/ai_usage retention is intentionally not changed here because no
+    // product/legal retention policy is currently approved. See V2.1.2 report.
     await adminAuth.deleteUser(uid);
     return NextResponse.json({ data: { deleted: true } }, { status: 200, headers: corsHeaders });
   } catch {

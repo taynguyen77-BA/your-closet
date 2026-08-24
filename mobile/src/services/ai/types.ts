@@ -32,6 +32,13 @@ export interface ClothingImageAnalysis extends DetectedClothingMeta {
 export interface ClothingReviewDraft {
   originalImageUrl: string;
   selectedImageUrl: string;
+  /** Local source URI retained only for retry/re-upload after a failed save. */
+  sourceImageUri?: string;
+  /** Server-issued Storage object path for the original upload; not AI/user-editable. */
+  storagePath?: string;
+  storedUpload?: { url: string; path: string };
+  /** Stable logical create key reused if the user retries save. */
+  createRequestId?: string;
   analysis?: ClothingImageAnalysis;
   name: string;
   type: ClothingItem['type'];

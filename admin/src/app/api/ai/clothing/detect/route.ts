@@ -1,106 +1,94 @@
-import { NextRequest, NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/server/firebase-admin";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { callWithFallback } from "@/lib/server/ai-resolver";
+import {
+  executeAiOperation,
+  fetchTextWithTimeout,
+  readImageForm,
+} from "@/lib/server/ai-boundary";
 import { corsHeaders } from "@/lib/server/resources";
-import type { AiTier } from "@/lib/server/ai-resolver";
 
 export const runtime = "nodejs";
 
-/**
- * POST /api/ai/clothing/detect
- * Accepts multipart/form-data with 'image' field.
- * Routes through resolveModel('clothing_detection', tier) — never hardcoded.
- * BRD 3.2.2, 3.2.2.2
- */
-export async function POST(request: NextRequest) {
-  // Verify Firebase user token (not admin — regular user endpoint)
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-  if (!token) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401, headers: corsHeaders });
+interface DetectionResponse {
+  type: string;
+  color: string;
+  material?: string;
+  style?: string;
+  season: string[];
+  tags: string[];
+  suggestedName: string;
+  confidenceScore: number;
+  qualityWarnings: string[];
+}
 
-  let userId: string;
-  let tier: AiTier = "free";
-  try {
-    const decoded = await adminAuth.verifyIdToken(token);
-    userId = decoded.uid;
-    // Read user's membership tier from Firestore
-    const userSnap = await adminDb.collection("users").doc(userId).get();
-    const plan = userSnap.exists ? (userSnap.data()?.plan as AiTier | undefined) : undefined;
-    tier = plan === "pro" || plan === "premium" ? plan : "free";
-  } catch {
-    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401, headers: corsHeaders });
-  }
+function parseDetection(value: unknown): DetectionResponse {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("AI provider returned an invalid response.");
+  const parsed = value as Record<string, unknown>;
+  const validTypes = ["top", "bottom", "dress", "outerwear", "shoes", "accessory", "bag", "other"];
+  const confidence = typeof parsed.confidenceScore === "number" && Number.isFinite(parsed.confidenceScore)
+    ? Math.max(0, Math.min(1, parsed.confidenceScore))
+    : 0.5;
+  return {
+    type: validTypes.includes(String(parsed.type)) ? String(parsed.type) : "other",
+    color: typeof parsed.color === "string" && parsed.color.trim() ? parsed.color : "Unknown",
+    material: typeof parsed.material === "string" ? parsed.material : undefined,
+    style: typeof parsed.style === "string" ? parsed.style : undefined,
+    season: Array.isArray(parsed.season) ? parsed.season.filter((item): item is string => typeof item === "string").slice(0, 12) : [],
+    tags: Array.isArray(parsed.tags) ? parsed.tags.filter((item): item is string => typeof item === "string").slice(0, 30) : [],
+    suggestedName: typeof parsed.suggestedName === "string" && parsed.suggestedName.trim() ? parsed.suggestedName.slice(0, 120) : "Món đồ mới",
+    confidenceScore: confidence,
+    qualityWarnings: Array.isArray(parsed.qualityWarnings) ? parsed.qualityWarnings.filter((item): item is string => typeof item === "string").slice(0, 20) : [],
+  };
+}
 
-  // Parse image from multipart form
-  let imageBase64: string;
-  let mimeType = "image/jpeg";
-  try {
-    const form = await request.formData();
-    const file = form.get("image") as File | null;
-    if (!file) return NextResponse.json({ error: "Missing 'image' field" }, { status: 400, headers: corsHeaders });
-    mimeType = file.type || "image/jpeg";
-    const buffer = await file.arrayBuffer();
-    imageBase64 = Buffer.from(buffer).toString("base64");
-  } catch {
-    return NextResponse.json({ error: "Failed to read image" }, { status: 400, headers: corsHeaders });
-  }
-
+async function invokeGemini(modelId: string, file: File): Promise<DetectionResponse> {
   const apiKey = process.env.GOOGLE_AI_API_KEY;
+  if (!apiKey) throw new Error("AI provider is not configured.");
+  const imageBase64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+  const { response, text: responseText } = await fetchTextWithTimeout(
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelId)}:generateContent?key=${encodeURIComponent(apiKey)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [
+          { text: "Analyze this clothing item image. Return JSON with type (top|bottom|dress|outerwear|shoes|accessory|bag|other), color, material, style, season array, tags array, suggestedName in Vietnamese, confidenceScore between 0 and 1, and qualityWarnings array. No markdown." },
+          { inlineData: { mimeType: file.type, data: imageBase64 } },
+        ] }],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 512, responseMimeType: "application/json" },
+      }),
+    },
+  );
+  if (!response.ok) throw new Error("AI provider request failed.");
+  const json = (() => { try { return JSON.parse(responseText) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }; } catch { throw new Error("AI provider returned malformed response."); } })();
+  const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("AI provider returned no usable response.");
+  let parsed: unknown;
+  try { parsed = JSON.parse(text); } catch { throw new Error("AI provider returned malformed JSON."); }
+  return parseDetection(parsed);
+}
 
-  try {
-    const result = await callWithFallback(
-      "clothing_detection",
-      tier,
-      userId,
-      async (modelId) => {
-        if (!apiKey) throw new Error("GOOGLE_AI_API_KEY not configured");
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
-        const payload = {
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Analyze this clothing item image. Return JSON with: type (one of: top|bottom|dress|outerwear|shoes|accessory|bag|other), color (string), material (string or null), style (string or null), season (array of strings), tags (array of strings), suggestedName (Vietnamese string), confidenceScore (0-1 float), qualityWarnings (array of strings). No markdown, only valid JSON.`,
-                },
-                { inlineData: { mimeType, data: imageBase64 } },
-              ],
-            },
-          ],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 512, responseMimeType: "application/json" },
-        };
-        const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-        if (!res.ok) throw new Error(`Gemini API error ${res.status}`);
-        const json = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
-        const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Empty response from Gemini");
-        const parsed = JSON.parse(text) as {
-          type?: string; color?: string; material?: string; style?: string;
-          season?: string[]; tags?: string[]; suggestedName?: string;
-          confidenceScore?: number; qualityWarnings?: string[];
-        };
-        const validTypes = ["top","bottom","dress","outerwear","shoes","accessory","bag","other"];
-        return {
-          type: validTypes.includes(parsed.type ?? "") ? parsed.type! : "other",
-          color: parsed.color ?? "Unknown",
-          material: parsed.material ?? undefined,
-          style: parsed.style ?? undefined,
-          season: Array.isArray(parsed.season) ? parsed.season : [],
-          tags: Array.isArray(parsed.tags) ? parsed.tags : [],
-          suggestedName: parsed.suggestedName ?? "Món đồ mới",
-          confidenceScore: typeof parsed.confidenceScore === "number" ? parsed.confidenceScore : 0.5,
-          qualityWarnings: Array.isArray(parsed.qualityWarnings) ? parsed.qualityWarnings : [],
-        };
-      }
-    );
-    // AC 45.4 / BRD 3.4.6.3 / §9 fallback rule — the client must be able to see that a
-    // fallback served this result, so it can warn the user and skip the quota charge.
-    return NextResponse.json(
-      { ...result.result, modelUsed: result.modelUsed, fallbackUsed: result.fallbackUsed },
-      { headers: corsHeaders }
-    );
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Detection failed";
-    return NextResponse.json({ error: message }, { status: 503, headers: corsHeaders });
-  }
+export async function POST(request: NextRequest) {
+  return executeAiOperation(
+    request,
+    "clothing_detection",
+    async () => readImageForm(request, ["image"]),
+    async (auth, input) => {
+      const result = await callWithFallback(
+        "clothing_detection",
+        auth.plan,
+        auth.userId,
+        (modelId) => invokeGemini(modelId, input.file),
+      );
+      return {
+        body: { ...result.result, modelUsed: result.modelUsed, fallbackUsed: result.fallbackUsed },
+        modelUsed: result.modelUsed,
+        provider: "gemini",
+        fallbackUsed: result.fallbackUsed,
+      };
+    },
+  );
 }
 
 export async function OPTIONS() {

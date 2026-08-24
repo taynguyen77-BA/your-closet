@@ -16,17 +16,6 @@ export interface ResolvedModel {
   useBatchApi: boolean;
 }
 
-export interface AiCallLog {
-  feature: AiFeature;
-  tier: AiTier;
-  userId: string;
-  modelUsed: string;
-  fallbackUsed: boolean;
-  success: boolean;
-  timestamp: string;
-  costEstimate: number;
-}
-
 // clothing_enhance: Batch at every tier (BRD 1.3.6)
 // virtual_tryon: Standard (real-time) at every tier (BRD Section 7)
 // all others: Standard
@@ -82,13 +71,13 @@ export async function resolveModel(feature: AiFeature, tier: AiTier): Promise<Re
 /**
  * Wrapper: calls the AI provider with the resolved model.
  * On primary failure, retries once with the fallback model.
- * Writes exactly one ai_logs entry per call (P-14).
+ * Authoritative usage logging is performed by the AI quota boundary, not here.
  */
 export async function callWithFallback<T>(
   feature: AiFeature,
   tier: AiTier,
-  userId: string,
-  caller: (modelId: string, useBatchApi: boolean) => Promise<T>
+  _userId: string,
+  caller: (modelId: string, useBatchApi: boolean) => Promise<T>,
 ): Promise<{ result: T; modelUsed: string; fallbackUsed: boolean }> {
   const { modelId, fallbackModelId, useBatchApi } = await resolveModel(feature, tier);
 
@@ -105,14 +94,5 @@ export async function callWithFallback<T>(
     result = await caller(fallbackModelId, useBatchApi);
   }
 
-  // Write ai_logs (fire-and-forget — do not let logging failure surface to caller)
-  writeAiLog({ feature, tier, userId, modelUsed, fallbackUsed, success: true, timestamp: new Date().toISOString(), costEstimate: 0 }).catch(
-    (err) => console.error("[ai-resolver] ai_logs write failed:", err)
-  );
-
   return { result, modelUsed, fallbackUsed };
-}
-
-async function writeAiLog(log: AiCallLog): Promise<void> {
-  await adminDb.collection("ai_logs").add(log);
 }

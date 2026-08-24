@@ -136,7 +136,8 @@ service cloud.firestore {
       allow create: if isActiveAdmin();
     }
     match /ai_logs/{logId} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      // Authoritative AI usage records are written only by the trusted server via Admin SDK.
+      allow create, update, delete: if false;
       allow read: if request.auth != null && request.auth.uid == resource.data.userId;
       allow read: if isActiveAdmin();
     }

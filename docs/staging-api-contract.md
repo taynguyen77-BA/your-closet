@@ -40,13 +40,19 @@ Returns backend dependency state:
 
 ## Resources
 
-Generic resource endpoints:
+Generic resource endpoints remain available for compatible reads and non-authoritative collections:
 
 - `GET /api/resources/:collection`
 - `GET /api/resources/:collection/:id`
-- `POST /api/resources/:collection`
-- `PATCH /api/resources/:collection/:id`
-- `DELETE /api/resources/:collection/:id`
+
+Wardrobe writes must use the dedicated server-authoritative endpoints. Generic `clothes` create/update/delete is rejected with `USE_WARDROBE_API`.
+
+- `POST /api/wardrobe/upload`
+- `GET /api/wardrobe/items`
+- `POST /api/wardrobe/items`
+- `GET /api/wardrobe/items/:id`
+- `PATCH /api/wardrobe/items/:id`
+- `DELETE /api/wardrobe/items/:id`
 
 Supported staging collections:
 
@@ -75,7 +81,7 @@ Public mobile-readable records:
 Owner-scoped mobile records:
 
 - `users.id === auth.uid`
-- `clothes.userId === auth.uid`
+- `clothes.userId === auth.uid` (read compatibility only; wardrobe writes use `/api/wardrobe/*`)
 - `outfits.userId === auth.uid`
 - `events.userId === auth.uid`
 - `user_missions.userId === auth.uid`
@@ -89,6 +95,8 @@ Owner-scoped mobile records:
 Body: `{ "idToken": "<Firebase ID token>" }`. Verifies the token server-side, creates/links the `users/{uid}` profile on first sign-in, and returns `{ user, customToken? }`. `customToken` is only returned when the identity was merged into a different canonical `uid` (cross-provider linking).
 
 `DELETE /api/auth/account`
+
+Before Firestore/Auth deletion, the backend removes `users/{uid}/clothes/` Storage assets. If Storage cleanup fails, the operation fails closed and does not silently continue to delete the Firestore/Auth identity.
 
 Requires `Authorization: Bearer <Firebase ID token>` issued by a real sign-in (Google/Facebook re-consent or phone OTP re-verify) within the last 5 minutes — a still-valid but older session token is rejected with `{ "error": "REAUTH_REQUIRED" }` (401). On success, permanently deletes the caller's own records from `clothes`, `outfits`, `events`, `user_missions`, `notifications`, `listings`, `marketplace_messages` (messages authored by the user, i.e. `senderId`), and `subscriptions`, then deletes the `users/{uid}` profile document and the Firebase Auth account. Anonymized/aggregated statistics are not touched. Returns `{ "data": { "deleted": true } }`.
 

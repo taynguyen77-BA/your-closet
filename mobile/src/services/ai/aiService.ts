@@ -9,13 +9,14 @@ export { AiServiceError } from './providers';
 const enableRealAi = process.env.EXPO_PUBLIC_ENABLE_REAL_AI === 'true';
 const demoMode = process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
 const mock = new MockAiProvider();
-const provider: AiProvider = demoMode && !enableRealAi ? mock : new BackendAiProvider();
+const usingBackendAi = !demoMode || enableRealAi;
+const provider: AiProvider = usingBackendAi ? new BackendAiProvider() : mock;
 const costs: Record<AiFeature, number> = {
   clothing_detection: 0.002, outfit_recommendation: 0.01, virtual_try_on: 0.08, style_profile: 0.015,
 };
 
 async function log(userId: string, feature: AiFeature, inputSummary: string, resultStatus: AiUsageLog['resultStatus']) {
-  if (enableRealAi || !isFirebaseConfigured()) return;
+  if (usingBackendAi || demoMode || !isFirebaseConfigured()) return;
   try { await aiUsageLogsService.create({ userId, feature, inputSummary, resultStatus, costEstimate: resultStatus === 'success' ? costs[feature] : 0, createdAt: new Date().toISOString() }); }
   catch { /* AI output should remain usable when analytics logging is unavailable. */ }
 }
@@ -33,9 +34,9 @@ async function run<T>(userId: string, feature: AiFeature, summary: string, actio
     const fallbackUsed = Boolean((data as AiFallbackMeta | null)?.fallbackUsed);
     return {
       data,
-      source: enableRealAi ? 'real' : 'mock',
+      source: usingBackendAi ? 'real' : 'mock',
       quotaChargeEligible: !fallbackUsed,
-      quotaManagedByBackend: enableRealAi,
+      quotaManagedByBackend: usingBackendAi,
       fallbackUsed,
       fallbackMessage: fallbackUsed ? FALLBACK_QUALITY_NOTICE : undefined,
     };

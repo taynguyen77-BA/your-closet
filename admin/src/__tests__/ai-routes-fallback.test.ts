@@ -12,6 +12,29 @@ jest.mock("@/lib/server/firebase-admin", () => ({
   adminDb: { collection: jest.fn() },
 }));
 
+jest.mock("@/lib/server/ai-usage", () => ({
+  aiUsageErrorResponse: jest.fn(() => ({ code: "AI_REQUEST_FAILED", message: "AI request failed.", status: 503 })),
+  reserveAiUsage: jest.fn().mockResolvedValue({
+    usageId: "test-usage",
+    userId: "user-gapA",
+    operation: "clothing_detection",
+    plan: "free",
+    idempotencyKey: "clothing_detection:test",
+    requestId: "test-request",
+    quotaUnits: 1,
+    unlimited: false,
+    quotaPeriod: "2026-08",
+    status: "RESERVED",
+    fallbackUsed: false,
+    isReplay: false,
+  }),
+  finalizeAiUsage: jest.fn().mockImplementation(async (input: { reservation: unknown; fallbackUsed: boolean }) => ({
+    ...(input.reservation as object),
+    status: input.fallbackUsed ? "RELEASED" : "COMMITTED",
+    isReplay: false,
+  })),
+}));
+
 import { adminAuth, adminDb } from "@/lib/server/firebase-admin";
 import { invalidateAiRoutingCache } from "@/lib/server/ai-resolver";
 import { POST as detectPOST } from "@/app/api/ai/clothing/detect/route";
@@ -82,7 +105,7 @@ describe("GAP-A — /api/ai/clothing/detect surfaces fallbackUsed (AC 45.4)", ()
       // NOTE: match the fallback FIRST — "gemini-2.5-flash-lite" contains "gemini-2.5-flash".
       if (url.includes(`${FALLBACK_DETECT}:generateContent`)) {
         calledModels.push(FALLBACK_DETECT);
-        return { ok: true, json: async () => geminiBody(DETECT_JSON) };
+        return { ok: true, text: async () => JSON.stringify(geminiBody(DETECT_JSON)) };
       }
       calledModels.push(PRIMARY_FREE);
       return { ok: false, status: 500 }; // primary model down
@@ -101,7 +124,7 @@ describe("GAP-A — /api/ai/clothing/detect surfaces fallbackUsed (AC 45.4)", ()
   test("primary model succeeds → fallbackUsed=false + primary modelUsed", async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: async () => geminiBody(DETECT_JSON),
+      text: async () => JSON.stringify(geminiBody(DETECT_JSON)),
     }) as unknown as typeof fetch;
 
     const res = await detectPOST(buildRequest("http://localhost/api/ai/clothing/detect"));
@@ -118,7 +141,7 @@ describe("GAP-A — /api/ai/clothing/analyze-and-enhance surfaces fallbackUsed (
     global.fetch = jest.fn().mockImplementation(async () => {
       call += 1;
       if (call === 1) return { ok: false, status: 503 }; // primary down
-      return { ok: true, json: async () => geminiBody(ENHANCE_JSON) };
+      return { ok: true, text: async () => JSON.stringify(geminiBody(ENHANCE_JSON)) };
     }) as unknown as typeof fetch;
 
     const res = await enhancePOST(buildRequest("http://localhost/api/ai/clothing/analyze-and-enhance"));
@@ -133,7 +156,7 @@ describe("GAP-A — /api/ai/clothing/analyze-and-enhance surfaces fallbackUsed (
   test("primary succeeds → fallbackUsed=false", async () => {
     global.fetch = jest.fn().mockResolvedValue({
       ok: true,
-      json: async () => geminiBody(ENHANCE_JSON),
+      text: async () => JSON.stringify(geminiBody(ENHANCE_JSON)),
     }) as unknown as typeof fetch;
 
     const res = await enhancePOST(buildRequest("http://localhost/api/ai/clothing/analyze-and-enhance"));

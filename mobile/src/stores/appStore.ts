@@ -13,7 +13,7 @@ import {
   marketplaceMessagesService, missionsService, outfitsService, planLimitsService, shoppingEventsService, tradeOffersService,
   transactionsService, trendsService, userMissionsService, usersService,
 } from '@/services/api/resources';
-import { clothingImagesService } from '@/services/firebase';
+import { wardrobeItemsService, wardrobeUploadService, type WardrobeUploadResult } from '@/services/api/wardrobe';
 import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
 
 const useMocks = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
@@ -59,7 +59,7 @@ interface AppState {
   consumeAiTry: (persist?: boolean) => Promise<void>;
   completeMission: (id: string) => Promise<void>;
   claimMission: (id: string) => Promise<void>;
-  createClothing: (item: Omit<ClothingItem, 'id' | 'imageUrl'>, localImageUri: string) => Promise<void>;
+  createClothing: (item: Omit<ClothingItem, 'id' | 'imageUrl'>, localImageUri: string, uploaded?: Pick<WardrobeUploadResult, 'url' | 'path'>, requestId?: string) => Promise<void>;
   updateClothing: (id: string, patch: Partial<ClothingItem>) => Promise<void>;
   deleteClothing: (id: string) => Promise<void>;
   createEvent: (event: Omit<WardrobeEvent, 'id'>) => Promise<void>;
@@ -165,7 +165,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const item = get().clothing.find((value) => value.id === id); if (!item) return;
     const patch = { isFavorite: !item.isFavorite };
     set({ clothing: get().clothing.map((value) => value.id === id ? { ...value, ...patch } : value) });
-    if (useRemoteWrites()) try { await clothesService.update(id, patch); } catch (error) { reportError(set, error); }
+    if (useRemoteWrites()) try { await wardrobeItemsService.update(id, patch); } catch (error) { reportError(set, error); }
   },
   saveOutfit: async (id) => {
     set({ savedOutfitIds: [...new Set([...get().savedOutfitIds, id])], outfits: get().outfits.map((o) => o.id === id ? { ...o, isSaved: true } : o) });
@@ -201,21 +201,34 @@ export const useAppStore = create<AppState>((set, get) => ({
     const claimed = { ...mission, isClaimed: true, claimedAt: new Date().toISOString() };
     set({ missions: get().missions.map((m) => m.id === id ? claimed : m), user });
   },
-  createClothing: async (item, uri) => {
+  createClothing: async (item, uri, uploaded, requestId) => {
+    let upload: Pick<WardrobeUploadResult, 'url' | 'path'> | undefined = uploaded;
+    let itemPersisted = false;
     try {
-      const imageUrl = useRemoteWrites() ? await clothingImagesService.upload(item.userId, uri) : uri;
-      const originalImageUrl = item.originalImageUrl
-        ? useRemoteWrites() && item.originalImageUrl !== uri ? await clothingImagesService.upload(item.userId, item.originalImageUrl) : item.originalImageUrl
-        : imageUrl;
-      const payload = { ...item, imageUrl, originalImageUrl };
-      const created = useRemoteWrites() ? await clothesService.create(payload) : { ...payload, id: `c-${Date.now()}` };
-      const user = { ...get().user, closetItemCount: get().user.closetItemCount + 1 };
-      set({ clothing: [created, ...get().clothing], user });
-      if (useRemoteWrites()) await usersService.update(user.id, { closetItemCount: user.closetItemCount });
-    } catch (error) { reportError(set, error); throw error; }
+      if (useRemoteWrites() && !upload) upload = await wardrobeUploadService.upload(uri);
+      const imageUrl = useRemoteWrites() ? upload!.url : uri;
+      const storagePath = useRemoteWrites() ? upload!.path : undefined;
+      const isStorageUrl = (value: unknown): value is string => typeof value === 'string' && value.startsWith('https://firebasestorage.googleapis.com/');
+      const originalImageUrl = useRemoteWrites() ? (isStorageUrl(item.originalImageUrl) ? item.originalImageUrl : imageUrl) : (item.originalImageUrl ?? imageUrl);
+      const enhancedImageUrl = isStorageUrl(item.enhancedImageUrl) ? item.enhancedImageUrl : undefined;
+      const payload = { ...item, imageUrl, storagePath, originalImageUrl, enhancedImageUrl };
+      const created = useRemoteWrites()
+        ? (await wardrobeItemsService.create(payload, requestId)).item
+        : { ...payload, id: `c-${Date.now()}` };
+      itemPersisted = useRemoteWrites();
+      const alreadyPresent = get().clothing.some((value) => value.id === created.id);
+      const user = { ...get().user, closetItemCount: get().user.closetItemCount + (alreadyPresent ? 0 : 1) };
+      set({ clothing: alreadyPresent ? get().clothing : [created, ...get().clothing], user });
+    } catch (error) {
+      if (useRemoteWrites() && !itemPersisted && upload?.path) {
+        try { await wardrobeUploadService.remove(upload.path); } catch { /* cleanup task is recorded server-side on item delete; upload cleanup remains best effort */ }
+      }
+      reportError(set, error);
+      throw error;
+    }
   },
-  updateClothing: async (id, patch) => { if (useRemoteWrites()) await clothesService.update(id, patch); set({ clothing: get().clothing.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
-  deleteClothing: async (id) => { if (useRemoteWrites()) await clothesService.remove(id); set({ clothing: get().clothing.filter((item) => item.id !== id) }); },
+  updateClothing: async (id, patch) => { if (useRemoteWrites()) await wardrobeItemsService.update(id, patch); set({ clothing: get().clothing.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
+  deleteClothing: async (id) => { if (useRemoteWrites()) await wardrobeItemsService.remove(id); set({ clothing: get().clothing.filter((item) => item.id !== id), user: { ...get().user, closetItemCount: Math.max(0, get().user.closetItemCount - 1) } }); },
   createEvent: async (value) => { const item = useRemoteWrites() ? await eventsService.create(value) : { ...value, id: `e-${Date.now()}` }; set({ events: [item, ...get().events] }); },
   updateEvent: async (id, patch) => { if (useRemoteWrites()) await eventsService.update(id, patch); set({ events: get().events.map((item) => item.id === id ? { ...item, ...patch } : item) }); },
   deleteEvent: async (id) => { if (useRemoteWrites()) await eventsService.remove(id); set({ events: get().events.filter((item) => item.id !== id) }); },

@@ -29,12 +29,17 @@
     "date-fns": "^4.4.0",
     "firebase-admin": "^13.10.0",
     "lucide-react": "^1.17.0",
-    "next": "15.1.0",
+    "next": "15.5.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
+  },
+  "overrides": {
+    "form-data": "2.5.6",
+    "nanoid": "3.3.18",
+    "websocket-driver": "0.7.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -43,7 +48,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.1.0",
+    "eslint-config-next": "15.5.23",
     "jest": "^30.4.2",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
@@ -59,6 +64,9 @@
     },
     "testMatch": [
       "**/__tests__/**/*.test.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/src/__tests__/account-deletion\\.emulator\\.test\\.ts$"
     ],
     "transform": {
       "^.+\\.tsx?$": [

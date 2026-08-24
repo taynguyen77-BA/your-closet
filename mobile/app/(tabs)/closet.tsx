@@ -14,6 +14,7 @@ import { aiService, FALLBACK_QUALITY_NOTICE } from '@/services/ai/aiService';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
+import { wardrobeUploadService } from '@/services/api/wardrobe';
 
 type Filter = 'all' | 'top' | 'bottom' | 'dress' | 'shoes' | 'bag' | 'favorites' | 'rarely';
 const FILTERS: { key: Filter; label: string }[] = [
@@ -73,19 +74,22 @@ export default function ClosetScreen() {
     if (!canUseAiTry()) return Alert.alert('Hết lượt AI', 'Nâng cấp hoặc hoàn thành nhiệm vụ để nhận diện thêm quần áo.');
     setSaving(true);
     setAnalysisError(null);
+    let uploaded: { url: string; path: string } | undefined;
     try {
+      // V2.1.2: server validates and owns the Storage upload before AI analysis.
+      uploaded = await wardrobeUploadService.upload(result.assets[0].uri, `wardrobe-upload-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
       // P-11: call clothing_detection only — enhancement is user-triggered (P-12)
       const aiResult = await aiService.detectClothingFromImage(useAppStore.getState().user.id, result.assets[0].uri);
       const meta = aiResult.data;
       if (!meta.suggestedName || !meta.type || !meta.color) throw new Error('AI result is missing required clothing metadata.');
       // AC 45.4 — a fallback-served result carries a visible lower-quality notice in the
       // review draft, and must not have charged the user's quota (quotaChargeEligible=false).
-      setReviewDraft({ originalImageUrl: result.assets[0].uri, selectedImageUrl: result.assets[0].uri, name: meta.suggestedName, type: meta.type, material: meta.material, color: meta.color, style: meta.style, season: meta.season ?? [], tags: meta.tags, qualityWarnings: aiResult.fallbackUsed ? [FALLBACK_QUALITY_NOTICE] : [], enhancedImageCandidates: [] });
+      setReviewDraft({ originalImageUrl: uploaded.url, selectedImageUrl: uploaded.url, sourceImageUri: result.assets[0].uri, storagePath: uploaded.path, storedUpload: uploaded, createRequestId: `wardrobe-create-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`, name: meta.suggestedName, type: meta.type, material: meta.material, color: meta.color, style: meta.style, season: meta.season ?? [], tags: meta.tags, qualityWarnings: aiResult.fallbackUsed ? [FALLBACK_QUALITY_NOTICE] : [], enhancedImageCandidates: [] });
       if (aiResult.quotaChargeEligible) await consumeAiTry(!aiResult.quotaManagedByBackend);
       if (aiResult.fallbackMessage) Alert.alert('Đã chuẩn bị bản nháp', aiResult.fallbackMessage);
     } catch {
       setAnalysisError('AI chưa phân tích được ảnh này. Bạn vẫn có thể nhập thủ công để lưu món đồ.');
-      setReviewDraft(createManualDraft(result.assets[0].uri));
+      setReviewDraft(createManualDraft(result.assets[0].uri, uploaded));
     }
     finally { setSaving(false); }
   };
@@ -159,6 +163,13 @@ export default function ClosetScreen() {
   };
 
   const updateDraft = (patch: Partial<ClothingReviewDraft>) => setReviewDraft((draft) => draft ? { ...draft, ...patch } : draft);
+  const discardReviewDraft = async () => {
+    const draft = reviewDraft;
+    setReviewDraft(null);
+    if (isAuthenticated && !isGuest && draft?.storagePath) {
+      try { await wardrobeUploadService.remove(draft.storagePath); } catch { /* server-side cleanup remains retryable */ }
+    }
+  };
   const splitList = (value: string) => value.split(',').map((item) => item.trim()).filter(Boolean);
   const [atLimit, setAtLimit] = useState(false);
 
@@ -178,6 +189,7 @@ export default function ClosetScreen() {
         name: reviewDraft.name.trim(),
         originalImageUrl: reviewDraft.originalImageUrl,
         enhancedImageUrl: reviewDraft.selectedImageUrl,
+        storagePath: reviewDraft.storagePath,
         type: reviewDraft.type,
         material: reviewDraft.material?.trim() || undefined,
         color: reviewDraft.color.trim(),
@@ -191,11 +203,14 @@ export default function ClosetScreen() {
         timesWorn: 0,
         createdAt: new Date().toISOString(),
       };
-      await createClothing(newItem, reviewDraft.selectedImageUrl);
+      await createClothing(newItem, reviewDraft.sourceImageUri ?? reviewDraft.originalImageUrl, reviewDraft.storedUpload, reviewDraft.createRequestId);
       setReviewDraft(null);
       setAnalysisError(null);
       Alert.alert('Đã thêm vào tủ', `${newItem.name} đã sẵn sàng để AI stylist phối đồ.`);
-    } catch { Alert.alert('Chưa lưu được món đồ', 'Thử lại sau một chút nhé. Chế độ trải nghiệm vẫn lưu dữ liệu trên thiết bị của bạn.'); }
+    } catch {
+      setReviewDraft((draft) => draft ? { ...draft, originalImageUrl: draft.sourceImageUri ?? draft.originalImageUrl, selectedImageUrl: draft.sourceImageUri ?? draft.selectedImageUrl, storagePath: undefined, storedUpload: undefined } : draft);
+      Alert.alert('Chưa lưu được món đồ', 'Thử lại sau một chút nhé. Ảnh đã được chuẩn bị lại để bạn có thể lưu sau.');
+    }
     finally { setSaving(false); }
   };
 
@@ -237,7 +252,7 @@ export default function ClosetScreen() {
     <FloatingActionButton onPress={() => void pickImage()} />
 
     {/* Single-item review modal */}
-    <Modal visible={Boolean(reviewDraft)} animationType="slide" transparent><View style={styles.overlay}><View style={[styles.reviewModal, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}>{reviewDraft ? <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}><View style={styles.modalHead}><View><AppText variant="caption" muted>KIỂM TRA TRƯỚC KHI LƯU</AppText><AppText variant="h1">AI đã chuẩn bị bản nháp</AppText></View><Pressable onPress={() => setReviewDraft(null)}><Ionicons name="close" size={24} color={colors.text} /></Pressable></View>{analysisError ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="alert-circle-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>{analysisError}</AppText></View> : null}<View style={styles.imageGrid}><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH GỐC</AppText><SafeImage source={{ uri: reviewDraft.originalImageUrl }} style={[styles.reviewImage, { borderRadius: rounded.DEFAULT }]} contentFit="cover" /></View><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH SẼ LƯU</AppText><SafeImage source={{ uri: reviewDraft.selectedImageUrl }} style={[styles.reviewImage, { borderRadius: rounded.DEFAULT }]} contentFit="cover" /></View></View>{enhancing ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="sync-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>Đang xử lý cải thiện ảnh với AI — bạn có thể tiếp tục chỉnh sửa thông tin trong lúc chờ.</AppText></View> : <Button label="Cải thiện ảnh bằng AI" variant="secondary" icon="sparkles" onPress={() => void enhanceClothing()} disabled={enhancing} />}<AppText variant="label">Chọn ảnh sạch</AppText><ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.candidates}><Candidate uri={reviewDraft.originalImageUrl} label="Ảnh gốc" selected={reviewDraft.selectedImageUrl === reviewDraft.originalImageUrl} onPress={() => updateDraft({ selectedImageUrl: reviewDraft.originalImageUrl })} />{reviewDraft.enhancedImageCandidates.map((candidate) => <Candidate key={candidate.id} uri={candidate.imageUrl} label={candidate.label ?? 'Ảnh AI'} selected={reviewDraft.selectedImageUrl === candidate.imageUrl} onPress={() => updateDraft({ selectedImageUrl: candidate.imageUrl })} />)}</View></ScrollView>{typeof reviewDraft.confidenceScore === 'number' ? <AppText variant="bodySmall" muted>Độ tin cậy AI: {Math.round(reviewDraft.confidenceScore * 100)}%</AppText> : null}{reviewDraft.qualityWarnings.length ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="warning-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>{reviewDraft.qualityWarnings.join(' · ')}</AppText></View> : null}<DraftInput label="Tên món đồ" value={reviewDraft.name} onChangeText={(name) => updateDraft({ name })} /><DraftInput label="Loại" value={reviewDraft.type} onChangeText={(type) => updateDraft({ type: normalizeType(type) })} /><DraftInput label="Màu sắc" value={reviewDraft.color} onChangeText={(color) => updateDraft({ color })} /><DraftInput label="Chất liệu" value={reviewDraft.material ?? ''} onChangeText={(material) => updateDraft({ material })} /><DraftInput label="Phong cách" value={reviewDraft.style ?? ''} onChangeText={(style) => updateDraft({ style })} /><DraftInput label="Mùa, cách nhau bằng dấu phẩy" value={reviewDraft.season.join(', ')} onChangeText={(value) => updateDraft({ season: splitList(value) })} /><DraftInput label="Tags, cách nhau bằng dấu phẩy" value={reviewDraft.tags.join(', ')} onChangeText={(value) => updateDraft({ tags: splitList(value) })} />{atLimit ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="lock-closed-outline" size={18} color={colors.primary} /><View style={{ flex: 1 }}><AppText variant="bodySmall">Tủ đồ đã đạt giới hạn của gói hiện tại.</AppText><AppText variant="bodySmall" muted>Xóa một món đồ cũ hoặc nâng cấp gói để tiếp tục lưu món này.</AppText><Button label="Nâng cấp gói" variant="secondary" onPress={() => router.push('/membership')} style={{ marginTop: 8 }} /></View></View> : null}<Button label={saving ? 'Đang lưu...' : 'Save to Closet'} icon="checkmark-circle-outline" onPress={() => void saveDraft()} disabled={saving || atLimit} /><View style={styles.modalActions}><Button label="Retake/Upload again" variant="secondary" icon="camera-outline" onPress={() => { setReviewDraft(null); void pickImage(); }} style={{ flex: 1 }} /><Button label="Cancel" variant="ghost" onPress={() => setReviewDraft(null)} style={{ flex: 1 }} /></View></ScrollView> : null}</View></View></Modal>
+    <Modal visible={Boolean(reviewDraft)} animationType="slide" transparent><View style={styles.overlay}><View style={[styles.reviewModal, { backgroundColor: colors.surface, borderRadius: rounded.lg }]}>{reviewDraft ? <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}><View style={styles.modalHead}><View><AppText variant="caption" muted>KIỂM TRA TRƯỚC KHI LƯU</AppText><AppText variant="h1">AI đã chuẩn bị bản nháp</AppText></View><Pressable onPress={() => void discardReviewDraft()}><Ionicons name="close" size={24} color={colors.text} /></Pressable></View>{analysisError ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="alert-circle-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>{analysisError}</AppText></View> : null}<View style={styles.imageGrid}><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH GỐC</AppText><SafeImage source={{ uri: reviewDraft.originalImageUrl }} style={[styles.reviewImage, { borderRadius: rounded.DEFAULT }]} contentFit="cover" /></View><View style={styles.imageBlock}><AppText variant="caption" muted>ẢNH SẼ LƯU</AppText><SafeImage source={{ uri: reviewDraft.selectedImageUrl }} style={[styles.reviewImage, { borderRadius: rounded.DEFAULT }]} contentFit="cover" /></View></View>{enhancing ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="sync-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>Đang xử lý cải thiện ảnh với AI — bạn có thể tiếp tục chỉnh sửa thông tin trong lúc chờ.</AppText></View> : <Button label="Cải thiện ảnh bằng AI" variant="secondary" icon="sparkles" onPress={() => void enhanceClothing()} disabled={enhancing} />}<AppText variant="label">Chọn ảnh sạch</AppText><ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.candidates}><Candidate uri={reviewDraft.originalImageUrl} label="Ảnh gốc" selected={reviewDraft.selectedImageUrl === reviewDraft.originalImageUrl} onPress={() => updateDraft({ selectedImageUrl: reviewDraft.originalImageUrl })} />{reviewDraft.enhancedImageCandidates.map((candidate) => <Candidate key={candidate.id} uri={candidate.imageUrl} label={candidate.label ?? 'Ảnh AI'} selected={reviewDraft.selectedImageUrl === candidate.imageUrl} onPress={() => updateDraft({ selectedImageUrl: candidate.imageUrl })} />)}</View></ScrollView>{typeof reviewDraft.confidenceScore === 'number' ? <AppText variant="bodySmall" muted>Độ tin cậy AI: {Math.round(reviewDraft.confidenceScore * 100)}%</AppText> : null}{reviewDraft.qualityWarnings.length ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="warning-outline" size={18} color={colors.primary} /><AppText variant="bodySmall" style={{ flex: 1 }}>{reviewDraft.qualityWarnings.join(' · ')}</AppText></View> : null}<DraftInput label="Tên món đồ" value={reviewDraft.name} onChangeText={(name) => updateDraft({ name })} /><DraftInput label="Loại" value={reviewDraft.type} onChangeText={(type) => updateDraft({ type: normalizeType(type) })} /><DraftInput label="Màu sắc" value={reviewDraft.color} onChangeText={(color) => updateDraft({ color })} /><DraftInput label="Chất liệu" value={reviewDraft.material ?? ''} onChangeText={(material) => updateDraft({ material })} /><DraftInput label="Phong cách" value={reviewDraft.style ?? ''} onChangeText={(style) => updateDraft({ style })} /><DraftInput label="Mùa, cách nhau bằng dấu phẩy" value={reviewDraft.season.join(', ')} onChangeText={(value) => updateDraft({ season: splitList(value) })} /><DraftInput label="Tags, cách nhau bằng dấu phẩy" value={reviewDraft.tags.join(', ')} onChangeText={(value) => updateDraft({ tags: splitList(value) })} />{atLimit ? <View style={[styles.warning, { backgroundColor: colors.sand }]}><Ionicons name="lock-closed-outline" size={18} color={colors.primary} /><View style={{ flex: 1 }}><AppText variant="bodySmall">Tủ đồ đã đạt giới hạn của gói hiện tại.</AppText><AppText variant="bodySmall" muted>Xóa một món đồ cũ hoặc nâng cấp gói để tiếp tục lưu món này.</AppText><Button label="Nâng cấp gói" variant="secondary" onPress={() => router.push('/membership')} style={{ marginTop: 8 }} /></View></View> : null}<Button label={saving ? 'Đang lưu...' : 'Save to Closet'} icon="checkmark-circle-outline" onPress={() => void saveDraft()} disabled={saving || atLimit} /><View style={styles.modalActions}><Button label="Retake/Upload again" variant="secondary" icon="camera-outline" onPress={() => { void discardReviewDraft().then(() => pickImage()); }} style={{ flex: 1 }} /><Button label="Cancel" variant="ghost" onPress={() => void discardReviewDraft()} style={{ flex: 1 }} /></View></ScrollView> : null}</View></View></Modal>
 
     {/* Bulk draft review modal */}
     <Modal visible={bulkDrafts.length > 0} animationType="slide" transparent>
@@ -266,8 +281,9 @@ export default function ClosetScreen() {
   </View>;
 }
 
-function createManualDraft(uri: string): ClothingReviewDraft {
-  return { originalImageUrl: uri, selectedImageUrl: uri, name: '', type: 'other', color: '', season: [], tags: [], qualityWarnings: ['AI không trả về kết quả đủ rõ để tự điền thông tin.'], enhancedImageCandidates: [] };
+function createManualDraft(uri: string, uploaded?: { url: string; path: string }): ClothingReviewDraft {
+  const imageUrl = uploaded?.url ?? uri;
+  return { originalImageUrl: imageUrl, selectedImageUrl: imageUrl, sourceImageUri: uri, storagePath: uploaded?.path, storedUpload: uploaded, createRequestId: `wardrobe-create-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`, name: '', type: 'other', color: '', season: [], tags: [], qualityWarnings: ['AI không trả về kết quả đủ rõ để tự điền thông tin.'], enhancedImageCandidates: [] };
 }
 
 function normalizeType(value: string): ClothingItem['type'] {

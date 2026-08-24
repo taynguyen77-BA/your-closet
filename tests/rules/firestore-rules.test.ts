@@ -368,3 +368,24 @@ describe('P09 — clothes: user cannot read/write another user\'s items', () => 
     await assertSucceeds(setDoc(doc(ctx.firestore(), 'clothes', 'new-item-a'), clothingDoc(USER_A)));
   });
 });
+
+
+// ── P05-6: authoritative AI logs are server-write-only ───────────────────────
+describe('P05-6 — ai_logs: client cannot fabricate authoritative usage', () => {
+  test('Authenticated user cannot create an ai_logs document', async () => {
+    const ctx = asUser(USER_A);
+    await assertFails(setDoc(doc(ctx.firestore(), 'ai_logs', 'client-log'), {
+      userId: USER_A,
+      operation: 'outfit_recommend',
+      status: 'COMMITTED',
+      quotaUnits: 1,
+    }));
+  });
+
+  test('Authenticated user cannot update or delete an ai_logs document', async () => {
+    await seedPublicDoc('ai_logs', 'server-log', { userId: USER_A, operation: 'outfit_recommend', status: 'COMMITTED' });
+    const ctx = asUser(USER_A);
+    await assertFails(updateDoc(doc(ctx.firestore(), 'ai_logs', 'server-log'), { status: 'RELEASED' }));
+    await assertFails(deleteDoc(doc(ctx.firestore(), 'ai_logs', 'server-log')));
+  });
+});

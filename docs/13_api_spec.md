@@ -17,15 +17,16 @@ Mostly client-SDK-driven (Firebase Auth handles sign-in directly); backend endpo
 
 ---
 
-## Domain: Closet (`/api/closet/*`)
+## Domain: Wardrobe (`/api/wardrobe/*`)
 
 | Method | Path | Purpose | Auth | Notes |
 |---|---|---|---|---|
-| GET | `/api/closet/items` | List user's items (filter/search query params) | Bearer | |
-| POST | `/api/closet/items` | Create item(s) — supports bulk (max 5, BRD 3.2.1.1) | Bearer | Enforces `plan_limits.closetItems` |
-| GET | `/api/closet/items/:id` | Item detail — includes `timesWorn` for Item Detail screen stat | Bearer | |
-| PATCH | `/api/closet/items/:id` | Edit item (tags, favorite) | Bearer | |
-| DELETE | `/api/closet/items/:id` | Delete item | Bearer | Triggers ADR-07 check: if item is `sourceClothesId` of an active listing, archive that listing |
+| POST | `/api/wardrobe/upload` | Validate and upload one wardrobe image to the caller's Storage namespace | Bearer | Server generates the Storage path; JPEG/PNG/WebP, max 10 MB |
+| GET | `/api/wardrobe/items` | List user's items (filter/search query params) | Bearer | |
+| POST | `/api/wardrobe/items` | Persist one reviewed wardrobe item | Bearer | Idempotent; enforces `plan_limits.closetItems` and server ownership |
+| GET | `/api/wardrobe/items/:id` | Item detail — includes `timesWorn` for Item Detail screen stat | Bearer | Owner-scoped |
+| PATCH | `/api/wardrobe/items/:id` | Edit metadata (tags, favorite, and other approved fields) | Bearer | Image references cannot be replaced through metadata PATCH |
+| DELETE | `/api/wardrobe/items/:id` | Delete item | Bearer | Owner-scoped; triggers Storage cleanup and records a pending cleanup marker on failure |
 
 ---
 

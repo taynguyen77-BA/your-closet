@@ -121,6 +121,7 @@ export class BackendAiProvider implements AiProvider {
 
   private async post<T>(path: string, body: unknown): Promise<T> {
     if (!apiBaseUrl) throw new AiServiceError('AI backend chưa được cấu hình.', 'config');
+    const requestId = `ai-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
     let lastError: unknown;
     for (let attempt = 0; attempt < 3; attempt += 1) {
       const controller = new AbortController();
@@ -130,7 +131,7 @@ export class BackendAiProvider implements AiProvider {
         const isForm = body instanceof FormData;
         const response = await fetch(`${apiBaseUrl}${path}`, {
           method: 'POST',
-          headers: { ...(isForm ? {} : { 'Content-Type': 'application/json' }), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          headers: { ...(isForm ? {} : { 'Content-Type': 'application/json' }), 'Idempotency-Key': requestId, 'X-Request-Id': requestId, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
           body: isForm ? body : JSON.stringify(body), signal: controller.signal,
         });
         if (!response.ok) throw new AiServiceError(`AI backend trả về lỗi ${response.status}.`, 'server');

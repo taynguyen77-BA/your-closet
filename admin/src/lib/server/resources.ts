@@ -69,11 +69,12 @@ const demoCollections: Record<string, DemoRow[]> = {
   adminUsers: [],
 };
 const isDemo = () => process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-export const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Authorization, Content-Type, x-demo-admin-role", "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS" };
+export const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Authorization, Content-Type, Idempotency-Key, X-Request-Id, x-demo-admin-role", "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS", "Access-Control-Expose-Headers": "X-Request-Id" };
 const json = (data: unknown, status = 200, meta?: Record<string, unknown>) => NextResponse.json({ data, meta: { total: Array.isArray(data) ? data.length : data ? 1 : 0, limit: 50, cursor: null, ...meta } }, { status, headers: corsHeaders });
 const fail = (error: unknown) => {
   const message = error instanceof Error ? error.message : "SERVER_ERROR";
-  return NextResponse.json({ error: message }, { status: message === "UNAUTHORIZED" ? 401 : message === "FORBIDDEN" ? 403 : message === "NOT_FOUND" ? 404 : 500, headers: corsHeaders });
+  const status = message === "UNAUTHORIZED" ? 401 : message === "FORBIDDEN" ? 403 : message === "NOT_FOUND" ? 404 : message === "USE_WARDROBE_API" ? 409 : 500;
+  return NextResponse.json({ error: message }, { status, headers: corsHeaders });
 };
 const clean = (value: Record<string, unknown>) => {
   const data = { ...value };
@@ -162,7 +163,10 @@ export async function create(request: NextRequest, collection: string) {
   try {
     const identity = await access(request, collection, true);
     if (!identity) throw new Error("FORBIDDEN");
-    const raw = await request.json() as Record<string, unknown>; const body = normalizeWrite(collection, clean(raw));
+    const raw = await request.json() as Record<string, unknown>;
+    if (collection === "ai_logs") throw new Error("FORBIDDEN");
+    if (collection === "clothes") throw new Error("USE_WARDROBE_API");
+    const body = normalizeWrite(collection, clean(raw));
     const ownerAllowed = ownerFields[collection] && (body[ownerFields[collection]] === identity.uid || collection === "users" && raw.id === identity.uid);
     if (!isAdminAllowed(identity, permissions[collection].manage) && !ownerAllowed) throw new Error("FORBIDDEN");
     if (!identity.isAdmin && collection === "listings" && body.status !== "pending_review") throw new Error("FORBIDDEN");
@@ -184,6 +188,7 @@ export async function update(request: NextRequest, collection: string, id: strin
   try {
     const identity = await access(request, collection, true);
     if (!identity || readOnlyCollections.has(collection)) throw new Error("FORBIDDEN");
+    if (collection === "clothes") throw new Error("USE_WARDROBE_API");
     const patch = normalizeWrite(collection, clean(await request.json()));
     if (!identity.isAdmin && collection === "users" && Object.keys(patch).some((key) => !userProfileFields.has(key))) throw new Error("FORBIDDEN");
     if (!identity.isAdmin && collection === "listings" && "status" in patch) throw new Error("FORBIDDEN");
@@ -207,6 +212,7 @@ export async function remove(request: NextRequest, collection: string, id: strin
   try {
     const identity = await access(request, collection, true);
     if (!identity || readOnlyCollections.has(collection)) throw new Error("FORBIDDEN");
+    if (collection === "clothes") throw new Error("USE_WARDROBE_API");
     // Self-deleting a users doc must go through DELETE /api/auth/account, which
     // re-authenticates and cascades the owned collections (BRD 3.1.7). This
     // generic single-doc delete stays admin-only for moderation use.

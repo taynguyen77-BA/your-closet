@@ -12,6 +12,15 @@ function getApp() {
   if (!json && projectId && clientEmail && privateKey) {
     return initializeApp({ credential: cert({ projectId, clientEmail, privateKey: privateKey.replace(/\\n/g, "\n") }) });
   }
+  const emulatorConfigured = Boolean(
+    process.env.FIREBASE_AUTH_EMULATOR_HOST ||
+    process.env.FIRESTORE_EMULATOR_HOST ||
+    process.env.FIREBASE_STORAGE_EMULATOR_HOST,
+  );
+  if (!json && emulatorConfigured) {
+    const emulatorProjectId = projectId || process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || "demo-your-closet";
+    return initializeApp({ projectId: emulatorProjectId, storageBucket: `${emulatorProjectId}.appspot.com` });
+  }
   if (!json) {
     throw new Error("Firebase Admin is not configured. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY.");
   }

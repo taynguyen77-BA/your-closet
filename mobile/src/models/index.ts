@@ -107,6 +107,8 @@ export interface ClothingItem {
   userId: string;
   name: string;
   imageUrl: string;
+  /** Server-owned Firebase Storage object path used for cleanup; optional for legacy records. */
+  storagePath?: string;
   originalImageUrl?: string;
   enhancedImageUrl?: string;
   type: ClothingType;

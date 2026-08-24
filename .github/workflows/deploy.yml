@@ -66,6 +66,7 @@ jobs:
           cache: npm
           cache-dependency-path: |
             mobile/package-lock.json
+            admin/package-lock.json
             tests/rules/package-lock.json
             tests/p04-migration/package-lock.json
 
@@ -73,6 +74,26 @@ jobs:
       - name: Install mobile deps
         run: npm ci
         working-directory: mobile
+
+      - name: Install admin deps
+        run: npm ci
+        working-directory: admin
+
+      - name: Run mobile Jest
+        run: npm test -- --runInBand
+        working-directory: mobile
+
+      - name: Run admin Jest
+        run: npm test -- --runInBand
+        working-directory: admin
+
+      - name: Build admin production bundle
+        run: npm run build
+        working-directory: admin
+
+      - name: Run account deletion Admin SDK integration
+        run: npx --yes firebase-tools@13.31.2 emulators:exec --config ../firebase.json --project demo-your-closet --only auth,firestore,storage "npx jest --runInBand --config jest.integration.config.js src/__tests__/account-deletion.emulator.test.ts"
+        working-directory: admin
 
       - name: Install rules-test deps
         run: npm ci
@@ -130,34 +151,39 @@ jobs:
         run: node --test tests/retired-script-sanity.test.js
 
       # ── Firestore security rules tests ────────────────────────────────────
-      # Rules tests use @firebase/rules-unit-testing which spins its own emulator.
-      - name: Install Firebase CLI (for rules tests)
-        run: npm install -g firebase-tools
-
-      - name: Run Firestore rules tests (P-05 / rules)
-        run: npm test
+      # Each suite owns an isolated emulator lifecycle. This prevents connection
+      # races, data leakage between suites, and orphaned background processes.
+      - name: Run Firestore and Storage rules tests (P-05 / rules)
+        run: npx --yes firebase-tools@13.31.2 emulators:exec --project demo-your-closet --only firestore,storage "npm test"
         working-directory: tests/rules
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
-      # ── P-04 migration tests — requires Firestore emulator ─────────────────
-      - name: Start Firestore emulator (background)
-        run: |
-          firebase emulators:start --only firestore \
-            --project demo-your-closet &
-          # Wait until the emulator REST endpoint responds
-          for i in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8080/ && echo "Emulator ready" && break
-            echo "Waiting for emulator ($i/30)..."
-            sleep 2
-          done
+      - name: Upload Firestore and Storage rules emulator logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: firestore-storage-rules-emulator-logs
+          path: |
+            tests/rules/firestore-debug.log
+            tests/rules/storage-debug.log
+          if-no-files-found: ignore
+          retention-days: 14
 
+      # ── P-04 migration tests — isolated Firestore emulator ─────────────────
       - name: Run P-04 migration tests
-        run: npm test
+        run: npx --yes firebase-tools@13.31.2 emulators:exec --project demo-your-closet --only firestore "npm test"
         working-directory: tests/p04-migration
         env:
           FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080"
           FIREBASE_PROJECT_ID: "demo-your-closet"
+
+      - name: Upload migration emulator log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-emulator-log
+          path: tests/p04-migration/firestore-debug.log
+          if-no-files-found: ignore
+          retention-days: 14
 
   # ────────────────────────────────────────────────────────────────────────────
   # 3. Build deploy artifact & deploy to Firebase Hosting (staging)
@@ -204,6 +230,25 @@ jobs:
         run: firebase deploy --only hosting --project staging
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Verify staging health endpoint
+        env:
+          STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+        run: |
+          test -n "$STAGING_API_BASE_URL"
+          HEALTH_URL="${STAGING_API_BASE_URL%/}/health"
+          curl --fail --silent --show-error --max-time 30 "$HEALTH_URL" | tee staging-health.json
+          grep -q '"status"' staging-health.json
+          grep -q '"dependencies"' staging-health.json
+
+      - name: Upload staging health evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-health
+          path: staging-health.json
+          if-no-files-found: ignore
+          retention-days: 14
 
   # ────────────────────────────────────────────────────────────────────────────
   # 4. Tag the git release (closes GAP-04)

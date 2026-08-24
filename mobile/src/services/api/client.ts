@@ -10,10 +10,11 @@ export async function apiFetch<T>(path: string, options?: RequestInit & { params
   const url = new URL(path, BASE_URL);
   Object.entries(options?.params ?? {}).forEach(([key, value]) => value && url.searchParams.set(key, value));
   const token = isFirebaseConfigured() ? await getFirebaseAuth().currentUser?.getIdToken() : undefined;
-  const response = await fetch(url.toString(), {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options?.headers },
-  });
+  const headers = new Headers(options?.headers);
+  const isMultipart = typeof FormData !== 'undefined' && options?.body instanceof FormData;
+  if (!isMultipart && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  const response = await fetch(url.toString(), { ...options, headers });
   if (!response.ok) throw new ApiError(response.status === 401 ? 'Bạn cần đăng nhập để tiếp tục.' : 'Không thể tải dữ liệu. Thử lại nhé.', response.status);
   if (response.status === 204) return undefined as T;
   return (await response.json() as ApiEnvelope<T>).data;
