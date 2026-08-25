@@ -186,10 +186,91 @@ jobs:
           retention-days: 14
 
   # ────────────────────────────────────────────────────────────────────────────
-  # 3. Build deploy artifact & deploy to Firebase Hosting (staging)
+  # 3. Manus runtime verification — current delivery target
+  # ────────────────────────────────────────────────────────────────────────────
+  manus-runtime:
+    name: Verify Manus runtime
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            mobile/package-lock.json
+            admin/package-lock.json
+      - name: Install mobile deps
+        run: npm ci
+        working-directory: mobile
+      - name: Install admin deps
+        run: npm ci
+        working-directory: admin
+      - name: Build Manus web frontend
+        working-directory: mobile
+        env:
+          EXPO_PUBLIC_APP_ENV: "local"
+          EXPO_PUBLIC_WARDRO_RUNTIME_MODE: "manus"
+          EXPO_PUBLIC_WARDRO_MANUS_USER: "manus-user-a"
+          EXPO_PUBLIC_WARDRO_BUILD_SHA: ${{ github.sha }}
+          EXPO_PUBLIC_API_BASE_URL: "http://127.0.0.1:3000"
+          EXPO_PUBLIC_API_URL: "http://127.0.0.1:3000"
+          EXPO_PUBLIC_AI_API_BASE_URL: "http://127.0.0.1:3000/api/ai"
+          EXPO_PUBLIC_ENABLE_REAL_AI: "true"
+          EXPO_PUBLIC_DEMO_MODE: "false"
+          EXPO_PUBLIC_DEMO_AUTH_BYPASS: "false"
+        run: |
+          npx expo export -p web --output-dir dist-manus --clear
+          grep -R --fixed-strings "${{ github.sha }}" dist-manus/_expo/static/js/web
+      - name: Start Manus backend
+        working-directory: admin
+        env:
+          APP_ENV: "local"
+          NEXT_PUBLIC_APP_ENV: "local"
+          NEXT_PUBLIC_DEMO_MODE: "false"
+          WARDRO_RUNTIME_MODE: "manus"
+          WARDRO_BUILD_SHA: ${{ github.sha }}
+          WARDRO_MANUS_DEFAULT_USER: "manus-user-a"
+          WARDRO_MANUS_DATA_DIR: ${{ runner.temp }}/wardro-manus-data
+          WARDRO_MANUS_STORAGE_DIR: ${{ runner.temp }}/wardro-manus-storage
+        run: |
+          npm run dev -- --hostname 127.0.0.1 > "$RUNNER_TEMP/wardro-manus-backend.log" 2>&1 &
+          for i in {1..60}; do curl --fail --silent http://127.0.0.1:3000/health && break; sleep 1; done
+          curl --fail --silent http://127.0.0.1:3000/health | tee "$RUNNER_TEMP/wardro-manus-health.json"
+          grep -q '"runtimeMode":"manus"' "$RUNNER_TEMP/wardro-manus-health.json"
+      - name: Run Manus wardrobe E2E
+        env:
+          MANUS_TEST_BASE_URL: "http://127.0.0.1:3000"
+          WARDRO_RUNTIME_MODE: "manus"
+          WARDRO_MANUS_DATA_DIR: ${{ runner.temp }}/wardro-manus-data
+          WARDRO_MANUS_STORAGE_DIR: ${{ runner.temp }}/wardro-manus-storage
+        run: node tests/manus-runtime-e2e.mjs
+      - name: Serve Manus frontend and run browser smoke
+        run: |
+          npx --yes serve mobile/dist-manus --single --listen 8081 > "$RUNNER_TEMP/wardro-manus-frontend.log" 2>&1 &
+          for i in {1..30}; do curl --fail --silent http://127.0.0.1:8081/ >/dev/null && break; sleep 1; done
+          MANUS_FRONTEND_URL=http://127.0.0.1:8081 node mobile/manus-frontend-smoke.mjs
+      - name: Upload Manus runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manus-runtime-evidence
+          path: |
+            ${{ runner.temp }}/wardro-manus-health.json
+            ${{ runner.temp }}/wardro-manus-backend.log
+            ${{ runner.temp }}/wardro-manus-frontend.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Firebase is a future integration and is intentionally not a current release gate.
+  # It remains in the file as a manual reference only; no Firebase project is required.
+  # ────────────────────────────────────────────────────────────────────────────
+  # 4. Deferred Firebase Hosting deployment
   # ────────────────────────────────────────────────────────────────────────────
   deploy-staging:
-    name: Deploy → staging
+    if: ${{ false }}
+    name: Firebase staging (deferred)
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -254,7 +335,8 @@ jobs:
   # 4. Tag the git release (closes GAP-04)
   # ────────────────────────────────────────────────────────────────────────────
   tag-release:
-    name: Tag release
+    if: ${{ false }}
+    name: Tag release (deferred)
     needs: deploy-staging
     runs-on: ubuntu-latest
     permissions:

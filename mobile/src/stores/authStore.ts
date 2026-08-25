@@ -11,6 +11,7 @@ import {
   getBiometricEnabled,
   getFreshIdToken,
   getGuestSessionEnabled,
+  getManusSessionUser,
   getOnboardingCompleted,
   loginWithFacebook as facebookLogin,
   loginWithGoogle as googleLogin,
@@ -35,6 +36,7 @@ export type AuthFlowRoute =
 let unsubscribe: (() => void) | undefined;
 const useDemoMode = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
 const useDemoAuthBypass = () => process.env.EXPO_PUBLIC_DEMO_AUTH_BYPASS === 'true';
+const useManusRuntime = () => process.env.EXPO_PUBLIC_WARDRO_RUNTIME_MODE === 'manus';
 
 interface OnboardingPayload {
   username?: string;
@@ -117,6 +119,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   biometricEnabled: false,
   biometricVerified: false,
   initializeAuth: async () => {
+    if (useManusRuntime()) {
+      try {
+        const [onboardingCompleted, biometricEnabled, currentUser] = await Promise.all([getOnboardingCompleted(), getBiometricEnabled(), getManusSessionUser()]);
+        set({ firebaseUser: null, currentUser, appUser: currentUser, authStatus: 'authenticated', isAuthenticated: true, isGuest: false, isAuthLoading: false, onboardingCompleted, biometricEnabled, biometricVerified: !biometricEnabled, firebaseSetupError: undefined, authError: undefined });
+      } catch (error) {
+        set({ firebaseSetupError: friendlyAuthError(error), authStatus: 'unauthenticated', isAuthLoading: false, isAuthenticated: false, isGuest: false });
+      }
+      return;
+    }
     if (useDemoMode() && useDemoAuthBypass()) {
       const onboardingCompleted = await getOnboardingCompleted();
       set({
@@ -261,7 +272,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   deleteAccount: async () => {
     try {
-      const idToken = await getFreshIdToken();
+      const idToken = useManusRuntime() ? null : await getFreshIdToken();
       await requestAccountDeletion(idToken);
     } catch (error) {
       set({ authError: friendlyAuthError(error) });
@@ -275,7 +286,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
   updateProfile: async (patch) => {
     const user = get().currentUser; if (!user) return false;
-    if (useDemoMode() && useDemoAuthBypass()) {
+    if (useManusRuntime() || (useDemoMode() && useDemoAuthBypass())) {
       const updated = { ...user, ...patch };
       set({ currentUser: updated, appUser: updated });
       return true;

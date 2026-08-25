@@ -7,6 +7,7 @@ import {
   readImageForm,
 } from "@/lib/server/ai-boundary";
 import { corsHeaders } from "@/lib/server/resources";
+import { isManusRuntime } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
 
@@ -75,16 +76,18 @@ export async function POST(request: NextRequest) {
     async () => readImageForm(request, ["image"]),
     async (auth, input) => {
       const candidateCount = CANDIDATE_COUNTS[auth.plan];
-      const result = await callWithFallback(
-        "clothing_enhance",
-        auth.plan,
-        auth.userId,
-        (modelId, useBatchApi) => invokeGemini(modelId, input.file, candidateCount, useBatchApi),
-      );
+      const result = isManusRuntime()
+        ? { result: parseEnhancement({ enhancedImageCandidates: [], qualityWarnings: ["Đang dùng AI development provider; cải thiện ảnh thật sẽ được tích hợp sau Firebase/provider phase."], analysis: { type: "top", color: "Chưa xác định", suggestedName: "Món đồ mới", confidenceScore: 0.5 }, processingAsync: false }, 0), modelUsed: "manus-vision", fallbackUsed: false }
+        : await callWithFallback(
+          "clothing_enhance",
+          auth.plan,
+          auth.userId,
+          (modelId, useBatchApi) => invokeGemini(modelId, input.file, candidateCount, useBatchApi),
+        );
       return {
         body: { ...result.result, modelUsed: result.modelUsed, fallbackUsed: result.fallbackUsed },
         modelUsed: result.modelUsed,
-        provider: "gemini",
+        provider: isManusRuntime() ? "manus-development" : "gemini",
         fallbackUsed: result.fallbackUsed,
       };
     },

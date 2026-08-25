@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { authorize } from "@/lib/server/authorize";
 import { adminDb } from "@/lib/server/firebase-admin";
 import { aiLogs, dashboardKpis } from "@/data/mock";
+import { isManusRuntime } from "@/lib/server/runtime";
 export const runtime = "nodejs";
 const today = () => new Date().toISOString().slice(0, 10);
 export async function GET(request: NextRequest) {
   try {
     await authorize(request, "dashboard.view");
-    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true" || isManusRuntime()) {
       return NextResponse.json({ kpis: dashboardKpis, aiLogs, generatedAt: new Date().toISOString() });
     }
     const [users, transactions, logs, listings] = await Promise.all(["users", "transactions", "ai_logs", "listings"].map((name) => adminDb.collection(name).limit(1000).get()));

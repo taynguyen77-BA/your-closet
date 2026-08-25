@@ -24,7 +24,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) → redirects to login.
 
-### Firebase admin configuration
+### Runtime provider selection
+
+The current development runtime does not require a Firebase project. Set `WARDRO_RUNTIME_MODE=manus` to use the server-side Manus development auth, data, storage, and AI adapters. The development identities are fixed and allowlisted: `manus-user-a`, `manus-user-b`, and `manus-admin`. The server never accepts an arbitrary client UID as authoritative.
+
+Set `WARDRO_RUNTIME_MODE=firebase` only for the future Firebase integration phase and provide Firebase Admin configuration through deployment secrets.
+
+`GET /health` reports the runtime mode, provider names, dependency status, and non-secret build SHA without exposing credentials.
+
+## Firebase admin configuration (future integration)
 
 Production mode uses Firebase Authentication and verifies ID tokens in the Next.js API with
 `firebase-admin`. Configure:
@@ -93,7 +101,18 @@ Seed CMS data before first production run:
 npm run seed
 ```
 
-## Production
+## Manus runtime
+
+```bash
+cd admin
+cp .env.example .env.local
+# WARDRO_RUNTIME_MODE=manus
+npm run dev
+```
+
+The core wardrobe API uses `/api/wardrobe/upload` and `/api/wardrobe/items*`. Manus image objects are served through protected `/api/manus-storage/*` capability URLs and persisted in the development storage directory; they are not raw filesystem URLs.
+
+## Production / future Firebase integration
 
 1. Configure Firebase environment variables and custom claims
 2. Deploy: `vercel` or Firebase Hosting (`npm run build && firebase deploy`)

@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { adminAuth, adminDb } from "./firebase-admin";
 import { corsHeaders } from "./resources";
+import { getManusRuntimeUser, isManusRuntime } from "./runtime";
+import { authenticate } from "./authorize";
 import {
   aiUsageErrorResponse,
   finalizeAiUsage,
@@ -54,13 +56,23 @@ export function routeForPath(path: string[]): { operation: AiOperation; kind: "i
 }
 
 export async function authenticateAiRequest(request: NextRequest, operation: AiOperation): Promise<AuthenticatedAiRequest> {
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-  if (!token) throw new AiBoundaryError("UNAUTHORIZED", "Authentication is required.", 401);
-  const decoded = await adminAuth.verifyIdToken(token).catch(() => null);
-  if (!decoded) throw new AiBoundaryError("UNAUTHORIZED", "Authentication is required.", 401);
-  const userSnap = await adminDb.collection("users").doc(decoded.uid).get();
-  if (!userSnap.exists) throw new AiBoundaryError("USER_NOT_FOUND", "User profile was not found.", 404);
-  const user = userSnap.data() as Record<string, unknown>;
+  let userId: string;
+  let user: Record<string, unknown> | null;
+  if (isManusRuntime()) {
+    const identity = await authenticate(request);
+    if (!identity) throw new AiBoundaryError("UNAUTHORIZED", "Authentication is required.", 401);
+    userId = identity.uid;
+    user = await getManusRuntimeUser(userId);
+  } else {
+    const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+    if (!token) throw new AiBoundaryError("UNAUTHORIZED", "Authentication is required.", 401);
+    const decoded = await adminAuth.verifyIdToken(token).catch(() => null);
+    if (!decoded) throw new AiBoundaryError("UNAUTHORIZED", "Authentication is required.", 401);
+    userId = decoded.uid;
+    const userSnap = await adminDb.collection("users").doc(userId).get();
+    user = userSnap.exists ? userSnap.data() as Record<string, unknown> : null;
+  }
+  if (!user) throw new AiBoundaryError("USER_NOT_FOUND", "User profile was not found.", 404);
   if (user.status === "suspended") throw new AiBoundaryError("FORBIDDEN", "This account cannot use AI operations.", 403);
   const plan = user.plan === "pro" || user.plan === "premium" ? user.plan : "free";
   const requestId = request.headers.get("x-request-id")?.trim() || randomUUID();
@@ -69,12 +81,7 @@ export async function authenticateAiRequest(request: NextRequest, operation: AiO
   if (idempotencyKey.length > 200 || !/^[A-Za-z0-9._:-]+$/.test(idempotencyKey)) {
     throw new AiBoundaryError("INVALID_IDEMPOTENCY_KEY", "Idempotency-Key is invalid.", 400);
   }
-  return {
-    userId: decoded.uid,
-    plan,
-    requestId,
-    idempotencyKey: `${operation}:${idempotencyKey}`,
-  };
+  return { userId, plan, requestId, idempotencyKey: `${operation}:${idempotencyKey}` };
 }
 
 export function validateJsonContentType(request: NextRequest): void {

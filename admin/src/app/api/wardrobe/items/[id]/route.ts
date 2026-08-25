@@ -4,6 +4,9 @@ import type { NextRequest } from "next/server";
 import { authenticate } from "@/lib/server/authorize";
 import { adminDb, adminStorage } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
+import { isManusRuntime } from "@/lib/server/runtime";
+import { deleteManusClothing, getManusClothing, setManusCleanupStatus, updateManusClothing } from "@/lib/server/manus-data";
+import { deleteManusImage } from "@/lib/server/manus-storage";
 
 export const runtime = "nodejs";
 const CLOTHES = "clothes";
@@ -50,6 +53,11 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     const identity = await authenticate(request);
     if (!identity || identity.demo) return fail("UNAUTHORIZED", 401, id);
     const { id: itemId } = await context.params;
+    if (isManusRuntime()) {
+      const item = await getManusClothing(identity.uid, itemId);
+      if (!item) return fail("NOT_FOUND", 404, id);
+      return NextResponse.json({ data: item }, { headers: { ...corsHeaders, "X-Request-Id": id } });
+    }
     const snapshot = await adminDb.collection(CLOTHES).doc(itemId).get();
     if (!snapshot.exists) return fail("NOT_FOUND", 404, id);
     if (!isOwner(identity.uid, snapshot.data())) return fail("FORBIDDEN", 403, id);
@@ -63,12 +71,18 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
     const identity = await authenticate(request);
     if (!identity || identity.demo) return fail("UNAUTHORIZED", 401, id);
     const { id: itemId } = await context.params;
-    const snapshot = await adminDb.collection(CLOTHES).doc(itemId).get();
-    if (!snapshot.exists) return fail("NOT_FOUND", 404, id);
-    if (!isOwner(identity.uid, snapshot.data())) return fail("FORBIDDEN", 403, id);
     const raw = await request.json() as Record<string, unknown>;
     const patch = cleanPatch(raw);
     const key = keyOf(request);
+    if (isManusRuntime()) {
+      const current = await getManusClothing(identity.uid, itemId);
+      if (!current) return fail("NOT_FOUND", 404, id);
+      const result = await updateManusClothing({ uid: identity.uid, id: itemId, patch, idempotencyKey: key });
+      return NextResponse.json({ data: result.item, meta: { replayed: result.replayed } }, { headers: { ...corsHeaders, "X-Request-Id": id } });
+    }
+    const snapshot = await adminDb.collection(CLOTHES).doc(itemId).get();
+    if (!snapshot.exists) return fail("NOT_FOUND", 404, id);
+    if (!isOwner(identity.uid, snapshot.data())) return fail("FORBIDDEN", 403, id);
     if (key) {
       const requestRef = adminDb.collection(REQUESTS).doc(createHash("sha256").update(`${identity.uid}:update:${itemId}:${key}`).digest("hex"));
       const existing = await requestRef.get();
@@ -99,6 +113,17 @@ export async function DELETE(request: NextRequest, context: { params: Promise<{ 
     if (!identity || identity.demo) return fail("UNAUTHORIZED", 401, id);
     const { id: itemId } = await context.params;
     const key = keyOf(request) ?? `delete-${itemId}`;
+    if (isManusRuntime()) {
+      const result = await deleteManusClothing({ uid: identity.uid, id: itemId, idempotencyKey: key });
+      if (!result.replayed) {
+        let failed = false;
+        for (const path of result.paths) {
+          try { await deleteManusImage(identity.uid, path); } catch { failed = true; }
+        }
+        if (result.cleanupTaskId) await setManusCleanupStatus(result.cleanupTaskId, failed ? "pending" : "completed", failed ? "STORAGE_DELETE_FAILED" : undefined);
+      }
+      return new NextResponse(null, { status: 204, headers: { ...corsHeaders, "X-Request-Id": id } });
+    }
     const requestRef = adminDb.collection(REQUESTS).doc(createHash("sha256").update(`${identity.uid}:delete:${itemId}:${key}`).digest("hex"));
     let paths: string[] = [];
     let cleanupTaskId: string | null = null;

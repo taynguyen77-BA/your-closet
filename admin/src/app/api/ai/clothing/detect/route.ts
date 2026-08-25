@@ -7,6 +7,7 @@ import {
   readImageForm,
 } from "@/lib/server/ai-boundary";
 import { corsHeaders } from "@/lib/server/resources";
+import { isManusRuntime } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
 
@@ -75,16 +76,18 @@ export async function POST(request: NextRequest) {
     "clothing_detection",
     async () => readImageForm(request, ["image"]),
     async (auth, input) => {
-      const result = await callWithFallback(
-        "clothing_detection",
-        auth.plan,
-        auth.userId,
-        (modelId) => invokeGemini(modelId, input.file),
-      );
+      const result = isManusRuntime()
+        ? { result: parseDetection({ type: "top", color: "Chưa xác định", material: "Chưa xác định", style: "Casual", season: [], tags: ["manus-development"], suggestedName: "Món đồ mới", confidenceScore: 0.5, qualityWarnings: ["Đang dùng AI development provider; cần provider thật trước production."] }), modelUsed: "manus-vision", fallbackUsed: false }
+        : await callWithFallback(
+          "clothing_detection",
+          auth.plan,
+          auth.userId,
+          (modelId) => invokeGemini(modelId, input.file),
+        );
       return {
         body: { ...result.result, modelUsed: result.modelUsed, fallbackUsed: result.fallbackUsed },
         modelUsed: result.modelUsed,
-        provider: "gemini",
+        provider: isManusRuntime() ? "manus-development" : "gemini",
         fallbackUsed: result.fallbackUsed,
       };
     },

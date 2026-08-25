@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import { adminDb } from "./firebase-admin";
+import { finalizeManusAiUsage, reserveManusAiUsage } from "./manus-data";
+import { isManusRuntime } from "./runtime";
 
 export type AiOperation =
   | "clothing_detection"
@@ -128,6 +130,10 @@ export async function reserveAiUsage(input: {
   idempotencyKey: string;
   requestId: string;
 }): Promise<AiReservation> {
+  if (isManusRuntime()) {
+    try { return await reserveManusAiUsage(input); }
+    catch (error) { throw mapManusUsageError(error); }
+  }
   const usageId = usageIdFor(input.userId, input.idempotencyKey);
   const usageRef = adminDb.collection(USAGE_COLLECTION).doc(usageId);
   const userRef = adminDb.collection("users").doc(input.userId);
@@ -209,6 +215,10 @@ export async function finalizeAiUsage(input: {
   responseStatus?: number;
   errorCode?: string;
 }): Promise<AiReservation> {
+  if (isManusRuntime()) {
+    try { return await finalizeManusAiUsage(input); }
+    catch (error) { throw mapManusUsageError(error); }
+  }
   const usageRef = adminDb.collection(USAGE_COLLECTION).doc(input.reservation.usageId);
   const userRef = adminDb.collection("users").doc(input.reservation.userId);
   const logRef = adminDb.collection(LOG_COLLECTION).doc(input.reservation.usageId);
@@ -291,6 +301,13 @@ export async function finalizeAiUsage(input: {
 
   if (!result) throw new AiUsageError("INVALID_USAGE_STATE", "AI usage finalization did not complete.");
   return result;
+}
+
+function mapManusUsageError(error: unknown): AiUsageError {
+  const code = error instanceof Error ? error.message : "INVALID_USAGE_STATE";
+  const known = new Set<AiUsageError["code"]>(["UNAUTHORIZED", "USER_NOT_FOUND", "QUOTA_EXCEEDED", "IDEMPOTENCY_CONFLICT", "AI_REQUEST_IN_PROGRESS", "IDEMPOTENCY_REPLAY_UNAVAILABLE", "INVALID_USAGE_STATE"]);
+  const resolved = known.has(code as AiUsageError["code"]) ? code as AiUsageError["code"] : "INVALID_USAGE_STATE";
+  return new AiUsageError(resolved, "AI usage request could not be processed.", resolved === "USER_NOT_FOUND" ? 404 : undefined);
 }
 
 export function replayableReservation(reservation: AiReservation): boolean {

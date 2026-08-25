@@ -23,6 +23,9 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import type { User } from '@/models';
 import { getFirebaseAuth, getFirebaseFirestore, getFirebaseStorage, getFirebaseStatus } from '@/services/firebase/config';
 
+const isManusRuntime = () => process.env.EXPO_PUBLIC_WARDRO_RUNTIME_MODE === 'manus';
+const manusUserId = () => process.env.EXPO_PUBLIC_WARDRO_MANUS_USER?.trim() || 'manus-user-a';
+
 export type AuthProviderName = 'phone' | 'google' | 'facebook';
 export const ONBOARDING_COMPLETED_KEY = 'your_closet_onboarding_completed';
 export const GUEST_SESSION_KEY = 'your_closet_guest_session';
@@ -162,6 +165,20 @@ export async function loginWithPhone(phoneNumber: string) {
   phoneConfirmation = await signInWithPhoneNumber(auth(), phoneNumber.trim(), verifier);
 }
 
+export async function getManusSessionUser(): Promise<User> {
+  const baseUrl = apiBaseUrl();
+  if (!baseUrl) throw new Error('API chưa được cấu hình cho Manus runtime.');
+  const response = await fetch(new URL('/api/auth/session/verify', baseUrl).toString(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Wardro-Dev-User': manusUserId() },
+    body: JSON.stringify({}),
+  });
+  if (!response.ok) throw new Error('Không thể khởi tạo phiên Manus runtime.');
+  const body = await response.json() as { data?: { user?: User } };
+  if (!body.data?.user) throw new Error('Không thể tải hồ sơ Manus runtime.');
+  return body.data.user;
+}
+
 export async function verifyOtp(code: string) {
   if (!phoneConfirmation) throw new Error('Bạn cần gửi OTP trước khi xác minh.');
   const credential = await phoneConfirmation.confirm(code.trim());
@@ -171,21 +188,23 @@ export async function verifyOtp(code: string) {
 
 export async function logoutFirebase() {
   await disableBiometric();
+  if (isManusRuntime()) return;
   await signOut(auth());
 }
 
 export async function getFreshIdToken() {
+  if (isManusRuntime()) return '';
   const firebaseUser = auth().currentUser;
   if (!firebaseUser) throw new Error('Phiên đăng nhập đã hết hạn. Bạn đăng nhập lại nhé.');
   return firebaseUser.getIdToken(true);
 }
 
-export async function requestAccountDeletion(idToken: string) {
+export async function requestAccountDeletion(idToken: string | null) {
   const baseUrl = apiBaseUrl();
   if (!baseUrl) throw new Error('API chưa được cấu hình để xoá tài khoản.');
   const response = await fetch(new URL('/api/auth/account', baseUrl).toString(), {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` },
+    headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}), ...(isManusRuntime() ? { 'X-Wardro-Dev-User': manusUserId() } : {}) },
   });
   if (!response.ok) {
     const body = await response.json().catch(() => ({} as { error?: string }));
@@ -195,6 +214,13 @@ export async function requestAccountDeletion(idToken: string) {
 }
 
 export async function updateUserProfile(uid: string, patch: Partial<User>) {
+  if (isManusRuntime()) {
+    const baseUrl = apiBaseUrl();
+    if (!baseUrl) throw new Error('API chưa được cấu hình để cập nhật hồ sơ.');
+    const response = await fetch(new URL(`/api/resources/users/${encodeURIComponent(uid)}`, baseUrl).toString(), { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Wardro-Dev-User': manusUserId() }, body: JSON.stringify(patch) });
+    if (!response.ok) throw new Error('Không thể cập nhật hồ sơ.');
+    return;
+  }
   await updateDoc(doc(db(), 'users', uid), { ...patch, updatedAt: serverTimestamp() });
   const firebaseUser = auth().currentUser;
   if (firebaseUser && (patch.name || patch.avatarUrl)) {
@@ -203,6 +229,7 @@ export async function updateUserProfile(uid: string, patch: Partial<User>) {
 }
 
 export async function uploadAvatarFile(uid: string, uri: string) {
+  if (isManusRuntime()) return uri;
   const response = await fetch(uri);
   const blob = await response.blob();
   if (!blob.type.startsWith('image/')) throw new Error('Tệp đã chọn không phải là ảnh.');

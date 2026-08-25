@@ -6,6 +6,7 @@
 
 import { adminDb } from "./firebase-admin";
 import type { AiFeature, AiRoutingConfig, AiFeatureRoutingRow } from "@/types/ai-routing";
+import { isManusRuntime } from "./runtime";
 
 export type AiTier = "free" | "pro" | "premium";
 
@@ -37,7 +38,18 @@ function assertNotImageModel(feature: AiFeature, modelId: string): string {
 let configCache: { config: AiRoutingConfig; cachedAt: number } | null = null;
 const CACHE_TTL_MS = 60_000;
 
+const MANUS_ROUTING_CONFIG: AiRoutingConfig = {
+  id: "manus-development",
+  clothing_detection: { free: "manus-vision", pro: "manus-vision", premium: "manus-vision", fallback: "manus-vision-fallback" },
+  clothing_enhance: { free: "manus-vision", pro: "manus-vision", premium: "manus-vision", fallback: "manus-vision-fallback" },
+  outfit_recommend: { free: "manus-text", pro: "manus-text", premium: "manus-text", fallback: "manus-text-fallback" },
+  virtual_tryon: { free: "manus-text", pro: "manus-text", premium: "manus-text", fallback: "manus-text-fallback" },
+  style_profile_analyze: { free: "manus-text", pro: "manus-text", premium: "manus-text", fallback: "manus-text-fallback" },
+  updatedAt: "development",
+};
+
 async function getRoutingConfig(): Promise<AiRoutingConfig> {
+  if (isManusRuntime()) return MANUS_ROUTING_CONFIG;
   const now = Date.now();
   if (configCache && now - configCache.cachedAt < CACHE_TTL_MS) {
     return configCache.config;

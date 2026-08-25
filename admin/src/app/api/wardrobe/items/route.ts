@@ -4,6 +4,9 @@ import type { NextRequest } from "next/server";
 import { authenticate } from "@/lib/server/authorize";
 import { adminDb } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
+import { isManusRuntime } from "@/lib/server/runtime";
+import { createManusClothing } from "@/lib/server/manus-data";
+import { isManusStorageUrl } from "@/lib/server/manus-storage";
 
 export const runtime = "nodejs";
 
@@ -60,8 +63,8 @@ function ownedStoragePath(uid: string, path: string | undefined) {
   return /^[a-zA-Z0-9_-]{10,80}\.(jpg|png|webp)$/.test(file) ? path : null;
 }
 
-function validDownloadUrl(value: unknown) {
-  return typeof value === "string" && value.startsWith("https://firebasestorage.googleapis.com/");
+function validDownloadUrl(value: unknown, path?: string) {
+  return isManusRuntime() ? isManusStorageUrl(value, path) : typeof value === "string" && value.startsWith("https://firebasestorage.googleapis.com/");
 }
 
 function asString(value: unknown, field: string, max = MAX_TEXT) {
@@ -78,9 +81,9 @@ function normalizePayload(uid: string, raw: Record<string, unknown>): WardrobePa
   const userId = asString(raw.userId, "userId", 160);
   if (userId !== uid) throw new Error("FORBIDDEN");
   const storagePath = ownedStoragePath(uid, typeof raw.storagePath === "string" ? raw.storagePath : undefined);
-  if (!storagePath || !validDownloadUrl(raw.imageUrl)) throw new Error("INVALID_STORAGE_REFERENCE");
+  if (!storagePath || !validDownloadUrl(raw.imageUrl, storagePath)) throw new Error("INVALID_STORAGE_REFERENCE");
   const originalStoragePath = raw.originalStoragePath == null ? storagePath : ownedStoragePath(uid, String(raw.originalStoragePath));
-  if (!originalStoragePath || (raw.originalImageUrl != null && !validDownloadUrl(raw.originalImageUrl))) throw new Error("INVALID_STORAGE_REFERENCE");
+  if (!originalStoragePath || (raw.originalImageUrl != null && !validDownloadUrl(raw.originalImageUrl, originalStoragePath))) throw new Error("INVALID_STORAGE_REFERENCE");
   const type = asString(raw.type, "type", 30).toLowerCase();
   if (!CLOTHING_TYPES.has(type)) throw new Error("INVALID_TYPE");
   const season = raw.season == null ? [] : asStringArray(raw.season, "season");
@@ -134,6 +137,10 @@ export async function POST(request: NextRequest) {
       return fail("INVALID_JSON", 400, traceId);
     }
     const normalized = normalizePayload(identity.uid, raw);
+    if (isManusRuntime()) {
+      const result = await createManusClothing({ uid: identity.uid, payload: { id: "", ...normalized }, idempotencyKey: key });
+      return NextResponse.json({ data: { item: result.item, replayed: result.replayed } }, { status: result.replayed ? 200 : 201, headers: { ...corsHeaders, "X-Request-Id": traceId } });
+    }
     const requestRef = adminDb.collection(REQUESTS).doc(hashKey(identity.uid, key));
     const userRef = adminDb.collection("users").doc(identity.uid);
     const itemRef = adminDb.collection(CLOTHES).doc();

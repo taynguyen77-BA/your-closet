@@ -10,6 +10,7 @@ const enableRealAi = process.env.EXPO_PUBLIC_ENABLE_REAL_AI === 'true';
 const demoMode = process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
 const mock = new MockAiProvider();
 const usingBackendAi = !demoMode || enableRealAi;
+const usingManusAi = process.env.EXPO_PUBLIC_WARDRO_RUNTIME_MODE === 'manus';
 const provider: AiProvider = usingBackendAi ? new BackendAiProvider() : mock;
 const costs: Record<AiFeature, number> = {
   clothing_detection: 0.002, outfit_recommendation: 0.01, virtual_try_on: 0.08, style_profile: 0.015,
@@ -34,7 +35,7 @@ async function run<T>(userId: string, feature: AiFeature, summary: string, actio
     const fallbackUsed = Boolean((data as AiFallbackMeta | null)?.fallbackUsed);
     return {
       data,
-      source: usingBackendAi ? 'real' : 'mock',
+      source: usingBackendAi && !usingManusAi ? 'real' : 'mock',
       quotaChargeEligible: !fallbackUsed,
       quotaManagedByBackend: usingBackendAi,
       fallbackUsed,

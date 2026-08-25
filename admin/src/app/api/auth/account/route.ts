@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminAuth, adminDb, adminStorage } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
 import { FIRESTORE_COLLECTIONS } from "@/lib/firestore-schema";
+import { authenticateManusRequest, isManusRuntime } from "@/lib/server/runtime";
+import { deleteManusUser, listManusClothes } from "@/lib/server/manus-data";
+import { deleteManusUserStorage } from "@/lib/server/manus-storage";
 
 export const runtime = "nodejs";
 
@@ -48,6 +51,17 @@ function fail(error: string, status: number) {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (isManusRuntime()) {
+    const identity = await authenticateManusRequest(request);
+    try {
+      await listManusClothes(identity.uid);
+      await deleteManusUserStorage(identity.uid);
+      await deleteManusUser(identity.uid);
+      return NextResponse.json({ data: { deleted: true, provider: "manus" } }, { status: 200, headers: corsHeaders });
+    } catch {
+      return fail("SERVER_ERROR", 500);
+    }
+  }
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return fail("UNAUTHORIZED", 401);
 

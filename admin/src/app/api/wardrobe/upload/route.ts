@@ -4,6 +4,8 @@ import type { NextRequest } from "next/server";
 import { authenticate, type ApiIdentity } from "@/lib/server/authorize";
 import { adminStorage } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
+import { isManusRuntime } from "@/lib/server/runtime";
+import { deleteManusImage, manusStoragePath, manusStorageUrl, saveManusImage } from "@/lib/server/manus-storage";
 
 export const runtime = "nodejs";
 
@@ -61,6 +63,10 @@ export async function POST(request: NextRequest) {
     if (buffer.length <= 0 || buffer.length > MAX_IMAGE_BYTES) return errorResponse("UPLOAD_TOO_LARGE", 413, id);
     if (!hasImageSignature(new Uint8Array(buffer), type)) return errorResponse("INVALID_IMAGE_CONTENT", 415, id);
 
+    if (isManusRuntime()) {
+      const stored = await saveManusImage(identity.uid, type, buffer);
+      return NextResponse.json({ data: { url: manusStorageUrl(stored.path), path: stored.path, contentType: stored.contentType, sizeBytes: stored.sizeBytes, provider: "manus" } }, { status: 201, headers: { ...corsHeaders, "X-Request-Id": id } });
+    }
     const path = `users/${identity.uid}/clothes/${randomUUID()}.${extensionFor(type)}`;
     const token = randomUUID();
     const bucket = adminStorage.bucket();
@@ -83,7 +89,13 @@ export async function DELETE(request: NextRequest) {
     if (!identity || identity.demo) return errorResponse("UNAUTHORIZED", 401, id);
     const path = ownedPath(identity.uid, request.nextUrl.searchParams.get("path") ?? "");
     if (!path) return errorResponse("INVALID_STORAGE_PATH", 400, id);
-    await adminStorage.bucket().file(path).delete({ ignoreNotFound: true });
+    if (isManusRuntime()) {
+      const safePath = manusStoragePath(identity.uid, path);
+      if (!safePath) return errorResponse("INVALID_STORAGE_PATH", 400, id);
+      await deleteManusImage(identity.uid, safePath);
+    } else {
+      await adminStorage.bucket().file(path).delete({ ignoreNotFound: true });
+    }
     return new NextResponse(null, { status: 204, headers: { ...corsHeaders, "X-Request-Id": id } });
   } catch (error) {
     console.error("[wardrobe-upload] cleanup failed", { requestId: id, error: error instanceof Error ? error.message : "unknown" });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { FieldValue, Filter } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
+import { authenticateManusRequest, isManusRuntime } from "@/lib/server/runtime";
 
 export const runtime = "nodejs";
 
@@ -76,6 +77,10 @@ function json(data: unknown, status = 200) {
 }
 
 export async function POST(request: NextRequest) {
+  if (isManusRuntime()) {
+    const identity = await authenticateManusRequest(request);
+    return json({ user: identity.user });
+  }
   const { idToken } = await request.json().catch(() => ({ idToken: "" }));
   if (!idToken || typeof idToken !== "string") return NextResponse.json({ error: "Missing idToken" }, { status: 400, headers: corsHeaders });
 

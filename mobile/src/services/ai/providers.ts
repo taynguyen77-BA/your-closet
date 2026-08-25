@@ -1,6 +1,6 @@
 import type { AiProvider, ClothingImageAnalysis, DetectedClothingMeta, MissingOutfitItem, OutfitRecommendation, OutfitSuggestionInput, StyleProfileInput, VirtualTryOnInput } from './types';
 import type { ClothingItem } from '@/models';
-import { getFirebaseAuth } from '@/services/firebase/config';
+import { getFirebaseAuth, isFirebaseConfigured } from '@/services/firebase/config';
 
 const MOCK_DETECTION: DetectedClothingMeta = {
   type: 'top', material: 'Cotton blend', color: 'Soft Pink', style: 'Casual',
@@ -127,11 +127,12 @@ export class BackendAiProvider implements AiProvider {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const token = await getFirebaseAuth().currentUser?.getIdToken();
+        const isManus = process.env.EXPO_PUBLIC_WARDRO_RUNTIME_MODE === 'manus';
+        const token = !isManus && isFirebaseConfigured() ? await getFirebaseAuth().currentUser?.getIdToken() : undefined;
         const isForm = body instanceof FormData;
         const response = await fetch(`${apiBaseUrl}${path}`, {
           method: 'POST',
-          headers: { ...(isForm ? {} : { 'Content-Type': 'application/json' }), 'Idempotency-Key': requestId, 'X-Request-Id': requestId, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          headers: { ...(isForm ? {} : { 'Content-Type': 'application/json' }), 'Idempotency-Key': requestId, 'X-Request-Id': requestId, ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(isManus ? { 'X-Wardro-Dev-User': process.env.EXPO_PUBLIC_WARDRO_MANUS_USER?.trim() || 'manus-user-a' } : {}) },
           body: isForm ? body : JSON.stringify(body), signal: controller.signal,
         });
         if (!response.ok) throw new AiServiceError(`AI backend trả về lỗi ${response.status}.`, 'server');

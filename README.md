@@ -23,14 +23,29 @@ Your Closet/
 | State | Zustand |
 | Backend API | Next.js API routes + Firebase Admin SDK |
 | Data source | Firestore single source of truth |
-| AI | Backend provider; mock data khi `EXPO_PUBLIC_DEMO_MODE=true`; mock auth chỉ khi bật thêm `EXPO_PUBLIC_DEMO_AUTH_BYPASS=true` |
+| AI | Backend provider; Manus development provider khi `WARDRO_RUNTIME_MODE=manus`; Firebase provider ở future integration |
 | Payments | VNPay, MoMo, Apple/Google Pay — UI + constants |
+
+## Manus runtime hiện tại
+
+Firebase chưa bắt buộc cho local/development runtime. Chạy backend bằng Manus providers với dữ liệu và Storage server-side được kiểm soát:
+
+```bash
+cd admin
+cp .env.example .env.local
+# giữ WARDRO_RUNTIME_MODE=manus trong .env.local
+npm run dev
+```
+
+Mobile dùng `EXPO_PUBLIC_WARDRO_RUNTIME_MODE=manus`, `EXPO_PUBLIC_WARDRO_MANUS_USER=manus-user-a`, và `EXPO_PUBLIC_API_BASE_URL=http://localhost:3000`. Development identity chỉ nhận các ID allowlist (`manus-user-a`, `manus-user-b`, `manus-admin`); server không chấp nhận UID tuỳ ý từ request body. Manus storage dùng thư mục server riêng và URL có token capability; không expose filesystem trực tiếp.
+
+Firebase Auth, Firestore và Firebase Storage là provider tương lai, được chọn tập trung bằng `WARDRO_RUNTIME_MODE=firebase` sau khi có project và cấu hình hợp lệ.
 
 ## Chạy mobile app
 
 ```bash
 cd mobile
-cp .env.example .env   # điền đủ Firebase keys
+cp .env.example .env   # Manus runtime không cần Firebase; Firebase keys chỉ dùng ở future mode
 npm install
 npm run typecheck
 npm start
@@ -87,7 +102,7 @@ mobile/
 | Pro | ∞ | ∞ |
 | Premium | ∞ + stylist AI | ∞ |
 
-## Firebase auth setup
+## Firebase auth setup (future integration)
 
 1. Tạo project trên [Firebase Console](https://console.firebase.google.com)
 2. Bật Authentication providers cho consumer mobile: Phone, Google, Facebook. Tắt Email/Password trong consumer app project.

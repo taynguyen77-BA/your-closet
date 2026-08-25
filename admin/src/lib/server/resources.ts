@@ -3,6 +3,8 @@ import { FIRESTORE_COLLECTIONS } from "@/lib/firestore-schema";
 import { authenticate, type ApiIdentity } from "./authorize";
 import { adminDb } from "./firebase-admin";
 import { hasPermission, type Permission } from "@/lib/rbac";
+import { isManusRuntime } from "./runtime";
+import { getManusClothing, getManusUser, listManusClothes, updateManusUser } from "./manus-data";
 import {
   affiliateProducts, aiLogs, auditLogs, contentReports, listings, membershipPlans, missions,
   mockUsers, notificationTemplates, outfits, securityLogs, subscriptions, supportTickets,
@@ -69,7 +71,7 @@ const demoCollections: Record<string, DemoRow[]> = {
   adminUsers: [],
 };
 const isDemo = () => process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-export const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Authorization, Content-Type, Idempotency-Key, X-Request-Id, x-demo-admin-role", "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS", "Access-Control-Expose-Headers": "X-Request-Id" };
+export const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Authorization, Content-Type, Idempotency-Key, X-Request-Id, x-demo-admin-role, X-Wardro-Dev-User, X-Wardro-Frontend-SHA", "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS", "Access-Control-Expose-Headers": "X-Request-Id" };
 const json = (data: unknown, status = 200, meta?: Record<string, unknown>) => NextResponse.json({ data, meta: { total: Array.isArray(data) ? data.length : data ? 1 : 0, limit: 50, cursor: null, ...meta } }, { status, headers: corsHeaders });
 const fail = (error: unknown) => {
   const message = error instanceof Error ? error.message : "SERVER_ERROR";
@@ -134,6 +136,11 @@ export async function list(request: NextRequest, collection: string) {
     const identity = await access(request, collection);
     const params = request.nextUrl.searchParams; const limit = Math.min(Number(params.get("limit") ?? 50), 100); const cursor = params.get("cursor");
     const filter = (row: DemoRow) => canRead(identity, collection, row) && matchesStatus(collection, row, params.get("status")) && (!params.get("userId") || row.userId === params.get("userId")) && (!params.get("search") || JSON.stringify(row).toLowerCase().includes(params.get("search")!.toLowerCase()));
+    if (isManusRuntime()) {
+      if (collection === "clothes") return json(identity ? await listManusClothes(identity.uid) : [], 200, { limit });
+      if (collection === "users") return json(identity ? (await getManusUser(identity.uid) ? [await getManusUser(identity.uid)] : []) : [], 200, { limit });
+      return json((demoCollections[collection] ?? []).filter(filter).slice(0, limit), 200, { limit });
+    }
     if (isDemo()) return json((demoCollections[collection] ?? []).filter(filter).slice(0, limit), 200, { limit });
     let query = adminDb.collection(collection).orderBy("createdAt", "desc").limit(limit + 1);
     if (cursor) query = query.startAfter(cursor);
@@ -146,7 +153,19 @@ export async function list(request: NextRequest, collection: string) {
 export async function get(request: NextRequest, collection: string, id: string) {
   try {
     const identity = await access(request, collection);
-    if (isDemo()) {
+    if (isManusRuntime()) {
+      if (collection === "clothes") {
+        const row = identity ? await getManusClothing(identity.uid, id) : null;
+        if (!row) throw new Error("NOT_FOUND");
+        return json(row);
+      }
+      if (collection === "users") {
+        const row = identity?.uid === id && identity ? await getManusUser(identity.uid) : null;
+        if (!row) throw new Error("NOT_FOUND");
+        return json(row);
+      }
+    }
+    if (isDemo() || isManusRuntime()) {
       const row = (demoCollections[collection] ?? []).find((item) => item.id === id);
       if (!row) throw new Error("NOT_FOUND");
       if (!canRead(identity, collection, row)) throw new Error("FORBIDDEN");
@@ -191,6 +210,10 @@ export async function update(request: NextRequest, collection: string, id: strin
     if (collection === "clothes") throw new Error("USE_WARDROBE_API");
     const patch = normalizeWrite(collection, clean(await request.json()));
     if (!identity.isAdmin && collection === "users" && Object.keys(patch).some((key) => !userProfileFields.has(key))) throw new Error("FORBIDDEN");
+    if (isManusRuntime() && collection === "users") {
+      if (identity.uid !== id && !identity.isAdmin) throw new Error("FORBIDDEN");
+      return json(await updateManusUser(id, patch));
+    }
     if (!identity.isAdmin && collection === "listings" && "status" in patch) throw new Error("FORBIDDEN");
     if (isDemo()) {
       const rows = demoCollections[collection] ?? [];
