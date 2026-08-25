@@ -246,6 +246,9 @@ jobs:
           WARDRO_MANUS_DATA_DIR: ${{ runner.temp }}/wardro-manus-data
           WARDRO_MANUS_STORAGE_DIR: ${{ runner.temp }}/wardro-manus-storage
         run: node tests/manus-runtime-e2e.mjs
+      - name: Install Playwright Chromium for Manus smoke
+        run: npx playwright install --with-deps chromium
+        working-directory: mobile
       - name: Serve Manus frontend and run browser smoke
         run: |
           npx --yes serve mobile/dist-manus --single --listen 8081 > "$RUNNER_TEMP/wardro-manus-frontend.log" 2>&1 &
