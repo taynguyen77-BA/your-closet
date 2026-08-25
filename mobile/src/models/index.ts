@@ -102,6 +102,29 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface WardrobeIntelligenceValue {
+  raw: string;
+  normalized: string;
+  display: string;
+}
+
+export interface WardrobeIntelligence {
+  schemaVersion: 1;
+  category: WardrobeIntelligenceValue;
+  subcategory?: WardrobeIntelligenceValue;
+  colors: WardrobeIntelligenceValue[];
+  pattern?: WardrobeIntelligenceValue;
+  material?: WardrobeIntelligenceValue;
+  style?: WardrobeIntelligenceValue;
+  seasons: WardrobeIntelligenceValue[];
+  occasions: WardrobeIntelligenceValue[];
+  brand?: WardrobeIntelligenceValue;
+  size?: WardrobeIntelligenceValue;
+  status: 'active' | 'archived';
+  source: 'user' | 'ai' | 'mixed';
+  confidence?: number;
+}
+
 export interface ClothingItem {
   id: string;
   userId: string;
@@ -118,6 +141,8 @@ export interface ClothingItem {
   season?: string[];
   tags: string[];
   aiMetadata?: Record<string, unknown>;
+  /** Additive V2.2 structured wardrobe intelligence; legacy fields remain authoritative for compatibility. */
+  intelligence?: WardrobeIntelligence;
   aiConfidenceScore?: number;
   aiQualityWarnings?: string[];
   isFavorite: boolean;

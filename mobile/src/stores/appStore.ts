@@ -13,7 +13,7 @@ import {
   marketplaceMessagesService, missionsService, outfitsService, planLimitsService, shoppingEventsService, tradeOffersService,
   transactionsService, trendsService, userMissionsService, usersService,
 } from '@/services/api/resources';
-import { wardrobeItemsService, wardrobeUploadService, type WardrobeUploadResult } from '@/services/api/wardrobe';
+import { wardrobeItemsService, wardrobeUploadService, type WardrobeQuery, type WardrobeUploadResult } from '@/services/api/wardrobe';
 import { DEFAULT_MISSIONS, PLAN_LIMITS } from '@/constants/membership';
 
 const useMocks = () => process.env.EXPO_PUBLIC_DEMO_MODE === 'true';
@@ -49,9 +49,12 @@ interface AppState {
   affiliateProducts: AffiliateProduct[];
   closetViewMode: 'grid' | 'list'; loadState: LoadState; error?: string;
   planLimits: Record<MembershipPlan, PlanLimit>;
+  wardrobeTotal: number;
+  wardrobeFacets: { categories: { value: string; display: string; count: number }[]; colors: { value: string; display: string; count: number }[] };
   initialize: () => Promise<void>;
   resetSession: () => void;
   setClosetViewMode: (mode: 'grid' | 'list') => void;
+  queryClothing: (query: WardrobeQuery) => Promise<void>;
   toggleFavorite: (id: string) => Promise<void>;
   saveOutfit: (id: string) => Promise<void>;
   addClothingToOutfit: (clothingId: string, outfitId: string) => Promise<void>;
@@ -112,6 +115,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   affiliateProducts: useMocks() ? mockAffiliateProducts : [],
   savedOutfitIds: useMocks() ? ['o2'] : [], closetViewMode: 'grid', loadState: 'idle',
   planLimits: useMocks() ? PLAN_LIMITS : emptyPlanLimits,
+  wardrobeTotal: useMocks() ? mockClothing.length : 0,
+  wardrobeFacets: { categories: [], colors: [] },
   initialize: async () => {
     if (useMocks()) {
       const previewUser = isGuestSession() ? guestUser : mockUser;
@@ -129,9 +134,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       if (!authUser) {
         const isGuest = useAuthStore.getState().isGuest;
         return set({
-          loadState: 'ready',
-          planLimits,
-          trends,
+                    loadState: 'ready', planLimits, wardrobeTotal: 0, trends,
+
           missions: isGuest ? mergeMissionState(missionDefinitions, []) : missionDefinitions,
           communityListings: approvedListings,
           affiliateProducts,
@@ -143,15 +147,15 @@ export const useAppStore = create<AppState>((set, get) => ({
         });
       }
       const userId = authUser.id;
-      const [user, clothing, outfits, events, userMissions, ownListings] = await Promise.all([
-        usersService.get(userId), clothesService.list({ userId }), outfitsService.list({ userId }),
+      const [user, wardrobeResult, outfits, events, userMissions, ownListings] = await Promise.all([
+        usersService.get(userId), wardrobeItemsService.list({ limit: 50 }), outfitsService.list({ userId }),
         eventsService.list({ userId }), userMissionsService.list({ userId }), listingsService.list({ userId }),
       ]);
       const communityListings = [...approvedListings, ...ownListings.filter((listing) => !approvedListings.some((approved) => approved.id === listing.id))];
       const currentUser = applyPlanLimit(user, planLimits);
       const mergedMissions = mergeMissionState(missionDefinitions, userMissions);
       set({
-        user: currentUser, clothing, outfits, events, trends, missions: mergedMissions, planLimits, communityListings, affiliateProducts,
+        user: currentUser, clothing: wardrobeResult.items, wardrobeTotal: wardrobeResult.total, wardrobeFacets: wardrobeResult.facets, outfits, events, trends, missions: mergedMissions, planLimits, communityListings, affiliateProducts,
         savedOutfitIds: outfits.filter((item) => item.isSaved).map((item) => item.id),
         loadState: 'ready',
       });
@@ -159,8 +163,15 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ loadState: 'error', error: 'Không thể tải dữ liệu. Kiểm tra kết nối rồi thử lại nhé.' });
     }
   },
-  resetSession: () => set({ user: useMocks() ? mockUser : emptyUser, clothing: [], outfits: [], events: [], communityListings: [], affiliateProducts: [], missions: [], savedOutfitIds: [], loadState: 'idle', error: undefined }),
+  resetSession: () => set({ user: useMocks() ? mockUser : emptyUser, clothing: [], wardrobeTotal: 0, wardrobeFacets: { categories: [], colors: [] }, outfits: [], events: [], communityListings: [], affiliateProducts: [], missions: [], savedOutfitIds: [], loadState: 'idle', error: undefined }),
   setClosetViewMode: (closetViewMode) => set({ closetViewMode }),
+  queryClothing: async (query) => {
+    if (!useRemoteWrites()) return;
+    try {
+      const result = await wardrobeItemsService.list({ ...query, limit: query.limit ?? 50 });
+      set({ clothing: result.items, wardrobeTotal: result.total, wardrobeFacets: result.facets });
+    } catch (error) { reportError(set, error); }
+  },
   toggleFavorite: async (id) => {
     const item = get().clothing.find((value) => value.id === id); if (!item) return;
     const patch = { isFavorite: !item.isFavorite };

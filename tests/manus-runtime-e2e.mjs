@@ -56,6 +56,14 @@ assert(item.userId === userA && item.id, 'created item ownership missing');
 const replay = await call('/api/wardrobe/items', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': 'manus-create-e2e-1' }, body: JSON.stringify(payload) });
 assert(replay.response.status === 200 && data(replay.body).replayed === true && data(replay.body).item.id === item.id, 'create idempotency failed');
 
+const queried = await call('/api/wardrobe/items?category=top&color=white&sort=name_asc&limit=1');
+assert(queried.response.status === 200 && data(queried.body).some((row) => row.id === item.id), 'structured wardrobe query failed');
+assert(queried.body.meta?.total === 1 && queried.body.meta?.facets?.categories?.some((facet) => facet.value === 'top'), 'query facets missing');
+const malformedQuery = await call('/api/wardrobe/items?sort=semantic');
+assert(malformedQuery.response.status === 400, 'invalid query was not rejected');
+const hiddenFromB = await call('/api/wardrobe/items?search=Manus%20test%20shirt', {}, userB);
+assert(hiddenFromB.response.status === 200 && data(hiddenFromB.body).length === 0 && hiddenFromB.body.meta?.total === 0, 'cross-user query isolation failed');
+
 const listed = await call('/api/resources/clothes?userId=manus-user-a');
 assert(listed.response.status === 200 && data(listed.body).some((row) => row.id === item.id), 'wardrobe list failed');
 const readA = await call(`/api/wardrobe/items/${item.id}`);

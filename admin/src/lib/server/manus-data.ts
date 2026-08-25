@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash, randomUUID } from "node:crypto";
 import type { AiOperation, AiPlan, AiReservation, AiResultStatus, AiUsageStatus } from "./ai-usage";
+import { queryWardrobeItems, type WardrobeQuery, type WardrobeQueryResult } from "./wardrobe-intelligence";
 
 type ManusUser = Record<string, unknown> & {
   id: string;
@@ -142,8 +143,12 @@ export async function updateManusUser(uid: string, patch: Record<string, unknown
   });
 }
 
-export async function listManusClothes(uid: string): Promise<ManusItem[]> {
-  return read((state) => Object.values(state.clothes).filter((item) => item.userId === uid).sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? ""))));
+export async function listManusClothes(uid: string, query?: WardrobeQuery): Promise<ManusItem[] | WardrobeQueryResult<ManusItem>> {
+  return read((state) => {
+    const items = Object.values(state.clothes).filter((item) => item.userId === uid);
+    if (!query) return items.sort((a, b) => String(b.createdAt ?? "").localeCompare(String(a.createdAt ?? "")));
+    return queryWardrobeItems(items, query);
+  });
 }
 
 export async function getManusClothing(uid: string, id: string): Promise<ManusItem | null> {

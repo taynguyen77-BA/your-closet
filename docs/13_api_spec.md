@@ -28,6 +28,8 @@ Mostly client-SDK-driven (Firebase Auth handles sign-in directly); backend endpo
 | PATCH | `/api/wardrobe/items/:id` | Edit metadata (tags, favorite, and other approved fields) | Bearer | Image references cannot be replaced through metadata PATCH |
 | DELETE | `/api/wardrobe/items/:id` | Delete item | Bearer | Owner-scoped; triggers Storage cleanup and records a pending cleanup marker on failure |
 
+`GET /api/wardrobe/items` accepts backward-compatible deterministic query parameters: `category`, `subcategory`, `color`, `style`, `season`, `occasion`, `search`, `status` (`active|archived`), `sort` (`newest|oldest|name_asc|name_desc|wear_count_desc|wear_count_asc`), `limit` (1–50, default 24), and numeric `cursor`. The response retains the standard `{ data, meta }` envelope and adds `meta.total`, `meta.cursor`, and `meta.facets.categories/colors`. Query ownership is always derived from the authenticated server identity; a client `userId` is not accepted as a source of collection scope.
+
 ---
 
 ## Domain: AI (`/api/ai/*`) — all routed through AI Routing resolver

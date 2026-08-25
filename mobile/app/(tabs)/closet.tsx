@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, FlatList, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { GuestAccessCard } from '@/components/auth/GuestAccessCard';
@@ -14,7 +14,7 @@ import { aiService, FALLBACK_QUALITY_NOTICE } from '@/services/ai/aiService';
 import { useAppStore } from '@/stores/appStore';
 import { useTheme } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
-import { wardrobeUploadService } from '@/services/api/wardrobe';
+import { wardrobeUploadService, type WardrobeSort } from '@/services/api/wardrobe';
 
 type Filter = 'all' | 'top' | 'bottom' | 'dress' | 'shoes' | 'bag' | 'favorites' | 'rarely';
 const FILTERS: { key: Filter; label: string }[] = [
@@ -33,6 +33,10 @@ export default function ClosetScreen() {
   const consumeAiTry = useAppStore((s) => s.consumeAiTry);
   const closetViewMode = useAppStore((s) => s.closetViewMode);
   const setClosetViewMode = useAppStore((s) => s.setClosetViewMode);
+  const queryClothing = useAppStore((s) => s.queryClothing);
+  const wardrobeTotal = useAppStore((s) => s.wardrobeTotal);
+  const wardrobeFacets = useAppStore((s) => s.wardrobeFacets);
+  const loadState = useAppStore((s) => s.loadState);
   const { isAuthenticated, isGuest } = useAuthStore();
   const isPublicViewer = isGuest || !isAuthenticated;
   const [saving, setSaving] = useState(false);
@@ -43,16 +47,37 @@ export default function ClosetScreen() {
   const [bulkIndex, setBulkIndex] = useState(0);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
+  const [colorFilter, setColorFilter] = useState<string | undefined>();
+  const [sort, setSort] = useState<WardrobeSort>('newest');
   const normalizedSearch = search.trim().toLowerCase();
   const rarelyWorn = clothing.filter((item) => item.timesWorn < 3).length;
   const favorites = clothing.filter((item) => item.isFavorite).length;
   const outfitPotential = clothing.length ? Math.max(clothing.length * 3, 8) : 0;
   const wardrobeScore = clothing.length ? Math.min(96, 66 + (clothing.length - rarelyWorn) * 5 + favorites * 2) : 0;
+  useEffect(() => {
+    if (isPublicViewer || loadState !== 'ready' || process.env.EXPO_PUBLIC_DEMO_MODE === 'true') return;
+    const categories = new Set(['top', 'bottom', 'dress', 'shoes', 'bag']);
+    void queryClothing({
+      category: categories.has(filter) ? filter : undefined,
+      color: colorFilter,
+      search: normalizedSearch || undefined,
+      sort,
+      limit: 50,
+    });
+  }, [colorFilter, filter, isPublicViewer, loadState, normalizedSearch, queryClothing, sort]);
+
   const filtered = clothing.filter((item) => {
     const matchesSearch = !normalizedSearch || item.name.toLowerCase().includes(normalizedSearch) || item.tags.some((tag) => tag.toLowerCase().includes(normalizedSearch));
-    const matchesFilter = filter === 'all' || (filter === 'favorites' ? item.isFavorite : filter === 'rarely' ? item.timesWorn < 3 : item.type === filter);
+      const matchesFilter = filter === 'all' || (filter === 'favorites' ? item.isFavorite : filter === 'rarely' ? item.timesWorn < 3 : item.type === filter);
     return matchesSearch && matchesFilter;
   });
+  const activeFilterCount = [search.trim(), filter !== 'all' ? filter : '', colorFilter ?? ''].filter(Boolean).length;
+  const sortLabels: Record<WardrobeSort, string> = { newest: 'Mới thêm', oldest: 'Cũ nhất', name_asc: 'Tên A–Z', name_desc: 'Tên Z–A', wear_count_desc: 'Mặc nhiều', wear_count_asc: 'Ít mặc' };
+  const cycleSort = () => {
+    const options: WardrobeSort[] = ['newest', 'name_asc', 'wear_count_desc', 'oldest'];
+    setSort(options[(options.indexOf(sort) + 1) % options.length]);
+  };
+  const clearFilters = () => { setSearch(''); setFilter('all'); setColorFilter(undefined); setSort('newest'); };
 
   if (isPublicViewer) {
     return (
@@ -237,18 +262,22 @@ export default function ClosetScreen() {
       <View style={[styles.healthBar, { backgroundColor: colors.warmGray }]}><View style={[styles.healthFill, { backgroundColor: colors.sand, width: `${wardrobeScore}%` }]} /></View>
       <Pressable onPress={() => router.push('/(tabs)/try-on')} style={[styles.healthCta, { borderTopColor: colors.warmGray }]}><AppText variant="label" color={colors.sand}>AI phối đồ →</AppText></Pressable>
     </View>
-    <View style={[styles.statsCard, { borderRadius: rounded.lg, borderColor: colors.border, backgroundColor: colors.surface }]}>
-      {[['shirt-outline', clothing.length, 'TỔNG SỐ MÓN'], ['heart', favorites, 'YÊU THÍCH'], ['time-outline', rarelyWorn, 'ÍT MẶC'], ['sparkles', outfitPotential, 'KHẢ NĂNG PHỐI']].map(([icon, value, label], index) => <View key={label as string} style={[styles.statCell, index % 2 === 0 && styles.statRightBorder, index < 2 && styles.statBottomBorder, { borderColor: colors.border }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={18} color={colors.primary} /><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText></View>)}
+          <View style={[styles.statsCard, { borderRadius: rounded.lg, borderColor: colors.border, backgroundColor: colors.surface }]}>
+      {[['shirt-outline', wardrobeTotal, 'TỔNG SỐ MÓN'], ['heart', favorites, 'YÊU THÍCH'], ['time-outline', rarelyWorn, 'ÍT MẶC'], ['sparkles', outfitPotential, 'KHẢ NĂNG PHỐI']].map(([icon, value, label], index) => <View key={label as string} style={[styles.statCell, index % 2 === 0 && styles.statRightBorder, index < 2 && styles.statBottomBorder, { borderColor: colors.border }]}><Ionicons name={icon as keyof typeof Ionicons.glyphMap} size={18} color={colors.primary} /><AppText variant="h2">{value}</AppText><AppText variant="caption" muted>{label}</AppText></View>)}
+
     </View>
     <View style={styles.toolbar}><Button label={saving ? 'Đang thêm...' : 'Thêm món'} icon="camera-outline" onPress={pickImage} disabled={saving} style={{ flex: 1 }} /><Button label="Thêm nhiều" variant="secondary" icon="images-outline" onPress={() => void pickBulkImages()} disabled={saving} style={{ marginLeft: 8 }} /></View>
     <SearchBar value={search} onChangeText={setSearch} />
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.filters}>{FILTERS.map((item) => <FilterPill key={item.key} label={item.label} active={filter === item.key} onPress={() => setFilter(item.key)} />)}</View></ScrollView>
-    <View style={styles.section}><View><AppText variant="h2">Các món đồ của bạn</AppText><AppText variant="bodySmall" muted>{filtered.length} món sẵn sàng để phối</AppText></View><View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}><Pressable onPress={() => setClosetViewMode(closetViewMode === 'grid' ? 'list' : 'grid')}><Ionicons name={closetViewMode === 'grid' ? 'list-outline' : 'grid-outline'} size={22} color={colors.primary} /></Pressable><Pressable onPress={() => setFilter('all')}><Ionicons name="options-outline" size={22} color={colors.primary} /></Pressable></View></View>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.filters}>{FILTERS.map((item) => { const count = item.key === 'all' ? wardrobeTotal : wardrobeFacets.categories.find((facet) => facet.value === item.key)?.count; return <FilterPill key={item.key} label={typeof count === 'number' ? `${item.label} · ${count}` : item.label} active={filter === item.key} onPress={() => setFilter(item.key)} />; })}</View></ScrollView>
+    {wardrobeFacets.colors.length ? <View style={{ gap: 6 }}><AppText variant="caption" muted>MÀU ĐANG CÓ</AppText><ScrollView horizontal showsHorizontalScrollIndicator={false}><View style={styles.filters}>{wardrobeFacets.colors.slice(0, 8).map((item) => <FilterPill key={item.value} label={`${item.display} · ${item.count}`} active={colorFilter === item.value} onPress={() => setColorFilter(colorFilter === item.value ? undefined : item.value)} />)}</View></ScrollView></View> : null}
+    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><AppText variant="bodySmall" muted>{activeFilterCount ? `${activeFilterCount} bộ lọc đang bật` : 'Lọc theo dữ liệu tủ đồ'}</AppText><Pressable onPress={cycleSort}><AppText variant="label" color={colors.primary}>Sắp xếp: {sortLabels[sort]} ↕</AppText></Pressable></View>
+    <View style={styles.section}><View><AppText variant="h2">Các món đồ của bạn</AppText><AppText variant="bodySmall" muted>{filtered.length} / {wardrobeTotal} món sẵn sàng để phối</AppText></View><View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}><Pressable onPress={() => setClosetViewMode(closetViewMode === 'grid' ? 'list' : 'grid')}><Ionicons name={closetViewMode === 'grid' ? 'list-outline' : 'grid-outline'} size={22} color={colors.primary} /></Pressable>{activeFilterCount ? <Pressable onPress={clearFilters}><AppText variant="label" color={colors.primary}>Xóa lọc</AppText></Pressable> : null}</View></View>
   </View>;
 
   const numColumns = closetViewMode === 'grid' ? 2 : 1;
+  const emptyState = clothing.length === 0 ? <EmptyClosetState onPress={() => void pickImage()} /> : <View style={{ alignItems: 'center', gap: 10, paddingVertical: 36 }}><Ionicons name="search-outline" size={32} color={colors.primary} /><AppText variant="h2">Không tìm thấy món đồ</AppText><AppText variant="bodySmall" muted style={{ textAlign: 'center' }}>Thử đổi từ khóa hoặc xóa bộ lọc để xem lại toàn bộ tủ đồ.</AppText><Button label="Xóa bộ lọc" variant="secondary" onPress={clearFilters} /></View>;
   return <View style={{ flex: 1, backgroundColor: colors.background }}>
-    <FlatList key={closetViewMode} data={filtered} numColumns={numColumns} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={closetViewMode === 'grid' ? styles.row : undefined} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 190 }} ListHeaderComponent={header} ListEmptyComponent={<EmptyClosetState onPress={() => void pickImage()} />} showsVerticalScrollIndicator={false} />
+    <FlatList key={closetViewMode} data={filtered} numColumns={numColumns} keyExtractor={(item) => item.id} renderItem={({ item }) => <ClosetItemCard item={item} onPress={() => router.push(`/closet/${item.id}`)} onFavorite={() => void toggleFavorite(item.id)} />} columnWrapperStyle={closetViewMode === 'grid' ? styles.row : undefined} contentContainerStyle={{ padding: spacing.lg, paddingBottom: 190 }} ListHeaderComponent={header} ListEmptyComponent={emptyState} showsVerticalScrollIndicator={false} />
     <FloatingActionButton onPress={() => void pickImage()} />
 
     {/* Single-item review modal */}

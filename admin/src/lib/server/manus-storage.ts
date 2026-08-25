@@ -3,7 +3,8 @@ import { join, normalize, relative } from "node:path";
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 
 const STORAGE_DIR = process.env.WARDRO_MANUS_STORAGE_DIR?.trim() || join(process.env.WARDRO_MANUS_DATA_DIR?.trim() || "/tmp", "wardro-manus-storage");
-const MANUS_STORAGE_SECRET = process.env.WARDRO_MANUS_STORAGE_SECRET?.trim() || randomUUID();
+const manusRuntimeGlobals = globalThis as typeof globalThis & { __wardroManusStorageSecret?: string };
+const MANUS_STORAGE_SECRET = process.env.WARDRO_MANUS_STORAGE_SECRET?.trim() || (manusRuntimeGlobals.__wardroManusStorageSecret ??= randomUUID());
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const SUPPORTED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 

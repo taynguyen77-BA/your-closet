@@ -7,12 +7,13 @@ import { corsHeaders } from "@/lib/server/resources";
 import { isManusRuntime } from "@/lib/server/runtime";
 import { deleteManusClothing, getManusClothing, setManusCleanupStatus, updateManusClothing } from "@/lib/server/manus-data";
 import { deleteManusImage } from "@/lib/server/manus-storage";
+import { normalizeWardrobeIntelligence } from "@/lib/server/wardrobe-intelligence";
 
 export const runtime = "nodejs";
 const CLOTHES = "clothes";
 const REQUESTS = "wardrobe_requests";
 const CLEANUP_TASKS = "storage_cleanup_tasks";
-const MUTABLE_FIELDS = new Set(["name", "type", "material", "color", "style", "season", "tags", "isFavorite", "aiMetadata", "aiConfidenceScore", "aiQualityWarnings", "updatedAt"]);
+const MUTABLE_FIELDS = new Set(["name", "type", "material", "color", "style", "season", "tags", "secondaryColors", "subcategory", "pattern", "occasion", "brand", "size", "status", "isFavorite", "aiMetadata", "aiConfidenceScore", "aiQualityWarnings", "updatedAt"]);
 const TYPES = new Set(["top", "bottom", "dress", "outerwear", "shoes", "accessory", "bag", "other"]);
 
 function traceId(request: NextRequest) { return request.headers.get("x-request-id")?.slice(0, 120) || randomUUID(); }
@@ -39,12 +40,23 @@ function cleanPatch(raw: Record<string, unknown>) {
   if (typeof patch.name === "string" && (!patch.name.trim() || patch.name.length > 120)) throw new Error("INVALID_NAME");
   if (typeof patch.color === "string" && (!patch.color.trim() || patch.color.length > 120)) throw new Error("INVALID_COLOR");
   if (patch.type != null && (typeof patch.type !== "string" || !TYPES.has(patch.type))) throw new Error("INVALID_TYPE");
-  for (const key of ["season", "tags", "aiQualityWarnings"]) {
+  if (patch.status != null && (patch.status !== "active" && patch.status !== "archived")) throw new Error("INVALID_STATUS");
+  for (const key of ["season", "tags", "secondaryColors", "occasion", "aiQualityWarnings"]) {
     if (patch[key] != null && (!Array.isArray(patch[key]) || (patch[key] as unknown[]).length > 20 || (patch[key] as unknown[]).some((item) => typeof item !== "string" || String(item).length > 120))) throw new Error(`INVALID_${key.toUpperCase()}`);
   }
   if (patch.aiConfidenceScore != null && (typeof patch.aiConfidenceScore !== "number" || patch.aiConfidenceScore < 0 || patch.aiConfidenceScore > 1)) throw new Error("INVALID_AI_CONFIDENCE");
   if (patch.isFavorite != null && typeof patch.isFavorite !== "boolean") throw new Error("INVALID_IS_FAVORITE");
+  for (const key of ["subcategory", "pattern", "brand", "size", "style", "material"]) {
+    if (patch[key] != null && (typeof patch[key] !== "string" || String(patch[key]).length > 120)) throw new Error(`INVALID_${key.toUpperCase()}`);
+  }
   return patch;
+}
+
+function withIntelligence(current: Record<string, unknown>, patch: Record<string, unknown>) {
+  return {
+    ...patch,
+    intelligence: normalizeWardrobeIntelligence({ ...current, ...patch }),
+  };
 }
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
@@ -77,7 +89,7 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
     if (isManusRuntime()) {
       const current = await getManusClothing(identity.uid, itemId);
       if (!current) return fail("NOT_FOUND", 404, id);
-      const result = await updateManusClothing({ uid: identity.uid, id: itemId, patch, idempotencyKey: key });
+      const result = await updateManusClothing({ uid: identity.uid, id: itemId, patch: withIntelligence(current, patch), idempotencyKey: key });
       return NextResponse.json({ data: result.item, meta: { replayed: result.replayed } }, { headers: { ...corsHeaders, "X-Request-Id": id } });
     }
     const snapshot = await adminDb.collection(CLOTHES).doc(itemId).get();
@@ -87,6 +99,8 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
       const requestRef = adminDb.collection(REQUESTS).doc(createHash("sha256").update(`${identity.uid}:update:${itemId}:${key}`).digest("hex"));
       const existing = await requestRef.get();
       if (existing.exists) return NextResponse.json({ data: { id: itemId, ...snapshot.data(), ...existing.data()?.patch }, meta: { replayed: true } }, { headers: { ...corsHeaders, "X-Request-Id": id } });
+      const currentData = snapshot.data() ?? {};
+      Object.assign(patch, withIntelligence(currentData, patch));
       patch.updatedAt = new Date().toISOString();
       await adminDb.runTransaction(async (transaction) => {
         const current = await transaction.get(adminDb.collection(CLOTHES).doc(itemId));
@@ -95,6 +109,7 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ i
         transaction.create(requestRef, { userId: identity.uid, operation: "update_clothing", itemId, patch, createdAt: patch.updatedAt });
       });
     } else {
+      Object.assign(patch, withIntelligence(snapshot.data() ?? {}, patch));
       patch.updatedAt = new Date().toISOString();
       await adminDb.collection(CLOTHES).doc(itemId).update(patch);
     }

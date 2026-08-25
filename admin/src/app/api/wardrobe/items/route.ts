@@ -5,8 +5,9 @@ import { authenticate } from "@/lib/server/authorize";
 import { adminDb } from "@/lib/server/firebase-admin";
 import { corsHeaders } from "@/lib/server/resources";
 import { isManusRuntime } from "@/lib/server/runtime";
-import { createManusClothing } from "@/lib/server/manus-data";
+import { createManusClothing, listManusClothes } from "@/lib/server/manus-data";
 import { isManusStorageUrl } from "@/lib/server/manus-storage";
+import { normalizeWardrobeIntelligence, parseWardrobeQuery, queryWardrobeItems } from "@/lib/server/wardrobe-intelligence";
 
 export const runtime = "nodejs";
 
@@ -32,6 +33,14 @@ type WardrobePayload = {
   season?: string[];
   tags: string[];
   aiMetadata?: Record<string, unknown>;
+  intelligence: ReturnType<typeof normalizeWardrobeIntelligence>;
+  secondaryColors?: string[];
+  subcategory?: string;
+  pattern?: string;
+  occasion?: string[];
+  brand?: string;
+  size?: string;
+  status?: "active" | "archived";
   aiConfidenceScore?: number;
   aiQualityWarnings?: string[];
   isFavorite: boolean;
@@ -88,6 +97,14 @@ function normalizePayload(uid: string, raw: Record<string, unknown>): WardrobePa
   if (!CLOTHING_TYPES.has(type)) throw new Error("INVALID_TYPE");
   const season = raw.season == null ? [] : asStringArray(raw.season, "season");
   const tags = asStringArray(raw.tags, "tags");
+  const secondaryColors = raw.secondaryColors == null ? [] : asStringArray(raw.secondaryColors, "secondaryColors");
+  const occasion = raw.occasion == null ? [] : asStringArray(raw.occasion, "occasion");
+  const subcategory = raw.subcategory == null ? undefined : asString(raw.subcategory, "subcategory");
+  const pattern = raw.pattern == null ? undefined : asString(raw.pattern, "pattern");
+  const brand = raw.brand == null ? undefined : asString(raw.brand, "brand");
+  const size = raw.size == null ? undefined : asString(raw.size, "size");
+  const status = raw.status == null ? "active" : asString(raw.status, "status");
+  if (status !== "active" && status !== "archived") throw new Error("INVALID_STATUS");
   const confidence = raw.aiConfidenceScore == null ? undefined : Number(raw.aiConfidenceScore);
   if (confidence != null && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)) throw new Error("INVALID_AI_CONFIDENCE");
   return {
@@ -104,6 +121,14 @@ function normalizePayload(uid: string, raw: Record<string, unknown>): WardrobePa
     style: raw.style == null ? undefined : asString(raw.style, "style"),
     season,
     tags,
+    secondaryColors,
+    subcategory,
+    pattern,
+    occasion,
+    brand,
+    size,
+    status: status as "active" | "archived",
+    intelligence: normalizeWardrobeIntelligence({ type, color: raw.color, secondaryColors, season, occasion, subcategory, pattern, material: raw.material, style: raw.style, brand, size, status, aiMetadata: raw.aiMetadata, aiConfidenceScore: confidence }),
     aiMetadata: raw.aiMetadata && typeof raw.aiMetadata === "object" ? raw.aiMetadata as Record<string, unknown> : undefined,
     aiConfidenceScore: confidence,
     aiQualityWarnings: raw.aiQualityWarnings == null ? [] : asStringArray(raw.aiQualityWarnings, "aiQualityWarnings"),
@@ -117,6 +142,31 @@ function mapError(error: unknown) {
   const code = error instanceof Error ? error.message : "SERVER_ERROR";
   const status = code === "FORBIDDEN" ? 403 : code === "CLOSET_LIMIT_REACHED" ? 409 : code.startsWith("INVALID_") ? 400 : 500;
   return { code, status };
+}
+
+export async function GET(request: NextRequest) {
+  const traceId = requestId(request);
+  try {
+    const identity = await authenticate(request);
+    if (!identity || identity.demo) return fail("UNAUTHORIZED", 401, traceId);
+    const query = parseWardrobeQuery(request.nextUrl.searchParams);
+    const result = isManusRuntime()
+      ? await listManusClothes(identity.uid, query)
+      : queryWardrobeItems(
+        (await adminDb.collection(CLOTHES).where("userId", "==", identity.uid).limit(1000).get()).docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        query,
+      );
+    if (Array.isArray(result)) throw new Error("SERVER_ERROR");
+    const items = result.items.map((item) => {
+      const row = item as Record<string, unknown>;
+      return row.intelligence ? item : { ...row, intelligence: normalizeWardrobeIntelligence(row) };
+    });
+    return NextResponse.json({ data: items, meta: { total: result.total, limit: result.limit, cursor: result.cursor, facets: result.facets } }, { headers: { ...corsHeaders, "X-Request-Id": traceId } });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "SERVER_ERROR";
+    const status = code.startsWith("INVALID_") ? 400 : code === "UNAUTHORIZED" ? 401 : 500;
+    return fail(code, status, traceId);
+  }
 }
 
 export async function POST(request: NextRequest) {
